@@ -1,5 +1,5 @@
 ############################################################
-# For penn genomes, 06.21
+# For rodent genomes
 # Figure 4
 # Gregg Thomas
 ############################################################
@@ -9,9 +9,7 @@ library(cowplot)
 library(ggbeeswarm)
 library(dplyr)
 library(RColorBrewer)
-
-this.dir <- dirname(parent.frame(2)$ofile)
-setwd(this.dir)
+library(here)
 
 ############################################################
 cat("----------\n")
@@ -25,31 +23,27 @@ marker_window_size = 1
 marker_window_size_kb = marker_window_size * 1000
 # Marker window size in kb
 
-au_flag = FALSE
-# Set to filter out windows that don't pass the AU test
-
-skip_one = FALSE
-# Set to only do one test chromosome
-
 read_data = T
 # Whether or not to re-read the input data
 
-save_fig = F
+save_fig = T
 # Whether or not to save the fig
 
-datadir = "C:/Users/Gregg/Box Sync/rodents/penn/paper/data/"
-tree_file = paste(datadir, window_size, "kb-0.5-0.5-", marker_window_size, "mb-topo-counts-tt.csv", sep="")
+datadir = here("data", "02-Genomic-discordance")
+
+#infile = here(datadir, paste(window_size, "kb-0.5-0.5-", marker_window_size, "mb-topo-counts-tt.csv.gz", sep=""))
 
 if(marker_window_size < 1){
   stop()
 }else{
-  marker_file = paste(datadir, window_size, "kb-", marker_window_size, "mb-recomb-dists.csv", sep="")
+  marker_file = here(datadir, paste(window_size, "kb-", marker_window_size, "mb-recomb-dists.csv", sep=""))
+  #marker_file = paste(datadir, window_size, "kb-", marker_window_size, "mb-recomb-dists.csv", sep="")
 }
 # Input options
 ######################
 
 if(read_data){
-  cat(as.character(Sys.time()), " | Reading marker window data: ", tree_file, "\n")
+  cat(as.character(Sys.time()), " | Reading marker window data: ", marker_file, "\n")
   marker_windows = read.csv(marker_file, header=T)
 }
 
@@ -81,9 +75,9 @@ fig4 = plot_grid(fig_4a, fig_4b, ncol=2, labels=c("A", "B"), label_size=16, alig
 ######################
 
 if(save_fig){
-  fig4file = "../figs/fig4.png"
-  cat(as.character(Sys.time()), " | Fig4: Saving figure:", fig4file, "\n")
-  ggsave(filename=fig4file, fig4, width=7.5, height=3.5, units="in")
+  fig_file = here("figs", "fig4.png")
+  cat(as.character(Sys.time()), " | Fig4: Saving figure:", fig_file, "\n")
+  ggsave(filename=fig_file, fig4, width=7.5, height=3.5, units="in")
 }
 
 ######################

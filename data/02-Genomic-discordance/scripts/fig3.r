@@ -1,5 +1,5 @@
 ############################################################
-# For penn genomes, 06.21
+# For rodent genomes
 # Figure 3
 # Gregg Thomas
 ############################################################
@@ -9,9 +9,9 @@ library(cowplot)
 library(ggbeeswarm)
 library(dplyr)
 library(RColorBrewer)
-
-this.dir <- dirname(parent.frame(2)$ofile)
-setwd(this.dir)
+library(here)
+library(readr)
+library(archive)
 
 ############################################################
 
@@ -42,12 +42,15 @@ save_fig = T
 num_reps = 100
 # The number of replicates for random tree dists from dists.r
 
-datadir = "C:/Users/Gregg/Box Sync/rodents/penn/paper/data/"
+datadir = here("data", "02-Genomic-discordance")
 
-infile = paste(datadir, window_size_kb, "kb-0.5-0.5-", marker_window_size, "mb-topo-counts-tt.csv", sep="")
-#script_dir = paste(datadir, "nonrandom-treedists/", sep="")
-#script_dir = "C:/Users/Gregg/Desktop/dists/"
-script_dir = "D:/data/rodent-genomes/dists/"
+infile = here(datadir, paste(window_size_kb, "kb-0.5-0.5-", marker_window_size, "mb-topo-counts-tt.csv.gz", sep=""))
+
+chrome_info_file = here(datadir, "recombination-markers", "chrome-stats.csv")
+
+#script_dir = "D:/data/rodent-genomes/dists/"
+dist_archive = "D:/data/rodent-genomes/test.tar.gz"
+
 # Input options
 ######################
 
@@ -56,19 +59,20 @@ if(read_data){
   cat(as.character(Sys.time()), " | Reading window data: ", infile, "\n")
   all_windows = read.csv(infile, header=T)
   
-  chrome_info_file = paste(datadir, "recombination-markers/chrome-stats.csv", sep="")
   cat(as.character(Sys.time()), " | Reading chrome data: ", chrome_info_file, "\n")
   chrome_info = read.csv(chrome_info_file, comment.char="#", header=T)
   
-  random_file = paste(script_dir,"random-dists", sep="")
+  random_file = "test/random-dists"
   if(au_flag){
     random_file = paste(random_file, "-au", sep="")
   }
   random_file = paste(random_file, ".csv", sep="")
   
   cat(as.character(Sys.time()), " | Reading random tree dists: ", random_file, "\n")
-  random_data = read.csv(random_file, header=T)
+  #random_data = read.csv(random_file, header=T)
+  random_data = read.csv(archive_read(dist_archive, file=random_file))
 }
+stop("OK")
 # Read input data
 ######################
 

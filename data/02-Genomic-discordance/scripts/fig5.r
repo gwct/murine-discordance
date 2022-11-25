@@ -1,19 +1,99 @@
 ############################################################
-# For penn genomes, 06.21
+# For rodent genomes
 # Figure 5
 # Gregg Thomas
 ############################################################
-
-this.dir <- dirname(parent.frame(2)$ofile)
-setwd(this.dir)
 
 library(ggplot2)
 library(cowplot)
 library(dplyr)
 library(tidyr)
 library(ggbeeswarm)
+library(ggsignif)
+library(phangorn)
+library(broom)
+library(here)
 
-############################################################
+########################################################################################################################
+
+featureCalcs <- function(chrome, dists, window_size, max_dist_mb){
+  cat(as.character(Sys.time()), "  | Fitting models\n", sep="")
+  dists$adj = dists$adj * window_size / 1000000
+  # Adjust the adjacenccy to reflect distance in Mb
+  
+  dists$adj[dists$adj < 0] = dists$adj[dists$adj < 0] * -1
+  # Convert the negative adjacencies to positive
+  
+  dists = subset(dists, adj <= max_dist_mb)
+  # Select only windows within the adjacency threshold we want to check
+  
+  adj_wrf = select(subset(dists, adj==1), feature.window, wrf)
+  names(adj_wrf)[2] = "wrf.adjacent"
+  # Get the wrfs from windows immediately adjacent to the features
+  print(nrow(dists))
+  fitted_models = dists %>% group_by(feature.window) %>% do(model = lm(wrf ~ adj, data = ., na.rm=T))
+  # Fit a linear regression to every feature window for adjacencies out to the max distance
+  print(nrow(fitted_models))
+  fitted_models$int = NA
+  fitted_models$slope = NA
+  for(i in 1:nrow(fitted_models)){
+    fitted_models[i,]$int = fitted_models$model[[i]]$coefficients[1]
+    fitted_models[i,]$slope = fitted_models$model[[i]]$coefficients[2]
+  }
+  # Get the slope and intercept as separate columns
+  
+  fitted_models = fitted_models %>% select(feature.window, int, slope)
+  # Select only the window, intercept, and slope columns from the models
+  
+  #####
+  
+  fitted_models_log = dists %>% group_by(feature.window) %>% do(model = lm(wrf ~ log10(adj), data = ., na.rm=T))
+  # Fit a linear regression to every feature window for the LOG adjacencies out to the max distance
+  
+  fitted_models_log$log.int = NA
+  fitted_models_log$log.slope = NA
+  for(i in 1:nrow(fitted_models_log)){
+    fitted_models_log[i,]$log.int = fitted_models_log$model[[i]]$coefficients[1]
+    fitted_models_log[i,]$log.slope = fitted_models_log$model[[i]]$coefficients[2]
+  }
+  # Get the LOG slope and intercept as separate columns
+  
+  fitted_models_log = fitted_models_log %>% select(feature.window, log.int, log.slope)
+  # Select only the window, intercept, and slope columns from the log models
+  
+  fitted_models = merge(fitted_models, fitted_models_log, by="feature.window")
+  fitted_models = merge(fitted_models, adj_wrf, by="feature.window")
+  # Merge everything together
+  
+  fitted_models$chr = chrome
+  
+  return(fitted_models)
+}
+
+featureToSpec <- function(spec_tree, fitted_models, chrdata_f){
+  cat(as.character(Sys.time()), "  | Getting distances to species tree\n", sep="")
+  
+  window_trees = subset(chrdata_f, window %in% fitted_models$feature.window)
+  window_trees = window_trees %>% select(window, unparsed.tree)
+  # Get the windows with trees from the full data file
+  
+  names(window_trees)[1] = "feature.window"
+  # Rename the window column to merge later
+  
+  window_trees$wrf.spec = wRF.dist(read.tree(text=window_trees$unparsed.tree), spec_tree)
+  # Calculate wRF for all the feature window trees to the species tree
+  
+  fitted_models = merge(fitted_models, window_trees, by="feature.window")
+  # Merge the models with the species tree distances
+  
+  fitted_models = fitted_models %>% select(!unparsed.tree)
+  # Remove the tree from the dataframe
+
+  return(fitted_models)
+}
+
+
+########################################################################################################################
 
 window_size_kb = 10
 # Window size in kb
@@ -27,10 +107,14 @@ marker_window_size = 5
 au_flag = FALSE
 # Set to filter out windows that don't pass the AU test
 
-read_data = T
+read_data = F
+# Whether or not to read the data
+
+do_calcs = F
+# Whether or not to do the calculations (takes about 1hr)
 
 gen_figs = T
-# Set to generate figures.
+# Set to generate figures
 
 skip_one = F
 # Set to only do one test chromosome
@@ -44,442 +128,612 @@ featured_chr = "chr7"
 max_dist_mb = 5
 # Distance limit for plots
 
-save_fig = T
+save_fig = F
 # Whether or not to save the figure
 
 gen_supp = F
+# Whether or not to save the supplemental figs for each chromosome
+
+coding_genes = T
+if(coding_genes){
+  gene_str = "All coding genes"
+}else{
+  gene_str = "All genes"
+}
+# Whether or not to use coding genes or all genes
 
 point_alpha = 0.1
+# Point transparency level
 
-datadir = "C:/Users/Gregg/Box Sync/rodents/penn/paper/data/"
-#distdir = "C:/Users/Gregg/Desktop/dists/"
+#datadir = "C:/Users/Gregg/Box Sync/rodents/penn/paper/data/"
+#datadir = "C:/Users/grt814/Box Sync/rodents/penn/paper/data/"
+
+datadir = here("data", "02-Genomic-discordance")
+ps_datadir = here("data", "03-Selection-tests")
+
 distdir = "D:/data/rodent-genomes/dists/"
+
 tree_file = paste(datadir, window_size_kb, "kb-0.5-0.5-", marker_window_size, "mb-topo-counts-tt.csv", sep="")
-marker_file = paste(datadir, window_size_kb, "kb-", marker_window_size, "mb-dists.csv", sep="")
+
+species_tree_file = paste(datadir, "05_penn_7spec_iqtree.cf.rooted.tree", sep="")
+# Re-label the species tree to match the gene trees
+
+transcript_windows_file = paste(datadir, "mm10-cds-windows.csv", sep="")
+longest_transcripts_file = paste(datadir, "mm10-transcripts-longest.tab", sep="")
+# Transcript files
+
+ps_genes_file = paste(datadir, "ps-genes-all-gt.csv", sep="")
+# PS gene IDs
 
 chrome_info_file = paste(datadir, "recombination-markers/chrome-stats.csv", sep="")
+
+pre_calc_file = paste(datadir, "all-feature-stats.csv", sep="")
 # Input options
 ######################
 
 if(read_data){
+  cat(as.character(Sys.time()), " | Reading species tree\n")
+  concat_tree = read.tree(species_tree_file)
+  
   cat(as.character(Sys.time()), " | Reading tree window data: ", tree_file, "\n")
   all_windows = read.csv(tree_file, header=T)
   all_windows_f = subset(all_windows, repeat.filter=="PASS" & missing.filter=="PASS")
   if(au_flag){
     all_windows_f = subset(all_windows_f, AU.test=="PASS")
   }
+ 
+  cat(as.character(Sys.time()), " | Reading gene IDs for PS genes\n")
+  ps_gene_ids = read.csv(ps_genes_file, header=F, stringsAsFactors=F)
   
-  cat(as.character(Sys.time()), " | Reading marker window data: ", marker_file, "\n")
-  marker_windows = read.csv(marker_file, header=T)
+  cat(as.character(Sys.time()), " | Reading gene trees\n")
+  transcript_windows = read.csv(transcript_windows_file, header=T, comment.char="#", stringsAsFactors=F)
+  # The 10kb windows that overlap with mouse transcripts
+  
+  longest_transcripts = read.csv(longest_transcripts_file, sep="\t", header=T, comment.char="#", stringsAsFactors=F)
+  # The transcripts used for gene trees and dN/dS
   
   #cat(as.character(Sys.time()), " | Reading chrome info: ", chrome_info_file, "\n")
 }
 # Read and filter the window data
 ######################
 
-slope_data = data.frame("chr"=c(), "slope.wrf"=c(), "type"=c())
-int_data = data.frame("chr"=c(), "int.wrf"=c(), "type"=c())
-diff_data = data.frame("chr"=c(), "adj"=c(), "wrf.diff"=c(), "type"=c())
-# Initialize data frames
+if(do_calcs){
+# Whether or not to do calculations
+  
+  non_features = data.frame("window"=c(), "wrf.adjacent"=c(), "slope"=c(), "int"=c(), "log.slope"=c(), "log.int"=c(), "wrf.spec"=c())
+  hs = data.frame("window"=c(), "wrf.adjacent"=c(), "slope"=c(), "int"=c(), "log.slope"=c(), "log.int"=c(), "wrf.spec"=c())
+  non_ps_genes = data.frame("window"=c(), "wrf.adjacent"=c(), "slope"=c(), "int"=c(), "log.slope"=c(), "log.int"=c(), "wrf.spec"=c())
+  ps_genes = data.frame("window"=c(), "wrf.adjacent"=c(), "slope"=c(), "int"=c(), "log.slope"=c(), "log.int"=c(), "wrf.spec"=c())
+  uces = data.frame("window"=c(), "wrf.adjacent"=c(), "slope"=c(), "int"=c(), "log.slope"=c(), "log.int"=c(), "wrf.spec"=c())
+  # Initialize data frames for each feature type
+  
+  for(chrome in levels(as.factor(all_windows$chr))){
+  # Do calculations for each chromosome
+    
+    if(skip_one && chrome != "chr9"){
+      next
+    }
+    
+    if(skip_x && chrome == "chrX"){
+      next
+    }
+    
+    if(nchar(chrome) == 4 && chrome != "chrX"){
+      out_chrome = gsub("chr", "chr0", chrome)
+    }else{
+      out_chrome = chrome
+    }
+    # The string for the current chromosome.
+    
+    # Parse chromosome strings and other conditions
+    ######################
+    
+    cat(as.character(Sys.time()), " Starting chromosome | ", out_chrome, "\n", sep="")
+    
+    chrdata = subset(all_windows, chr==chrome)
+    total_windows = length(chrdata[,1])
+    chrdata_f = subset(chrdata, repeat.filter=="PASS" & missing.filter=="PASS")
+    if(au_flag){
+      chrdata_f = subset(chrdata_f, AU.test=="PASS")
+    }
+    used_windows = length(chrdata_f[,1])
+    chr_len = chrdata$chr.len[1]
+    # Subset data for this chromosome
+    ######################
+    
+    full_stats_file = paste(distdir, out_chrome, "-stats.csv", sep="")
+    if(coding_genes){
+      gene_file = paste(datadir, "coord-query/mm10-coding-genes-", marker_window_size ,"-Mb.bed.", chrome, ".dists", sep="")
+    }else{
+      gene_file = paste(datadir, "coord-query/mm10-genes-", marker_window_size ,"-Mb.bed.", chrome, ".dists", sep="")
+    }
+    uce_file = paste(datadir, "coord-query/mm10-uces-", marker_window_size ,"-Mb.bed.", chrome, ".dists", sep="")
+    hs_file = paste(datadir, "coord-query/mm10-hotspots-", marker_window_size ,"-Mb.bed.", chrome, ".dists", sep="")
+    ps_file = paste(datadir, "coord-query/mm10-ps-", marker_window_size ,"-Mb.bed.", chrome, ".dists", sep="")
+    
+    # File names for this chromosome
+    ######################
+   
+    cat(as.character(Sys.time()), "  | Chromosome ", chrome, " - reading data: ", ps_file, "\n", sep="")
+    ps_dists = read.csv(ps_file, header=T)
+    ps_dists$feature.window = paste(ps_dists$chr, ":", ps_dists$start, "-", ps_dists$end, sep="")
+    # Get the feature window from the other columns  
+    # Read the data for this chromosome and feature
+    
+    ps_models = featureCalcs(out_chrome, ps_dists, window_size, max_dist_mb)
+    ps_models = featureToSpec(concat_tree, ps_models, chrdata_f)
+    ps_genes = rbind(ps_genes, ps_models)
+  
+    # Positively selected genes
+    ######################
+    
+    cat(as.character(Sys.time()), "  | Chromosome ", chrome, " - reading data: ", gene_file, "\n", sep="")
+    gene_dists = read.csv(gene_file, header=T)
+    gene_dists$feature.window = paste(gene_dists$chr, ":", gene_dists$start, "-", gene_dists$end, sep="")
+    # Get the feature window from the other columns  
+    # Read the data for this chromosome and feature
+    
+    non_ps_models = featureCalcs(out_chrome, gene_dists, window_size, max_dist_mb)
+    non_ps_models = featureToSpec(concat_tree, non_ps_models, chrdata_f)
+    non_ps_genes = rbind(non_ps_genes, non_ps_models)
+    
+    non_ps_genes = subset(non_ps_genes, !feature.window %in% ps_genes$feature.window)
+    # Non-positively selected genes
+    ###################### 
+    
+    cat(as.character(Sys.time()), "  | Chromosome ", chrome, " - reading data: ", hs_file, "\n", sep="")
+    hs_dists = read.csv(hs_file, header=T)
+    hs_dists$feature.window = paste(hs_dists$chr, ":", hs_dists$start, "-", hs_dists$end, sep="")
+    # Get the feature window from the other columns  
+    # Read the data for this chromosome and feature
+    
+    hs_models = featureCalcs(out_chrome, hs_dists, window_size, max_dist_mb)
+    hs_models = featureToSpec(concat_tree, hs_models, chrdata_f)
+    hs = rbind(hs, hs_models)
+    
+    # Hotspots
+    ######################
+    
+    cat(as.character(Sys.time()), "  | Chromosome ", chrome, " - reading data: ", uce_file, "\n", sep="")
+    uce_dists = read.csv(uce_file, header=T)
+    uce_dists$feature.window = paste(uce_dists$chr, ":", uce_dists$start, "-", uce_dists$end, sep="")
+    # Get the feature window from the other columns  
+    # Read the data for this chromosome and feature
+    
+    uce_models = featureCalcs(out_chrome, uce_dists, window_size, max_dist_mb)
+    uce_models = featureToSpec(concat_tree, uce_models, chrdata_f)
+    uces = rbind(uces, uce_models)
+    
+    # Hotspots
+    ######################
+  
+    cat(as.character(Sys.time()), "  | Chromosome ", chrome, " - reading all chromosome windows\n", sep="")
+    chr_dists = data.frame()
+    for(i in 1:(max_dist_mb * 1000000 / window_size)){
+      cat(i, " ")
+      cur_dist_file = paste(distdir, "/all-dists/", chrome, "-", i, ".csv", sep="")
+      cur_dists = read.csv(cur_dist_file, header=T)
+      cur_dists$adj = i
+      chr_dists = rbind(chr_dists, cur_dists)
+    }
+    cat("\n")
+    # Read a file for each adjacency/dist for this chromosome
+    
+    all_feature_windows = unique(union(ps_models$feature.window, union(non_ps_models$feature.window, union(hs_models$feature.window, uce_models$feature.window))))
+    names(chr_dists)[1] = "feature.window"
+    chr_dists = subset(chr_dists, !feature.window %in% all_feature_windows)
+    # Get only windows that don't overlap with a feature window
+    
+    chr_models = featureCalcs(out_chrome, chr_dists, window_size, max_dist_mb)
+    chr_models = featureToSpec(concat_tree, chr_models, chrdata_f)
+    non_features = rbind(non_features, chr_models)
+    
+    # Non-feature windows
+    ######################
+  } ## End Chromosome loop
+}else{
+  cat(as.character(Sys.time()), " | Reading pre-calculated feature data: ", pre_calc_file, "\n")
+  features = read.csv(pre_calc_file, header=T)
+} ## End do_calcs block
+  
 ######################
 
-for(chrome in levels(as.factor(all_windows$chr))){
-  # Generate figures for each chromosome.
-  
-  if(skip_one && chrome != "chr7"){
-    next
-  }
-  
-  if(skip_x && chrome == "chrX"){
-    next
-  }
-  
-  if(nchar(chrome) == 4 && chrome != "chrX"){
-    out_chrome = gsub("chr", "chr0", chrome)
-  }else{
-    out_chrome = chrome
-  }
-  # The string for the current chromosome.
-  
-  # Parse chromosome strings and other conditions
-  ######################
-  
-  cat(as.character(Sys.time()), " Starting chromosome | ", out_chrome, "\n", sep="")
-  
-  chrdata = subset(all_windows, chr==chrome)
-  total_windows = length(chrdata[,1])
-  chrdata_f = subset(chrdata, repeat.filter=="PASS" & missing.filter=="PASS")
-  if(au_flag){
-    chrdata_f = subset(chrdata_f, AU.test=="PASS")
-  }
-  used_windows = length(chrdata_f[,1])
-  chr_len = chrdata$chr.len[1]
-  # Subset data for this chromosome
-  ######################
-  
-  full_stats_file = paste(distdir, out_chrome, "-stats.csv", sep="")
-  gene_file = paste(datadir, "coord-query/mm10-genes-", marker_window_size ,"-Mb.bed.", chrome, ".dists", sep="")
-  uce_file = paste(datadir, "coord-query/mm10-uces-", marker_window_size ,"-Mb.bed.", chrome, ".dists", sep="")
-  hs_file = paste(datadir, "coord-query/mm10-hotspots-", marker_window_size ,"-Mb.bed.", chrome, ".dists", sep="")
-  ps_file = paste(datadir, "coord-query/mm10-ps-", marker_window_size ,"-Mb.bed.", chrome, ".dists", sep="")
-  
-  # File names for this chromosome
-  ######################
-  
-  cat(as.character(Sys.time()), " | Chromosome ", out_chrome, " - reading data: ", full_stats_file, "\n", sep="")
-  full_stats = read.csv(full_stats_file, header=T)
-  full_stats$adj = full_stats$adj * window_size / 1000000
-  full_stats = subset(full_stats, adj <= max_dist_mb)
-  full_stats$log.adj = log10(full_stats$adj)
-  # Chromosome-wide data
-  ######################
-  
-  cat(as.character(Sys.time()), " | Chromosome ", out_chrome, " - reading data: ", gene_file, "\n", sep="")
-  gene_dists = read.csv(gene_file, header=T)
-  gene_dists$adj = gene_dists$adj * window_size / 1000000
-  gene_dists$adj[gene_dists$adj < 0] = gene_dists$adj[gene_dists$adj < 0] * -1
-  gene_dists = subset(gene_dists, adj <= max_dist_mb)
-  gene_dists_avg = gene_dists %>% group_by(adj) %>% summarize(avg.wrf=mean(wrf, na.rm=T))
-  gene_dists_avg$log.adj = log10(gene_dists_avg$adj)
-  gene_diffs = data.frame("adj"=gene_dists_avg$adj, "wrf.diff" = gene_dists_avg$avg.wrf - full_stats$mean.wrf)
-  gene_diffs$chr = out_chrome
-  gene_diffs$type = "All genes"
-  #gene_diffs$type2 = "Genes"
-  # Gene data
-  ######################
-  
-  cat(as.character(Sys.time()), " | Chromosome ", out_chrome, " - reading data: ", ps_file, "\n", sep="")
-  ps_dists = read.csv(ps_file, header=T)
-  ps_dists$adj = ps_dists$adj * window_size / 1000000
-  ps_dists$adj[ps_dists$adj < 0] = ps_dists$adj[ps_dists$adj < 0] * -1
-  ps_dists = subset(ps_dists, adj <= max_dist_mb)
-  ps_dists_avg = ps_dists %>% group_by(adj) %>% summarize(avg.wrf=mean(wrf, na.rm=T))
-  ps_dists_avg$log.adj = log10(ps_dists_avg$adj)
-  ps_diffs = data.frame("adj"=ps_dists_avg$adj, "wrf.diff" = ps_dists_avg$avg.wrf - full_stats$mean.wrf)
-  ps_diffs$chr = out_chrome
-  ps_diffs$type = "Positively selected genes"
-  #ps_diffs$type2 = "Positively selected genes"
-  # PS gene data
-  ######################
-  
-  cat(as.character(Sys.time()), " | Chromosome ", out_chrome, " - reading data: ", uce_file, "\n", sep="")
-  uce_dists = read.csv(uce_file, header=T)
-  uce_dists$adj = uce_dists$adj * window_size / 1000000
-  uce_dists$adj[uce_dists$adj < 0] = uce_dists$adj[uce_dists$adj < 0] * -1
-  uce_dists = subset(uce_dists, adj <= max_dist_mb)
-  uce_dists_avg = uce_dists %>% group_by(adj) %>% summarize(avg.wrf=mean(wrf, na.rm=T))
-  uce_dists_avg$log.adj = log10(uce_dists_avg$adj)
-  uce_diffs = data.frame("adj"=uce_dists_avg$adj, "wrf.diff" = uce_dists_avg$avg.wrf - full_stats$mean.wrf)
-  uce_diffs$chr = out_chrome
-  uce_diffs$type = "UCEs"
-  # UCE data
-  ######################
-  
-  cat(as.character(Sys.time()), " | Chromosome ", out_chrome, " - reading data: ", hs_file, "\n", sep="")
-  hs_dists = read.csv(hs_file, header=T)
-  hs_dists$adj = hs_dists$adj * window_size / 1000000
-  hs_dists$adj[hs_dists$adj < 0] = hs_dists$adj[hs_dists$adj < 0] * -1
-  hs_dists = subset(hs_dists, adj <= max_dist_mb)
-  hs_dists_avg = hs_dists %>% group_by(adj) %>% summarize(avg.wrf=mean(wrf, na.rm=T))
-  hs_dists_avg$log.adj = log10(hs_dists_avg$adj)
-  hs_diffs = data.frame("adj"=hs_dists_avg$adj, "wrf.diff" = hs_dists_avg$avg.wrf - full_stats$mean.wrf)
-  hs_diffs$chr = out_chrome
-  hs_diffs$type = "Hotspots"
-  # Set up input file names (output files from gen_data) and read data.
-  # Hotspot data
-  ######################
-  
-  fill_fit = lm(full_stats$mean.wrf ~ log10(full_stats$adj))
-  full_slope = fill_fit$coefficients[2]
-  #full_int = fill_fit$coefficients[1]
-  full_int = full_stats$mean.wrf[full_stats$adj==0.01]
-  # Chromosome-wide fits
-  ######################
-  
-  gene_fit = lm(gene_dists_avg$avg.wrf ~ log10(gene_dists_avg$adj))
-  gene_slope = gene_fit$coefficients[2]
-  gene_int = gene_dists_avg$avg.wrf[gene_dists_avg$adj==0.01]
-  #gene_int = gene_fit$coefficients[1]
-  # Gene fits
-  ######################
-  
-  ps_fit = lm(ps_dists_avg$avg.wrf ~ log10(ps_dists_avg$adj))
-  ps_slope = ps_fit$coefficients[2]
-  ps_int = ps_dists_avg$avg.wrf[ps_dists_avg$adj==0.01]
-  #gene_int = gene_fit$coefficients[1]
-  # Positively selected gene fits
-  ######################
-  
-  uce_fit = lm(uce_dists_avg$avg.wrf ~ log10(uce_dists_avg$adj))
-  uce_slope = uce_fit$coefficients[2]
-  uce_int = uce_dists_avg$avg.wrf[uce_dists_avg$adj==0.01]
-  #uce_int = uce_fit$coefficients[1]
-  # UCE fits
-  ######################
-  
-  hs_fit = lm(hs_dists_avg$avg.wrf ~ log10(hs_dists_avg$adj))
-  hs_slope = hs_fit$coefficients[2]
-  hs_int = hs_dists_avg$avg.wrf[hs_dists_avg$adj==0.01]
-  #uce_int = uce_fit$coefficients[1]
-  # Calculate fits for both models
-  # Hotspot fits
-  ######################
-  
-  full_stats$type = "Chromosomes"
-  full_stats$type = factor(full_stats$type, levels=c("Chromosomes", "Hotspots", "All genes", "Positively selected genes", "UCEs"))
-  # Chromosome-wide labels
-  ######################
-  
-  gene_dists_avg$type = "All genes"
-  gene_dists_avg$type = factor(gene_dists_avg$type, levels=c("Chromosomes", "Hotspots", "All genes", "Positively selected genes", "UCEs"))
-  #gene_dists_avg$type2 = "All genes"
-  #gene_dists_avg$type2 = factor(gene_dists_avg$type2, levels=c("All genes", "Positively selected genes"))
-  # Gene labels
-  ######################
-  
-  ps_dists_avg$type = "Positively selected genes"
-  ps_dists_avg$type = factor(ps_dists_avg$type, levels=c("Chromosomes", "Hotspots", "All genes", "Positively selected genes", "UCEs"))
-  #ps_dists_avg$type2 = "Positively selected genes"
-  #ps_dists_avg$type2 = factor(ps_dists_avg$type2, levels=c("All genes", "Positively selected genes"))
-  # PS gene labels
-  ######################
-     
-  uce_dists_avg$type = "UCEs"
-  uce_dists_avg$type = factor(uce_dists_avg$type, levels=c("Chromosomes", "Hotspots", "All genes", "Positively selected genes", "UCEs"))
-  # UCE labels
-  ######################
-  
-  hs_dists_avg$type = "Hotspots"
-  hs_dists_avg$type = factor(hs_dists_avg$type, levels=c("Chromosomes", "Hotspots", "All genes", "Positively selected genes", "UCEs"))
-  # Hotspot labels
-  ######################
+non_lab = "Non-feature windows"
+hs_lab = "Hotspot windows"
+non_ps_lab = "Non-PS gene windows"
+ps_lab = "PS gene windows"
+uce_lab = "UCE windows"
+# Feature column labels
 
-  cat(as.character(Sys.time()), " | Fig5: Rendering panel A for ", chrome, "\n")
-  log_p = ggplot(full_stats, aes(x=adj, y=mean.wrf, color=type)) +
-    geom_point(size=2, alpha=point_alpha) +
-    geom_smooth(method="lm", formula=y~log10(x), se=F, linetype="dashed") +
-    #geom_line() +
-    geom_point(data=gene_dists_avg, aes(x=adj, y=avg.wrf), size=2, alpha=point_alpha) +
-    geom_smooth(data=gene_dists_avg, aes(x=adj, y=avg.wrf), method="lm", formula=y~log10(x), se=F, linetype="dashed") +
-    geom_point(data=ps_dists_avg, aes(x=adj, y=avg.wrf), size=2, alpha=point_alpha) +
-    geom_smooth(data=ps_dists_avg, aes(x=adj, y=avg.wrf), method="lm", formula=y~log10(x), se=F, linetype="dashed") +
-    geom_point(data=uce_dists_avg, aes(x=adj, y=avg.wrf), size=2, alpha=point_alpha) +
-    geom_smooth(data=uce_dists_avg, aes(x=adj, y=avg.wrf), method="lm", formula=y~log10(x), se=F, linetype="dashed") +
-    #geom_line(data=uce_dists_avg, aes(x=adj, y=avg.wrf)) +
-    geom_point(data=hs_dists_avg, aes(x=adj, y=avg.wrf), size=2, alpha=point_alpha) +
-    geom_smooth(data=hs_dists_avg, aes(x=adj, y=avg.wrf), method="lm", formula=y~log10(x), se=F, linetype="dashed") +
-    xlab("Distance between\nwindows (Mb)") +
-    ylab("Mean wRF") +
-    scale_color_manual(name="", values=c('#006ddb', "#333333", '#db6d00', '#004949', '#920000'), labels=c("Chromosomes", "Hotspots", "All genes", "Positively selected genes", "UCEs"), drop=FALSE) +
-    bartheme() + 
-    theme(legend.position="right",
-          axis.title.x = element_text(margin = unit(c(0, 3, 3, 3), "mm")),
-          plot.margin = unit(c(0,0,0.25,1), "cm"))
-  print(log_p)
-  # Log correlation plot
-  ######################
+if(do_calcs){
+  cat(as.character(Sys.time()), " | Adding labels to full data\n")
+  non_features$label = non_lab
+  hs$label = hs_lab
+  non_ps_genes$label = non_ps_lab
+  ps_genes$label = ps_lab
+  uces$label = uce_lab
+  # Add labels
   
-  cat(as.character(Sys.time()), " | Fig5: Rendering panel B for ", chrome, "\n")
-  lin_p = ggplot(full_stats, aes(x=log10(adj), y=mean.wrf, color=type)) +
-    geom_point(size=2, alpha=point_alpha) +
-    geom_smooth(method="lm", formula=y~x, se=F, linetype="dashed") +
-    #geom_line() +
-    geom_point(data=gene_dists_avg, aes(x=log10(adj), y=avg.wrf), size=2, alpha=point_alpha) +
-    geom_smooth(data=gene_dists_avg, aes(x=log10(adj), y=avg.wrf), method="lm", formula=y~x, se=F, linetype="dashed") +
-    geom_point(data=ps_dists_avg, aes(x=log10(adj), y=avg.wrf), size=2, alpha=point_alpha) +
-    geom_smooth(data=ps_dists_avg, aes(x=log10(adj), y=avg.wrf), method="lm", formula=y~x, se=F, linetype="dashed") +
-    geom_point(data=uce_dists_avg, aes(x=log10(adj), y=avg.wrf), size=2, alpha=point_alpha) +
-    geom_smooth(data=uce_dists_avg, aes(x=log10(adj), y=avg.wrf), method="lm", formula=y~x, se=F, linetype="dashed") +
-    #geom_line(data=uce_dists_avg, aes(x=log10(adj), y=avg.wrf)) +
-    geom_point(data=hs_dists_avg, aes(x=log10(adj), y=avg.wrf), size=2, alpha=point_alpha) +
-    geom_smooth(data=hs_dists_avg, aes(x=log10(adj), y=avg.wrf), method="lm", formula=y~x, se=F, linetype="dashed") +
-    xlab("Log distance between\nwindows (Mb)") +
-    ylab("Mean wRF") +
-    scale_color_manual(name="", values=c('#006ddb', "#333333", '#db6d00', '#004949', '#920000'), labels=c("Chromosomes", "Hotspots", "All genes", "Positively selected genes", "UCEs"), drop=FALSE) +
-    bartheme() +
-    theme(legend.position="right",
-          axis.title.x = element_text(margin = unit(c(0, 3, 3, 3), "mm")),
-          plot.margin = unit(c(0,0,0.25,1), "cm"))
-  print(lin_p)
-  # Linear correlation plot
-  ######################
-  
-  if(chrome == featured_chr){
-    fig_5a = log_p
-    fig_5b = lin_p
-  }
-  # Save the plots if this is the chromosome in the main fig
-  ######################
-  
-  if(gen_supp){
-    log_p = log_p + theme(legend.position="bottom",
-                          axis.text.x=element_text(angle=0, hjust=0.5),
-                          axis.text=element_text(size=8),
-                          axis.title=element_text(size=10),
-                          plot.margin = unit(c(1,1,0,1), "cm"))
-    lin_p = lin_p + theme(legend.position="bottom",
-                          axis.text.x=element_text(angle=0, hjust=0.5),
-                          axis.text=element_text(size=8),
-                          axis.title=element_text(size=10),
-                          axis.title.y=element_blank(),
-                          plot.margin = unit(c(1,1,0,1), "cm"),
-                          legend.text=element_text(size=8))
-    
-    
-    supp_file = paste("../figs/supp/supp-feature-plots/", chrome, ".png", sep="")
-    cat(as.character(Sys.time()), " | Combining plots for supp fig: ", chrome, "\n")
-    supp_p_main = plot_grid(log_p + theme(legend.position="none"),
-                       lin_p + theme(legend.position="none"),
-                       ncol=2, labels=c("A", "B"), label_size=14)
-    
-    ptitle = ggdraw() + draw_label(chrome, size=16, fontface="bold", x=0, hjust=0) + theme(plot.margin=margin(0,0,7,7))
-    supp_p_title = plot_grid(ptitle, supp_p_main, ncol=1, rel_heights=c(0.1,1))
-    
-    supp_legend = get_legend(lin_p)
-    supp_p = plot_grid(supp_p_title, supp_legend, nrow=2, rel_heights=c(1,0.1))
-    
-    
-    cat(as.character(Sys.time()), " | Saving supp figure:", supp_file, "\n")
-    ggsave(filename=supp_file, supp_p, width=6, height=3, units="in")
-  }
-
-  # Save the supplemental figure for each chromosome
-  ######################
-  
-  # if(chrome == featured_chr){
-  #   cat(as.character(Sys.time()), " | Fig5: Rendering panel A2 for ", chrome, "\n")
-  #   fig_5_2a = ggplot(gene_dists_avg, aes(x=adj, y=avg.wrf, color=type2)) +
-  #     geom_point(size=2, alpha=0.2) +
-  #     geom_smooth(method="lm", formula=y~log10(x), se=F, linetype="dashed") +
-  #     #geom_line() +
-  #     geom_point(data=ps_dists_avg, aes(x=adj, y=avg.wrf), size=2, alpha=0.2) +
-  #     geom_smooth(data=ps_dists_avg, aes(x=adj, y=avg.wrf), method="lm", formula=y~log10(x), se=F, linetype="dashed") +
-  #     xlab("Distance between\nwindows (Mb)") +
-  #     ylab("Mean wRF") +
-  #     scale_color_manual(name="", values=c('#db6d00', corecol(pal="wilke", numcol=1, offset=1)), labels=c("All genes","Positively selected genes"), drop=FALSE) +
-  #     bartheme() +
-  #     theme(legend.position="right",
-  #           axis.text.x=element_text(angle=45, hjust=1),
-  #           axis.title.x = element_text(margin = unit(c(0, 3, 3, 3), "mm")),
-  #           plot.margin = unit(c(0,0,0.25,1), "cm"))
-  #   print(fig_5_2a)
-  # 
-  #   cat(as.character(Sys.time()), " | Fig5: Rendering panel B2 for  ", chrome, "\n")
-  #   fig_5_2b = ggplot(gene_dists_avg, aes(x=log10(adj), y=avg.wrf, color=type2)) +
-  #     #geom_point(size=2, alpha=0.2) +
-  #     geom_smooth(method="lm", formula=y~x, se=F, linetype="dashed") +
-  #     #geom_line() +
-  #     geom_point(data=ps_dists_avg, aes(x=log10(adj), y=avg.wrf), size=2, alpha=0.2) +
-  #     geom_smooth(data=ps_dists_avg, aes(x=log10(adj), y=avg.wrf), method="lm", formula=y~x, se=F, linetype="dashed") +
-  #     xlab("Log distance between\nwindows (Mb)") +
-  #     ylab("Mean wRF") +
-  #     scale_color_manual(name="", values=c('#db6d00', corecol(pal="wilke", numcol=1, offset=7)), labels=c("All genes","Positively selected genes"), drop=FALSE) +
-  #     bartheme() +
-  #     theme(legend.position="right",
-  #           axis.text.x=element_text(angle=45, hjust=1),
-  #           axis.title.x = element_text(margin = unit(c(0, 3, 3, 3), "mm")),
-  #           plot.margin = unit(c(0,0,0.25,1), "cm"))
-  #   print(fig_5_2b)
-  #   stop()
-  # }
-  # PS vs Gene plots
-  ######################
-  
-  # diff_data_chr = rbind(gene_diffs, uce_diffs, hs_diffs)
-  # test_chr = ggplot(uce_diffs, aes(x=adj, y=wrf.diff, group=type, color=type)) +
-  #   geom_point(alpha=0.3) +
-  #   geom_smooth(method="loess", linetype="dashed", se=F) +
-  #   geom_line() +
-  #   bartheme()
-  # print(test_chr)
-  # Test plots
-  ######################
-  
-  if(skip_one){
-    stop("skip one ok")
-  }
-  
-  slope_data = rbind(slope_data, data.frame("chr"=c(chrome,chrome,chrome,chrome,chrome), "slope.wrf"=c(full_slope,gene_slope,ps_slope,uce_slope,hs_slope), "type"=c("Chromosomes", "All genes", "Positively selected genes", "UCEs", "Hotspots")))
-  int_data = rbind(int_data, data.frame("chr"=c(chrome,chrome,chrome,chrome,chrome), "int.wrf"=c(full_int,gene_int,ps_int,uce_int,hs_int), "type"=c("Chromosomes", "All genes", "Positively selected genes", "UCEs", "Hotspots")))
-  diff_data = rbind(diff_data, gene_diffs, ps_diffs, uce_diffs, hs_diffs)
-  # Add chromosome data to full data frames
+  features = rbind(non_features, hs, non_ps_genes, ps_genes, uces)
+  features$label = factor(features$label, levels=c(non_lab, hs_lab, non_ps_lab, ps_lab, uce_lab))
+  #write.csv(features, file=paste(datadir, "all-feature-stats.csv", sep=""), row.names=F)
+  # Combine feature dfs
 }
-## Chrome loop
+## If calcs are done, need to combine the data here
+
+#features = subset(features, chr != "chr05" & chr != "chr10")
+
+feature_cols = c('#006ddb', "#333333", '#db6d00', '#004949', '#920000')
+feature_labs = c(non_lab, hs_lab, non_ps_lab, ps_lab, uce_lab)
+# Colors for the feature distribution plots
+
+sig_comp_lvls = c("Hotspot - Non-feature", "Non-PS gene - Non-feature", "PS gene - Non-feature", "UCE - Non-feature",
+                  "Non-PS gene - Hotspot", "PS gene - Hotspot", "UCE - Hotspot",
+                  "PS gene - Non-PS gene", "UCE - Non-PS gene",
+                  "UCE - PS gene")
+# Levels for the feature comparisons for the Tukey test plots
+
+sig_cols = c("N.S."="#333333", 
+             "*"=corecol(pal="wilke", numcol=1, offset=4), 
+             "**"=corecol(pal="wilke", numcol=1, offset=2), 
+             "***"=corecol(pal="wilke", numcol=1, offset=6))
+# Colors for the significance levels in the Tukey means diff plots.
+
+# Plot setup
 ######################
 
-cat(as.character(Sys.time()), " | Fig5: Rendering panel C\n")
-slope_data$type = factor(slope_data$type, levels=c("Chromosomes", "Hotspots", "All genes", "Positively selected genes", "UCEs"))
-fig_5c = ggplot(slope_data, aes(x=type, y=slope.wrf, group=type)) +
-  geom_point(size=3, alpha=0.6, color=corecol(numcol=1, pal="wilke")) +
-  geom_boxplot(outlier.shape=NA, alpha=0.3, width=0.5, fill="transparent", color="#666666") +
+cat(as.character(Sys.time()), " | Rendering adjacent distributions\n")
+
+wrf_adj_avgs = features %>% group_by(label) %>% summarize(avg.wrf.adjacent=mean(wrf.adjacent, na.rm=T))
+# Get the average adjacent wrf for each feature
+
+wrf_adj_plot = ggplot(features, aes(x=label, y=wrf.adjacent, group=label)) +
+  geom_violin(aes(fill=label), alpha=0.2) +
+  geom_boxplot(width=0.1, outlier.shape=NA) +
+  geom_point(data=wrf_adj_avgs, aes(x=label, y=avg.wrf.adjacent, color=label)) +
+  #geom_hline(data=wrf_adj_avgs, aes(yintercept=avg.wrf.adjacent, color=label)) +
+  scale_color_manual(name="", values=feature_cols, labels=feature_labs, drop=FALSE) +
+  scale_fill_manual(name="", values=feature_cols, labels=feature_labs, drop=FALSE) +
   xlab("") +
-  ylab("Slope out to 1Mb") +
+  ylab("wRF from window tree to\nadjacent window tree") +
   bartheme() +
-  theme(legend.position="none") +
-  bartheme() +
-  theme(axis.text.x=element_text(angle=25, hjust=1),
-        plot.margin = unit(c(0,0,0,1), "cm"))
-print(fig_5c)
+  theme(axis.text.x=element_text(angle=40, hjust=1, size=10),
+        axis.title.y=element_text(size=12),
+        plot.margin=margin(0.5,0.5,0,0.5, unit="cm"),
+        legend.position="none")
+print(wrf_adj_plot)
+# Plot the distributions of adjacent wrf, colored by feature
 
+#####
+
+cat(as.character(Sys.time()), " | Rendering adjacent mean diffs\n")
+
+adj_wrf_anova = aov(wrf.adjacent ~ label, data=features)
+adj_wrf_anova_comp = TukeyHSD(adj_wrf_anova)
+# Perform ANOVA and Tukey mean difference test on results
+
+adj_wrf_anova_comp = as.data.frame(adj_wrf_anova_comp[1])
+adj_wrf_anova_comp$comp = row.names(adj_wrf_anova_comp)
+# Convert Tukey results to df
+
+adj_wrf_anova_comp$comp = gsub(" windows-", " - ", adj_wrf_anova_comp$comp)
+adj_wrf_anova_comp$comp = gsub(" windows", "", adj_wrf_anova_comp$comp)
+adj_wrf_anova_comp$comp[1] = "Hotspot - Non-feature"
+# Remove some strings from the labels
+
+adj_wrf_anova_comp$sig = "N.S."
+adj_wrf_anova_comp[adj_wrf_anova_comp$label.p.adj <= 0.05,]$sig = "*"
+adj_wrf_anova_comp[adj_wrf_anova_comp$label.p.adj <= 0.01,]$sig = "**"
+adj_wrf_anova_comp[adj_wrf_anova_comp$label.p.adj <= 0.001,]$sig = "***"
+# Add a significance label column
+
+adj_wrf_anova_comp$comp = factor(adj_wrf_anova_comp$comp, levels=sig_comp_lvls)
+# Re-order the comparisons by factoring with pre-ordered levels
+
+adj_wrf_anova_plot = ggplot(adj_wrf_anova_comp, aes(x=comp, y=label.diff, color=sig)) +
+  geom_point(size=3) +
+  geom_errorbar(aes(ymin=label.lwr, ymax=label.upr), width=0.25, size=1) +
+  geom_hline(yintercept=0, size=1, linetype=2) +
+  scale_color_manual(values=sig_cols) +
+  #xlab("Feature window comparison\nof wRF to adjacent window tree") +
+  xlab("") + 
+  ylab("Difference in means") +
+  bartheme() +
+  theme(panel.grid.major.x=element_line(color = "#d3d3d3", size=0.5, linetype=1),
+        axis.text.x=element_text(angle=40, hjust=1, size=10),
+        axis.title.y=element_text(size=12),
+        plot.margin=margin(0.5,0.5,0,0.5, unit="cm"))
+  #coord_flip()
+print(adj_wrf_anova_plot)
+# Plot the differences in mean, colored by significance level
+
+# Adjacent wrf plots
 ######################
 
-# chrome_int = subset(int_data, type=="Chrome")
-# genes_int = subset(int_data, type=="All genes")
-# ps_int = subset(int_data, type=="Positively selected genes")
-# uces_int = subset(int_data, type=="UCEs")
-# 
-# first_seg = data.frame("x1"=chrome_int$type, "y1"=chrome_int$int.wrf, "x2"=genes_int$type, "y2"=genes_int$int.wrf, "type"=NA)
-# second_seg = data.frame("x1"=genes_int$type, "y1"=genes_int$int.wrf, "x2"=uces_int$type, "y2"=uces_int$int.wrf, "type"=NA)
+cat(as.character(Sys.time()), " | Removing duplicate rows\n")
 
+features = features %>% dplyr::select(!(wrf.adjacent))
+features = unique(features)
+features$label = factor(features$label, levels=c(non_lab, hs_lab, non_ps_lab, ps_lab, uce_lab))
+
+# Removing wrf.adjacent and subsequent duplicate rows (since features have two adjacent windows)
 ######################
 
-cat(as.character(Sys.time()), " | Fig5: Rendering panel D\n")
-int_data$type = factor(int_data$type, levels=c("Chromosomes",  "Hotspots", "All genes", "Positively selected genes", "UCEs"))
-fig_5d = ggplot(int_data, aes(x=type, y=int.wrf, group=type)) +
-  geom_point(size=3, alpha=0.6, color=corecol(numcol=1, pal="wilke", offset=1)) +
-  geom_boxplot(outlier.shape=NA, alpha=0.3, width=0.5, fill="transparent", color="#666666") +
+cat(as.character(Sys.time()), " | Rendering slope distributions\n")
+
+slope_avgs = features %>% group_by(label) %>% summarize(avg.slope=mean(log.slope, na.rm=T))
+# Get the average slope for each feature window
+
+slope_plot = ggplot(features, aes(x=label, y=log.slope, group=label)) +
+  geom_violin(aes(fill=label), alpha=0.1) +
+  geom_boxplot(width=0.1, outlier.shape=NA) +
+  geom_point(data=slope_avgs, aes(x=label, y=avg.slope, color=label)) +
+  #geom_hline(data=slope_avgs, aes(yintercept=avg.slope, color=label)) +
+  scale_color_manual(name="", values=feature_cols, labels=feature_labs, drop=FALSE) +
+  scale_fill_manual(name="", values=feature_cols, labels=feature_labs, drop=FALSE) +
   xlab("") +
-  ylab("wRF of tres adjacent\nto feature") +
+  ylab(paste("Log wRF slope to ", max_dist_mb, "Mb", sep="")) +
   bartheme() +
-  theme(legend.position="none") +
-  bartheme() +
-  theme(axis.text.x=element_text(angle=25, hjust=1),
-        plot.margin = unit(c(0,0,0,1), "cm"))
-print(fig_5d)
+  theme(axis.text.x=element_text(angle=40, hjust=1, size=10),
+        axis.title.y=element_text(size=12),
+        plot.margin=margin(0.5,0.5,0,0.5, unit="cm"),
+        legend.position="none")
+print(slope_plot)
+# Plot the distributions of slope, colored by feature
 
+#####
+
+cat(as.character(Sys.time()), " | Rendering slope mean diffs\n")
+
+slope_anova = aov(log.slope ~ label, data=features)
+slope_anova_comp = TukeyHSD(slope_anova)
+# Perform ANOVA and Tukey mean difference test on results
+
+slope_anova_comp = as.data.frame(slope_anova_comp[1])
+slope_anova_comp$comp = row.names(slope_anova_comp)
+# Convert Tukey results to df
+
+slope_anova_comp$comp = gsub(" windows-", " - ", slope_anova_comp$comp)
+slope_anova_comp$comp = gsub(" windows", "", slope_anova_comp$comp)
+# Remove some strings from the labels
+
+slope_anova_comp$sig = "N.S."
+slope_anova_comp[slope_anova_comp$label.p.adj <= 0.05,]$sig = "*"
+slope_anova_comp[slope_anova_comp$label.p.adj <= 0.01,]$sig = "**"
+slope_anova_comp[slope_anova_comp$label.p.adj <= 0.001,]$sig = "***"
+# Add a significance label column
+
+slope_anova_comp$comp = factor(slope_anova_comp$comp, levels=sig_comp_lvls)
+# Re-order the comparisons by factoring with pre-ordered levels
+
+slope_anova_plot = ggplot(slope_anova_comp, aes(x=comp, y=label.diff, color=sig)) +
+  geom_point(size=3) +
+  geom_errorbar(aes(ymin=label.lwr, ymax=label.upr), width=0.25, size=1) +
+  geom_hline(yintercept=0, size=1, linetype=2) +
+  scale_color_manual(values=sig_cols) +
+  #xlab("wRF slope from feature window\nto all windows within 5Mb") +
+  xlab("") +
+  ylab("Difference in means") +
+  bartheme() +
+  theme(panel.grid.major.x=element_line(color = "#d3d3d3", size=0.5, linetype=1),
+        axis.text.x=element_text(angle=40, hjust=1, size=10),
+        axis.title.y=element_text(size=12),
+        plot.margin=margin(0.5,0.5,0,0.5, unit="cm"))
+  #coord_flip()
+print(slope_anova_plot)
+# Plot the differences in slope, colored by significance level
+
+## Slope plots
 ######################
 
-cat(as.character(Sys.time()), " | Fig5: Rendering panel E\n")
-x = subset(diff_data, type=="Genes")
-fig_5e = ggplot(diff_data, aes(x=adj, y=wrf.diff, group=type, color=type)) +
-  geom_point(alpha=0.1) +
-  geom_smooth(method="lm", se=F, linetype="dashed") +
-  xlab("Distance from\nfeature (Mb)") +
-  ylab("Difference from\nchromosome-wide wRF") +
-  scale_color_manual(name="", values=c("#333333", '#db6d00','#004949','#920000'), breaks=c( "Hotspots", "All genes", "Positively selected genes", "UCEs")) +
+cat(as.character(Sys.time()), " | Rendering species tree distributions\n")
+
+wrf_spec_avgs = features %>% group_by(label) %>% summarize(avg.wrf.spec=mean(wrf.spec, na.rm=T))
+# Get the average wrf to species tree for each feature window
+
+spec_plot = ggplot(features, aes(x=label, y=wrf.spec, group=label)) +
+  geom_violin(aes(fill=label), alpha=0.1) +
+  geom_boxplot(width=0.1, outlier.shape=NA) +
+  geom_point(data=wrf_spec_avgs, aes(x=label, y=avg.wrf.spec, color=label)) +
+  #geom_hline(data=wrf_spec_avgs, aes(yintercept=avg.wrf.spec, color=label)) +
+  scale_color_manual(name="", values=feature_cols, labels=feature_labs, drop=FALSE) +
+  scale_fill_manual(name="", values=feature_cols, labels=feature_labs, drop=FALSE) +
+  xlab("") +
+  ylab("wRF from window tree to\nspecies tree") +
   bartheme() +
-  theme(plot.margin = unit(c(0,0,0,1), "cm"))
-print(fig_5e)
+  theme(axis.text.x=element_text(angle=40, hjust=1, size=10),
+        axis.title.y=element_text(size=12),
+        plot.margin=margin(0.5,0.5,0,0.5, unit="cm"),
+        legend.position="none")
+print(spec_plot)
+# Plot the distributions of spec wrf, colored by feature
 
-fig_5_legend = get_legend(fig_5a)
+#####
 
-fig_5ab = plot_grid(fig_5a + theme(legend.position="none"), 
-                    fig_5b + theme(legend.position="none"),
-                    ncol=2, labels=c("A", "B"), label_size=16, align='vh')
-fig_5cd = plot_grid(fig_5c, fig_5d, labels=c("C", "D"), label_size=16, align='vh')
-fig_5eleg = plot_grid(fig_5e + theme(legend.position="none"), fig_5_legend, 
-                      labels=c("E", ""), label_size=16, rel_widths=c(0.7,0.3), align='vh')
-#fig_5cde = plot_grid(fig_5c, fig_5d, fig_5e + theme(legend.position="none"),
-#                     ncol=3, labels=c("C", "D", "E"), label_size=16, align='vh', rel_widths=c(0.2,0.2,0.6))
-fig_5abcde = plot_grid(fig_5ab, fig_5cd, fig_5eleg, nrow=3, align='h')
+cat(as.character(Sys.time()), " | Rendering species tree mean diffs\n")
+
+spec_anova = aov(wrf.spec ~ label, data=features)
+spec_anova_comp = TukeyHSD(spec_anova)
+# Perform ANOVA and Tukey mean difference test on results
+
+spec_anova_comp = as.data.frame(spec_anova_comp[1])
+spec_anova_comp$comp = row.names(spec_anova_comp)
+# Convert Tukey results to df
+
+spec_anova_comp$comp = gsub(" windows-", " - ", spec_anova_comp$comp)
+spec_anova_comp$comp = gsub(" windows", "", spec_anova_comp$comp)
+# Remove some strings from the labels
+
+spec_anova_comp$sig = "N.S."
+spec_anova_comp[spec_anova_comp$label.p.adj <= 0.05,]$sig = "*"
+spec_anova_comp[spec_anova_comp$label.p.adj <= 0.01,]$sig = "**"
+spec_anova_comp[spec_anova_comp$label.p.adj <= 0.001,]$sig = "***"
+# Add a significance label column
+
+spec_anova_comp$comp = factor(spec_anova_comp$comp, levels=sig_comp_lvls)
+# Re-order the comparisons by factoring with pre-ordered levels
+
+spec_anova_plot = ggplot(spec_anova_comp, aes(x=comp, y=label.diff, color=sig)) +
+  geom_point(size=3) +
+  geom_errorbar(aes(ymin=label.lwr, ymax=label.upr), width=0.25, size=1) +
+  geom_hline(yintercept=0, size=1, linetype=2) +
+  scale_color_manual(values=sig_cols) +
+  #xlab("Feature window comparison\nof wRF to species tree") +
+  xlab("") +
+  ylab("Difference in means") +
+  bartheme() +
+  theme(panel.grid.major.x=element_line(color = "#d3d3d3", size=0.5, linetype=1),
+        axis.text.x=element_text(angle=40, hjust=1, size=10),
+        axis.title.y=element_text(size=12),
+        plot.margin=margin(0.5,0.5,0,0.5, unit="cm"))
+  #coord_flip()
+print(spec_anova_plot)
+# Plot the differences in spec wrf, colored by significance level
+
+## Spec wRF plots
+######################
+
+cat(as.character(Sys.time()), " | Combining panels\n")
+
+comp_leg = get_legend(slope_anova_plot + theme(legend.position="bottom"))
+
+fig_5new_top = plot_grid(slope_plot, slope_anova_plot + theme(legend.position="none"), ncol=2, labels=c("A", ""))
+fig_5new_mid = plot_grid(wrf_adj_plot, adj_wrf_anova_plot + theme(legend.position="none"), ncol=2, labels=c("B", ""))
+fig_5new_bot = plot_grid(spec_plot, spec_anova_plot + theme(legend.position="none"), ncol=2, labels=c("C", ""))
+fig_5new_noleg = plot_grid(fig_5new_top, fig_5new_mid, fig_5new_bot, nrow=3)
+fig_5new = plot_grid(fig_5new_noleg, comp_leg, nrow=2, rel_heights=c(1,0.1))
+# Combine figure panels
 
 if(save_fig){
   fig5file = "../figs/fig5.png"
   cat(as.character(Sys.time()), " | Fig5: Saving figure:", fig5file, "\n")
-  ggsave(filename=fig5file, fig_5abcde, width=7.5, height=8, units="in")
+  ggsave(filename=fig5file, fig_5new, width=7.5, height=10.5, units="in")
+}
+# Save figure
+
+
+tree_file = paste(datadir, window_size_kb, "kb-0.5-0.5-", marker_window_size, "mb-topo-counts-tt.csv", sep="")
+all_windows = read.csv(tree_file, header=T)
+all_windows_f = subset(all_windows, repeat.filter=="PASS" & missing.filter=="PASS")
+if(au_flag){
+  all_windows_f = subset(all_windows_f, AU.test=="PASS")
 }
 
-############################################################
+uce_windows = subset(all_windows, window %in% uces$feature.window)
+print(nrow(uce_windows[uce_windows$astral.chrome.topo,]) / nrow(uce_windows))
+
+non_ps_windows = subset(all_windows, window %in% non_ps_genes$feature.window)
+print(nrow(non_ps_windows[non_ps_windows$astral.chrome.topo,]) / nrow(non_ps_windows))
+
+ps_windows = subset(all_windows, window %in% ps_genes$feature.window)
+print(nrow(ps_windows[ps_windows$astral.chrome.topo,]) / nrow(ps_windows))
+
+
+hs_windows = subset(all_windows, window %in% hs$feature.window)
+print(nrow(hs_windows[hs_windows$astral.chrome.topo,]) / nrow(hs_windows))
+
+non_windows = subset(all_windows, window %in% non_features$feature.window)
+print(nrow(non_windows[non_windows$astral.chrome.topo,]) / nrow(non_windows))
+
+stop("OK")
+
+## Figure saving
+######################
+
+longest_transcript_windows = subset(transcript_windows, Transcript.ID %in% longest_transcripts$feature.id)
+longest_transcript_windows = select(longest_transcript_windows, window, Gene.ID, Transcript.ID, Gene.tree)
+longest_transcript_windows = unique(longest_transcript_windows)
+# Get the gene trees from the longest transcripts
+
+#ps_genes_uniq = unique(select(ps_genes, !wrf.adjacent))
+ps_windows = subset(longest_transcript_windows, Gene.ID %in% ps_gene_ids$V1)
+ps_gene_trees = subset(ps_windows, window %in% ps_genes$feature.window)
+#ps_gene_trees = ps_windows %>% group_by(Gene.ID) %>% summarize("gene.tree"=Gene.tree)
+
+absrel = data.frame("Gene.ID"=c(), "Transcript.ID"=c(), "Gene.tree"=c(), "rf"=c(), "wrf"=c())
+busted = data.frame("Gene.ID"=c(), "Transcript.ID"=c(), "Gene.tree"=c(), "rf"=c(), "wrf"=c())
+paml = data.frame("Gene.ID"=c(), "Transcript.ID"=c(), "Gene.tree"=c(), "rf"=c(), "wrf"=c())
+no_ps = data.frame("Gene.ID"=c(), "Transcript.ID"=c(), "Gene.tree"=c(), "rf"=c(), "wrf"=c())
+
+longest_transcript_windows$rf = NA
+longest_transcript_windows$wrf = NA
+longest_transcript_windows$absrel = "No"
+longest_transcript_windows$busted = "No"
+longest_transcript_windows$paml = "No"
+# Initialize some new columns
+
+concat_tree_relabel = concat_tree
+concat_tree_relabel[["tip.label"]] = c("rsor", "gdol", "rdil", "hall", "mnat", "pdel", "mmus")
+# Re-label the species tree to match the gene trees
+
+for(i in 1:nrow(longest_transcript_windows)){
+  # Go over every transcript
+  
+  cur_tree = read.tree(text=longest_transcript_windows[i,]$Gene.tree)
+  # Get the gene tree
+  
+  longest_transcript_windows[i,]$rf = RF.dist(cur_tree, concat_tree_relabel)
+  longest_transcript_windows[i,]$wrf = wRF.dist(cur_tree, concat_tree_relabel)
+  # Calculate RF and wRF
+  
+  if(longest_transcript_windows[i,]$Gene.ID %in% gt_absrel_ps$id){
+    absrel = rbind(absrel, longest_transcript_windows[i,])
+    longest_transcript_windows[i,]$absrel = "Yes"
+  }
+  
+  if(longest_transcript_windows[i,]$Gene.ID %in% gt_busted_ps$id){
+    busted = rbind(busted, longest_transcript_windows[i,])
+    longest_transcript_windows[i,]$busted = "Yes"
+  }
+  
+  if(longest_transcript_windows[i,]$Gene.ID %in% gt_paml_ps$id){
+    paml = rbind(paml, longest_transcript_windows[i,])
+    longest_transcript_windows[i,]$paml = "Yes"
+  }
+  # Check if the current transcript had evidence for selection with any test
+  
+  if(longest_transcript_windows[i,]$absrel == "No" && longest_transcript_windows[i,]$busted == "No" && longest_transcript_windows[i,]$paml == "No"){
+    no_ps = rbind(no_ps, longest_transcript_windows[i,])
+  }
+}
+
+
+
+
+######################
+######################
+## STASH
+
+#x_comps = list(c(non_lab, hs_lab), c(non_lab, non_ps_lab), c(non_lab, ps_lab), c(non_lab, uce_lab),
+#               c(hs_lab, non_ps_lab), c(hs_lab, ps_lab), c(hs_lab, uce_lab), 
+#               c(non_ps_lab, ps_lab), c(non_ps_lab, uce_lab), 
+#               c(ps_lab, uce_lab))
+
+## List of comparisons for the Wilcox test with geom_signif()
+
+#geom_quasirandom(aes(color=ps.label), size=2, width=0.25, alpha=0.25) +
+#geom_quasirandom(size=1, width=0.25, alpha=0.1, color="#666666") +
+#geom_boxplot(outlier.shape=NA, alpha=0.3, width=0.5, fill="transparent", color="#000000") +
+#geom_signif(comparisons=x_comps, test=wilcox.test, map_signif_level=TRUE, textsize=4, size=1, step_increase=0.15, margin_top=0.1) +
+#scale_color_manual(values=corecol(pal="wilke", numcol=4, offset=2)) +
+#scale_y_continuous(limits=c(0,0.9)) +
+
+## The geom_signif() code for plots with significance brackets
+
+#plot(spec_anova_comp, las=1)
+
+## Base method to plot Tukey results
+
+#spec_kw = kruskal.test(wrf.spec ~ label, data=features)
+#spec_pw_wil = pairwise.wilcox.test(features$wrf.spec, features$label, p.adjust.method="BH")
+
+## A median test like ANOVA
+
+######################
+######################
+
+
+
 
 
 

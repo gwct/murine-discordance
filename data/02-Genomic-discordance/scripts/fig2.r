@@ -1,5 +1,5 @@
 ############################################################
-# For penn genomes, 06.21
+# For rodent
 # Figure 2
 # Gregg Thomas
 ############################################################
@@ -10,6 +10,7 @@ setwd(this.dir)
 library(ggplot2)
 library(cowplot)
 library(ggsignif)
+library(here)
 library("ggtree")
 
 ############################################################
@@ -24,13 +25,13 @@ marker_window_size = 1
 au_flag = F
 # Set to filter out windows that don't pass the AU test
 
-read_data = F
+read_data = T
 # Whether to read the initial data or not
 
 gen_chromo = T
 # Whether or not to re-genereate the chromoplot
 
-save_fig = F
+save_fig = T
 # Whether or not to save the figure
 
 skip_one = F
@@ -39,19 +40,24 @@ skip_one = F
 max_tree_rank = 3
 # The number of top trees to print/color
 
-datadir = "C:/Users/Gregg/Box Sync/rodents/penn/paper/data/"
+datadir = here("data", "02-Genomic-discordance")
 
-infile = paste(datadir, window_size, "kb-0.5-0.5-", marker_window_size, "mb-topo-counts-tt.csv", sep="")
+infile = here(datadir, paste(window_size, "kb-0.5-0.5-", marker_window_size, "mb-topo-counts-tt.csv.gz", sep=""))
+
+chrome_info_file = here(datadir, "recombination-markers", "chrome-stats.csv")
 # Input options
 ######################
 
 if(read_data){
   cat(as.character(Sys.time()), " | Reading data: ", infile, "\n")
-  all_windows = read.csv(infile, header=T)
+  all_windows = read.csv(gzfile(infile), header=T)
   all_windows_f = subset(all_windows, repeat.filter=="PASS" & missing.filter=="PASS")
   if(au_flag){
     all_windows_f = subset(all_windows_f, AU.test=="PASS")
   }
+  
+  cat(as.character(Sys.time()), " | Reading chrome info: ", chrome_info_file, "\n")
+  chrome_info = read.csv(chrome_info_file, header=T, comment.char="#")
 }
 # Read and filter the data
 ######################
@@ -173,6 +179,8 @@ if(gen_chromo){
   chrdata = subset(all_windows, chr==chrome_str)
   chrdata_f = subset(all_windows_f, chr==chrome_str)
   
+  chr_len = chrome_info[chrome_info$chr==chrome_str, ]$chr.len
+  
   chrdata$col.cat = NA
   chrdata$ystart = NA
   chrdata$yend = NA
@@ -245,7 +253,7 @@ fig2 = plot_grid(fig_2a + theme(plot.margin = unit(c(0,0,0,0), "cm")),
 ######################
 
 if(save_fig){
-  fig2file = "../figs/fig2.png"
-  cat(as.character(Sys.time()), " | Fig2: Saving figure:", fig2file, "\n")
-  ggsave(filename=fig2file, fig2, width=7.5, height=10, units="in")
+  fig_file = here("figs", "fig2.png")
+  cat(as.character(Sys.time()), " | Fig2: Saving figure:", fig_file, "\n")
+  ggsave(filename=fig_file, fig2, width=7.5, height=10, units="in")
 }
