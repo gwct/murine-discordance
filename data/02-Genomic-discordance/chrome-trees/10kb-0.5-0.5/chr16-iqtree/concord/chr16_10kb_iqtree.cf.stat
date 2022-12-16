@@ -1,0 +1,29 @@
+# Concordance factor statistics
+# This file can be read in MS Excel or in R with command:
+#   tab=read.table('/mnt/beegfs/gt156213e/penn-genomes/windows/tree-2/10kb-0.5-0.5/chr16-iqtree/concord/chr16_10kb_iqtree.cf.stat',header=TRUE)
+# Columns are tab-separated with following meaning:
+#   ID: Branch ID
+#   gCF: Gene concordance factor (=gCF_N/gN %)
+#   gCF_N: Number of trees concordant with the branch
+#   gDF1: Gene discordance factor for NNI-1 branch (=gDF1_N/gN %)
+#   gDF1_N: Number of trees concordant with NNI-1 branch
+#   gDF2: Gene discordance factor for NNI-2 branch (=gDF2_N/gN %)
+#   gDF2_N: Number of trees concordant with NNI-2 branch
+#   gDFP: Gene discordance factor due to polyphyly (=gDFP_N/gN %)
+#   gDFP_N: Number of trees decisive but discordant due to polyphyly
+#   gN: Number of trees decisive for the branch
+#   sCF: Site concordance factor averaged over 100 quartets (=sCF_N/sN %)
+#   sCF_N: sCF in absolute number of sites
+#   sDF1: Site discordance factor for alternative quartet 1 (=sDF1_N/sN %)
+#   sDF1_N: sDF1 in absolute number of sites
+#   sDF2: Site discordance factor for alternative quartet 2 (=sDF2_N/sN %)
+#   sDF2_N: sDF2 in absolute number of sites
+#   sN: Number of informative sites averaged over 100 quartets
+#   Label: Existing branch label
+#   Length: Branch length
+# *NOTE*: (gCF+gDF1+gDF2+gDFP) = 100% and (gCF_N+gDF1_N+gDF2_N+gDFP_N) = gN
+ID	gCF	gCF_N	gDF1	gDF1_N	gDF2	gDF2_N	gDFP	gDFP_N	gN	sCF	sCF_N	sDF1	sDF1_N	sDF2	sDF2_N	sN	Label	Length
+8	64.04	4120	2.47	159	24.47	1574	9.02	580	6433	47.22	367816.4	15.54	121317.49	37.25	290872.69	780006.58	100	0.00642137
+9	26.36	1696	32.92	2118	15.3	984	25.42	1635	6433	35.49	240853.88	36	248840.97	28.52	198006.31	687701.16	100	0.00252669
+10	87.28	5615	0.37	24	1.52	98	10.82	696	6433	61.19	590811.24	18.19	175561.75	20.61	198229.36	964602.35	100	0.00880011
+11	49.93	3212	34	2187	15.33	986	0.75	48	6433	39.01	374073.86	33.64	322442.23	27.35	261645.98	958162.07	100	0.00582404

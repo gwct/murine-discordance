@@ -9,6 +9,8 @@ library(cowplot)
 library(ggsignif)
 library("ggtree")
 library(here)
+source(here("lib", "get_tree_info.r"))
+source(here("lib", "design.r"))
 
 ############################################################
 cat("----------\n")
@@ -25,10 +27,10 @@ au_flag = F
 read_data = T
 # Whether to read the initial data or not
 
-save_fig = T
+save_fig = F
 # Whether or not to save the figure
 
-skip_one = F
+skip_one = T
 # Set to only do one test chromosome
 
 max_tree_rank = 3

@@ -10,6 +10,7 @@ library(ggbeeswarm)
 library(dplyr)
 library(RColorBrewer)
 library(here)
+source(here("lib", "design.r"))
 
 ############################################################
 cat("----------\n")

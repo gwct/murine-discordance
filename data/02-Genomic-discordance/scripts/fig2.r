@@ -12,6 +12,7 @@ library(cowplot)
 library(ggsignif)
 library(here)
 library("ggtree")
+source(here("lib", "design.r"))
 
 ############################################################
 cat("----------\n")
@@ -31,7 +32,7 @@ read_data = T
 gen_chromo = T
 # Whether or not to re-genereate the chromoplot
 
-save_fig = T
+save_fig = F
 # Whether or not to save the figure
 
 skip_one = F
@@ -162,7 +163,7 @@ for(j in 1:length(top_topos)){
 }
 
 cat(as.character(Sys.time()), " | Fig2B: Combining tree figures\n")
-fig_2b = plot_grid(plotlist=tree_figs, nrow=1, ncol=length(tree_figs), labels=c("Rank: 1", "2", "3"), label_size=14, align="h")
+fig_2b = plot_grid(plotlist=tree_figs, nrow=1, ncol=length(tree_figs), labels=c("Rank: 1", "2", "3"), label_size=14, hjust=1, align="h")
 print(fig_2b)
 
 cat(as.character(Sys.time()), " | Fig2: Combining panels A and B\n")
@@ -249,6 +250,8 @@ fig2 = plot_grid(fig_2a + theme(plot.margin = unit(c(0,0,0,0), "cm")),
                  fig_2b + theme(plot.margin = unit(c(0,0,0,0), "cm")),
                  fig_2c + theme(plot.margin = unit(c(0,0,0,0), "cm")), 
                  nrow=3, labels=c("A", "B", "C"), label_size=16, align="vh")
+
+print(fig2)
 
 ######################
 

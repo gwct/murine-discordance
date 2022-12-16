@@ -12,6 +12,7 @@ library(RColorBrewer)
 library(here)
 library(readr)
 library(archive)
+source(here("lib", "design.r"))
 
 ############################################################
 
@@ -48,8 +49,8 @@ infile = here(datadir, paste(window_size_kb, "kb-0.5-0.5-", marker_window_size, 
 
 chrome_info_file = here(datadir, "recombination-markers", "chrome-stats.csv")
 
-#script_dir = "D:/data/rodent-genomes/dists/"
-dist_archive = "D:/data/rodent-genomes/test.tar.gz"
+script_dir = "D:/data/rodent-genomes/dists/"
+dist_archive = "D:/data/rodent-genomes/dists.tar.gz"
 
 # Input options
 ######################
@@ -62,17 +63,18 @@ if(read_data){
   cat(as.character(Sys.time()), " | Reading chrome data: ", chrome_info_file, "\n")
   chrome_info = read.csv(chrome_info_file, comment.char="#", header=T)
   
-  random_file = "test/random-dists"
+  random_file = paste0(script_dir, "random-dists")
+  #random_file = "dists/random-dists"
   if(au_flag){
     random_file = paste(random_file, "-au", sep="")
   }
   random_file = paste(random_file, ".csv", sep="")
   
   cat(as.character(Sys.time()), " | Reading random tree dists: ", random_file, "\n")
-  #random_data = read.csv(random_file, header=T)
-  random_data = read.csv(archive_read(dist_archive, file=random_file))
+  random_data = read.csv(random_file, header=T)
+  #random_data = read.csv(archive_read(dist_archive, file=random_file))
 }
-stop("OK")
+
 # Read input data
 ######################
 
@@ -126,14 +128,31 @@ for(chrome in levels(all_windows$chr)){
   chr_infile = paste(chr_infile, ".csv", sep="")
   chr_statsfile = paste(chr_statsfile, ".csv", sep="")
   #figfile = paste(figfile, ".png", sep="")
-  
+
   cat(as.character(Sys.time()), " | Chromosome ", out_chrome, " - reading dist data:       ", chr_infile, "\n", sep="")
   dist_data = read.csv(chr_infile, header=T)
   dist_data = subset(dist_data, measure=="wrf")
-  
+
   cat(as.character(Sys.time()), " | Chromosome ", out_chrome, " - reading stats data:      ", chr_statsfile, "\n", sep="")
   stats_data = read.csv(chr_statsfile, header=T)
   # Set up input file names (output files from gen_data) and read data.
+  
+  # chr_infile = paste0("dists/",out_chrome)
+  # chr_statsfile = paste0("dists/", out_chrome, "-stats")
+  # if(au_flag){
+  #   chr_infile = paste0(chr_infile, "-au-filter")
+  #   chr_statsfile = paste0(chr_statsfile, "-au-filter")
+  # }
+  # chr_infile = paste0(chr_infile, ".csv")
+  # chr_statsfile = paste0(chr_statsfile, ".csv")
+  # 
+  # cat(as.character(Sys.time()), " | Chromosome ", out_chrome, " - reading dist data:       ", chr_infile, "\n", sep="")
+  # dist_data = read.csv(archive_read(dist_archive, file=chr_infile), header=T)
+  # dist_data = subset(dist_data, measure=="wrf")
+  # 
+  # cat(as.character(Sys.time()), " | Chromosome ", out_chrome, " - reading stats data:      ", chr_statsfile, "\n", sep="")
+  # stats_data = read.csv(archive_read(dist_archive, file=chr_statsfile), header=T)
+  # # Set up input file names (output files from gen_data) and read data.  
   
   cat(as.character(Sys.time()), " | Chromosome ", out_chrome, " - calculating decay rates (slopes)\n", sep="")
   cur_nonsig_adjs = c()
@@ -143,7 +162,6 @@ for(chrome in levels(all_windows$chr)){
     cur_dists$nonsig.adj = cur_dists$nonsig.adj * window_size / 1000000
     replicate_data = rbind(replicate_data, data.frame("chrome"=chrome, "replicate"=k, 
                                                       "nonsig.adj"=cur_dists$nonsig.adj))
-    
   }
   
   avg_nonsig_adj = mean(cur_nonsig_adjs)
