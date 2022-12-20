@@ -4,6 +4,9 @@
 # Gregg Thomas
 ############################################################
 
+this.dir <- dirname(parent.frame(2)$ofile)
+setwd(this.dir)
+
 library(ggplot2)
 library(cowplot)
 library(dplyr)
@@ -128,7 +131,7 @@ featured_chr = "chr7"
 max_dist_mb = 5
 # Distance limit for plots
 
-save_fig = F
+save_fig = T
 # Whether or not to save the figure
 
 gen_supp = F
@@ -153,21 +156,21 @@ ps_datadir = here("data", "03-Selection-tests")
 
 distdir = "D:/data/rodent-genomes/dists/"
 
-tree_file = paste(datadir, window_size_kb, "kb-0.5-0.5-", marker_window_size, "mb-topo-counts-tt.csv", sep="")
+tree_file = paste(datadir, "/", window_size_kb, "kb-0.5-0.5-", marker_window_size, "mb-topo-counts-tt.csv", sep="")
 
-species_tree_file = paste(datadir, "05_penn_7spec_iqtree.cf.rooted.tree", sep="")
+species_tree_file = paste(datadir, "/05_penn_7spec_iqtree.cf.rooted.tree", sep="")
 # Re-label the species tree to match the gene trees
 
-transcript_windows_file = paste(datadir, "mm10-cds-windows.csv", sep="")
-longest_transcripts_file = paste(datadir, "mm10-transcripts-longest.tab", sep="")
+transcript_windows_file = paste(datadir, "/mm10-cds-windows.csv", sep="")
+longest_transcripts_file = paste(datadir, "/mm10-transcripts-longest.tab", sep="")
 # Transcript files
 
-ps_genes_file = paste(datadir, "ps-genes-all-gt.csv", sep="")
+ps_genes_file = paste(datadir, "/ps-genes-all-gt.csv", sep="")
 # PS gene IDs
 
-chrome_info_file = paste(datadir, "recombination-markers/chrome-stats.csv", sep="")
+chrome_info_file = paste(datadir, "/recombination-markers/chrome-stats.csv", sep="")
 
-pre_calc_file = paste(datadir, "all-feature-stats.csv", sep="")
+pre_calc_file = paste(datadir, "/all-feature-stats.csv", sep="")
 # Input options
 ######################
 
@@ -605,104 +608,98 @@ fig_5new = plot_grid(fig_5new_noleg, comp_leg, nrow=2, rel_heights=c(1,0.1))
 # Combine figure panels
 
 if(save_fig){
-  fig5file = "../figs/fig5.png"
-  cat(as.character(Sys.time()), " | Fig5: Saving figure:", fig5file, "\n")
-  ggsave(filename=fig5file, fig_5new, width=7.5, height=10.5, units="in")
+  figfile = here("figs", "fig5.png")
+  cat(as.character(Sys.time()), " | Fig5: Saving figure:", figfile, "\n")
+  ggsave(filename=figfile, fig_5new, width=7.5, height=10.5, units="in")
 }
 # Save figure
-
-
-tree_file = paste(datadir, window_size_kb, "kb-0.5-0.5-", marker_window_size, "mb-topo-counts-tt.csv", sep="")
-all_windows = read.csv(tree_file, header=T)
-all_windows_f = subset(all_windows, repeat.filter=="PASS" & missing.filter=="PASS")
-if(au_flag){
-  all_windows_f = subset(all_windows_f, AU.test=="PASS")
-}
-
-uce_windows = subset(all_windows, window %in% uces$feature.window)
-print(nrow(uce_windows[uce_windows$astral.chrome.topo,]) / nrow(uce_windows))
-
-non_ps_windows = subset(all_windows, window %in% non_ps_genes$feature.window)
-print(nrow(non_ps_windows[non_ps_windows$astral.chrome.topo,]) / nrow(non_ps_windows))
-
-ps_windows = subset(all_windows, window %in% ps_genes$feature.window)
-print(nrow(ps_windows[ps_windows$astral.chrome.topo,]) / nrow(ps_windows))
-
-
-hs_windows = subset(all_windows, window %in% hs$feature.window)
-print(nrow(hs_windows[hs_windows$astral.chrome.topo,]) / nrow(hs_windows))
-
-non_windows = subset(all_windows, window %in% non_features$feature.window)
-print(nrow(non_windows[non_windows$astral.chrome.topo,]) / nrow(non_windows))
-
-stop("OK")
-
-## Figure saving
 ######################
-
-longest_transcript_windows = subset(transcript_windows, Transcript.ID %in% longest_transcripts$feature.id)
-longest_transcript_windows = select(longest_transcript_windows, window, Gene.ID, Transcript.ID, Gene.tree)
-longest_transcript_windows = unique(longest_transcript_windows)
-# Get the gene trees from the longest transcripts
-
-#ps_genes_uniq = unique(select(ps_genes, !wrf.adjacent))
-ps_windows = subset(longest_transcript_windows, Gene.ID %in% ps_gene_ids$V1)
-ps_gene_trees = subset(ps_windows, window %in% ps_genes$feature.window)
-#ps_gene_trees = ps_windows %>% group_by(Gene.ID) %>% summarize("gene.tree"=Gene.tree)
-
-absrel = data.frame("Gene.ID"=c(), "Transcript.ID"=c(), "Gene.tree"=c(), "rf"=c(), "wrf"=c())
-busted = data.frame("Gene.ID"=c(), "Transcript.ID"=c(), "Gene.tree"=c(), "rf"=c(), "wrf"=c())
-paml = data.frame("Gene.ID"=c(), "Transcript.ID"=c(), "Gene.tree"=c(), "rf"=c(), "wrf"=c())
-no_ps = data.frame("Gene.ID"=c(), "Transcript.ID"=c(), "Gene.tree"=c(), "rf"=c(), "wrf"=c())
-
-longest_transcript_windows$rf = NA
-longest_transcript_windows$wrf = NA
-longest_transcript_windows$absrel = "No"
-longest_transcript_windows$busted = "No"
-longest_transcript_windows$paml = "No"
-# Initialize some new columns
-
-concat_tree_relabel = concat_tree
-concat_tree_relabel[["tip.label"]] = c("rsor", "gdol", "rdil", "hall", "mnat", "pdel", "mmus")
-# Re-label the species tree to match the gene trees
-
-for(i in 1:nrow(longest_transcript_windows)){
-  # Go over every transcript
-  
-  cur_tree = read.tree(text=longest_transcript_windows[i,]$Gene.tree)
-  # Get the gene tree
-  
-  longest_transcript_windows[i,]$rf = RF.dist(cur_tree, concat_tree_relabel)
-  longest_transcript_windows[i,]$wrf = wRF.dist(cur_tree, concat_tree_relabel)
-  # Calculate RF and wRF
-  
-  if(longest_transcript_windows[i,]$Gene.ID %in% gt_absrel_ps$id){
-    absrel = rbind(absrel, longest_transcript_windows[i,])
-    longest_transcript_windows[i,]$absrel = "Yes"
-  }
-  
-  if(longest_transcript_windows[i,]$Gene.ID %in% gt_busted_ps$id){
-    busted = rbind(busted, longest_transcript_windows[i,])
-    longest_transcript_windows[i,]$busted = "Yes"
-  }
-  
-  if(longest_transcript_windows[i,]$Gene.ID %in% gt_paml_ps$id){
-    paml = rbind(paml, longest_transcript_windows[i,])
-    longest_transcript_windows[i,]$paml = "Yes"
-  }
-  # Check if the current transcript had evidence for selection with any test
-  
-  if(longest_transcript_windows[i,]$absrel == "No" && longest_transcript_windows[i,]$busted == "No" && longest_transcript_windows[i,]$paml == "No"){
-    no_ps = rbind(no_ps, longest_transcript_windows[i,])
-  }
-}
-
-
-
 
 ######################
 ######################
 ## STASH
+
+# tree_file = paste(datadir, window_size_kb, "kb-0.5-0.5-", marker_window_size, "mb-topo-counts-tt.csv", sep="")
+# all_windows = read.csv(tree_file, header=T)
+# all_windows_f = subset(all_windows, repeat.filter=="PASS" & missing.filter=="PASS")
+# if(au_flag){
+#   all_windows_f = subset(all_windows_f, AU.test=="PASS")
+# }
+# 
+# uce_windows = subset(all_windows, window %in% uces$feature.window)
+# print(nrow(uce_windows[uce_windows$astral.chrome.topo,]) / nrow(uce_windows))
+# 
+# non_ps_windows = subset(all_windows, window %in% non_ps_genes$feature.window)
+# print(nrow(non_ps_windows[non_ps_windows$astral.chrome.topo,]) / nrow(non_ps_windows))
+# 
+# ps_windows = subset(all_windows, window %in% ps_genes$feature.window)
+# print(nrow(ps_windows[ps_windows$astral.chrome.topo,]) / nrow(ps_windows))
+# 
+# 
+# hs_windows = subset(all_windows, window %in% hs$feature.window)
+# print(nrow(hs_windows[hs_windows$astral.chrome.topo,]) / nrow(hs_windows))
+# 
+# non_windows = subset(all_windows, window %in% non_features$feature.window)
+# print(nrow(non_windows[non_windows$astral.chrome.topo,]) / nrow(non_windows))
+# 
+# ######################
+# 
+# longest_transcript_windows = subset(transcript_windows, Transcript.ID %in% longest_transcripts$feature.id)
+# longest_transcript_windows = select(longest_transcript_windows, window, Gene.ID, Transcript.ID, Gene.tree)
+# longest_transcript_windows = unique(longest_transcript_windows)
+# # Get the gene trees from the longest transcripts
+# 
+# #ps_genes_uniq = unique(select(ps_genes, !wrf.adjacent))
+# ps_windows = subset(longest_transcript_windows, Gene.ID %in% ps_gene_ids$V1)
+# ps_gene_trees = subset(ps_windows, window %in% ps_genes$feature.window)
+# #ps_gene_trees = ps_windows %>% group_by(Gene.ID) %>% summarize("gene.tree"=Gene.tree)
+# 
+# absrel = data.frame("Gene.ID"=c(), "Transcript.ID"=c(), "Gene.tree"=c(), "rf"=c(), "wrf"=c())
+# busted = data.frame("Gene.ID"=c(), "Transcript.ID"=c(), "Gene.tree"=c(), "rf"=c(), "wrf"=c())
+# paml = data.frame("Gene.ID"=c(), "Transcript.ID"=c(), "Gene.tree"=c(), "rf"=c(), "wrf"=c())
+# no_ps = data.frame("Gene.ID"=c(), "Transcript.ID"=c(), "Gene.tree"=c(), "rf"=c(), "wrf"=c())
+# 
+# longest_transcript_windows$rf = NA
+# longest_transcript_windows$wrf = NA
+# longest_transcript_windows$absrel = "No"
+# longest_transcript_windows$busted = "No"
+# longest_transcript_windows$paml = "No"
+# # Initialize some new columns
+# 
+# concat_tree_relabel = concat_tree
+# concat_tree_relabel[["tip.label"]] = c("rsor", "gdol", "rdil", "hall", "mnat", "pdel", "mmus")
+# # Re-label the species tree to match the gene trees
+# 
+# for(i in 1:nrow(longest_transcript_windows)){
+#   # Go over every transcript
+#   
+#   cur_tree = read.tree(text=longest_transcript_windows[i,]$Gene.tree)
+#   # Get the gene tree
+#   
+#   longest_transcript_windows[i,]$rf = RF.dist(cur_tree, concat_tree_relabel)
+#   longest_transcript_windows[i,]$wrf = wRF.dist(cur_tree, concat_tree_relabel)
+#   # Calculate RF and wRF
+#   
+#   if(longest_transcript_windows[i,]$Gene.ID %in% gt_absrel_ps$id){
+#     absrel = rbind(absrel, longest_transcript_windows[i,])
+#     longest_transcript_windows[i,]$absrel = "Yes"
+#   }
+#   
+#   if(longest_transcript_windows[i,]$Gene.ID %in% gt_busted_ps$id){
+#     busted = rbind(busted, longest_transcript_windows[i,])
+#     longest_transcript_windows[i,]$busted = "Yes"
+#   }
+#   
+#   if(longest_transcript_windows[i,]$Gene.ID %in% gt_paml_ps$id){
+#     paml = rbind(paml, longest_transcript_windows[i,])
+#     longest_transcript_windows[i,]$paml = "Yes"
+#   }
+#   # Check if the current transcript had evidence for selection with any test
+#   
+#   if(longest_transcript_windows[i,]$absrel == "No" && longest_transcript_windows[i,]$busted == "No" && longest_transcript_windows[i,]$paml == "No"){
+#     no_ps = rbind(no_ps, longest_transcript_windows[i,])
+#   }
+# }
 
 #x_comps = list(c(non_lab, hs_lab), c(non_lab, non_ps_lab), c(non_lab, ps_lab), c(non_lab, uce_lab),
 #               c(hs_lab, non_ps_lab), c(hs_lab, ps_lab), c(hs_lab, uce_lab), 

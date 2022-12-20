@@ -349,7 +349,7 @@ print(fig_6a)
 
 if(save_fig){
   figfile = here("figs", "fig6.png")
-  cat(as.character(Sys.time()), " | Fig6: Saving figure:", fig6file, "\n")
+  cat(as.character(Sys.time()), " | Fig6: Saving figure:", figfile, "\n")
   ggsave(filename=figfile, fig_6a, width=5, height=4, units="in")
 }
 # Save the figure

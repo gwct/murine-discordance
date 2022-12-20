@@ -4,6 +4,9 @@
 # Gregg Thomas
 ############################################################
 
+this.dir <- dirname(parent.frame(2)$ofile)
+setwd(this.dir)
+
 library(ggplot2)
 library(cowplot)
 library(ggbeeswarm)
@@ -309,7 +312,7 @@ fig3 = plot_grid(fig_3ab, avg_p, dec_p, ncol=3, labels=c("", "C", "D"), label_si
 ######################
 
 if(save_fig){
-  fig3file = "../figs/fig4.png"
-  cat(as.character(Sys.time()), " | Fig3: Saving figure:", fig3file, "\n")
-  ggsave(filename=fig3file, fig3, width=12, height=7.5, units="in")
+  figfile = here("figs", "fig3.png")
+  cat(as.character(Sys.time()), " | Fig3: Saving figure:", figfile, "\n")
+  ggsave(filename=figfile, fig3, width=12, height=7.5, units="in")
 }

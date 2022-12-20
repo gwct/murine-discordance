@@ -29,7 +29,7 @@ au_flag = F
 read_data = T
 # Whether to read the initial data or not
 
-save_fig = T
+save_fig = F
 # Whether or not to save the figure
 
 skip_one = F
@@ -76,6 +76,7 @@ if(read_data){
 cat(as.character(Sys.time()), " | Reading chromosomes\n")
 
 plot_list = list()
+wrf_df = data.frame("chr"=c(), "start"=c(), "wrf"=c(), "wrf.chr"=c())
 diff_df = data.frame("chr"=c(), "wrf.diff"=c(), "wrf.avg"=c())
 i = 1
 # Some initializations
@@ -117,6 +118,7 @@ for(chrome in levels(as.factor(all_windows$chr))){
   cat(as.character(Sys.time()), " | -----> Calculating wRFs\n")
   chrdata$wrf = ifelse(is.na(chrdata$unparsed.tree), NA, wRF.dist(read.tree(text=chrdata$unparsed.tree), concat_tree))
   chrdata$wrf.chr = ifelse(is.na(chrdata$unparsed.tree), NA, wRF.dist(read.tree(text=chrdata$unparsed.tree), chr_tree))
+  wrf_df = rbind(wrf_df, select(chrdata, chr, start, wrf, wrf.chr))
   # Calculate wrf to the species tree and the chromosome tree for every window
   
   ##########
@@ -182,6 +184,36 @@ for(chrome in levels(as.factor(all_windows$chr))){
 }
 
 ######################
+
+wrf_df$chr = factor(wrf_df$chr, levels=chr_order)
+
+man_p = ggplot(wrf_df, aes(x=start, y=wrf)) +
+  geom_point(size=1, alpha=0.1, color="#808080") +
+  geom_point(aes(x=start, y=wrf.chr), alpha=0.1, color="#ffb366") +
+  geom_smooth(aes(color="To species tree"), method="loess", se=F) +
+  geom_smooth(aes(x=start, y=wrf.chr, color="To chromosome tree"), method="loess", se=F) +
+  geom_smooth(data=subset(wrf_df, wrf > 0.15 & wrf.chr > 0.15), aes(x=start, y=wrf), method="loess", se=F, color="#333333", linetype="dashed") +
+  geom_smooth(data=subset(wrf_df, wrf > 0.15 & wrf.chr > 0.15), aes(x=start, y=wrf.chr), method="loess", se=F, color=corecol(numcol=1), linetype="dashed") +
+  geom_hline(yintercept=0.15, linetype="dotted", color="#999999") +
+  scale_color_manual(values=c("To species tree"="#333333", "To chromosome tree"=corecol(numcol=1))) +
+  xlab("") +
+  ylab("wRF") +
+  facet_grid(~chr, switch = "x", scales = "free_x", space = "free_x") +
+  bartheme() +
+  theme(panel.spacing = unit(0, "lines"), 
+        strip.background = element_blank(),
+        strip.placement = "outside",
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank(),
+        legend.position="bottom")
+#print(man_p)
+figfile = here("figs", "wrf-manhattan.png")
+cat(as.character(Sys.time()), " | Saving figure:", figfile, "\n")
+
+ggsave(figfile, man_p, width=24, height=8, units="in")
+# Save the figure
+
+
 
 if(save_fig){
   fig = plot_grid(plotlist=plot_list, nrow=4, ncol=5)
