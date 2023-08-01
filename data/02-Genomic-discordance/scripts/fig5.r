@@ -110,7 +110,7 @@ marker_window_size = 5
 au_flag = FALSE
 # Set to filter out windows that don't pass the AU test
 
-read_data = F
+read_data = T
 # Whether or not to read the data
 
 do_calcs = F
@@ -131,7 +131,7 @@ featured_chr = "chr7"
 max_dist_mb = 5
 # Distance limit for plots
 
-save_fig = T
+save_fig = F
 # Whether or not to save the figure
 
 gen_supp = F
@@ -156,16 +156,16 @@ ps_datadir = here("data", "03-Selection-tests")
 
 distdir = "D:/data/rodent-genomes/dists/"
 
-tree_file = paste(datadir, "/", window_size_kb, "kb-0.5-0.5-", marker_window_size, "mb-topo-counts-tt.csv", sep="")
+tree_file = gzfile(paste(datadir, "/", window_size_kb, "kb-0.5-0.5-", marker_window_size, "mb-topo-counts-tt.csv.gz", sep=""))
 
-species_tree_file = paste(datadir, "/05_penn_7spec_iqtree.cf.rooted.tree", sep="")
+species_tree_file = paste(ps_datadir, "/05_penn_7spec_iqtree.cf.rooted.tree", sep="")
 # Re-label the species tree to match the gene trees
 
-transcript_windows_file = paste(datadir, "/mm10-cds-windows.csv", sep="")
+transcript_windows_file = gzfile(paste(datadir, "/mm10-cds-windows.csv.gz", sep=""))
 longest_transcripts_file = paste(datadir, "/mm10-transcripts-longest.tab", sep="")
 # Transcript files
 
-ps_genes_file = paste(datadir, "/ps-genes-all-gt.csv", sep="")
+ps_genes_file = paste(ps_datadir, "/ps-genes-all-gt.csv", sep="")
 # PS gene IDs
 
 chrome_info_file = paste(datadir, "/recombination-markers/chrome-stats.csv", sep="")

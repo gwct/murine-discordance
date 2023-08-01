@@ -8,6 +8,8 @@ library(ggplot2)
 library(cowplot)
 library(ggsignif)
 library("ggtree")
+#this.dir <- dirname(parent.frame(2)$ofile)
+#setwd(this.dir)
 library(here)
 source(here("lib", "get_tree_info.r"))
 source(here("lib", "design.r"))
@@ -18,7 +20,7 @@ cat("----------\n")
 window_size = 10
 # Window size in kb
 
-marker_window_size = 1
+marker_window_size = 5
 # Marker window size in Mb
 
 au_flag = F
@@ -27,10 +29,10 @@ au_flag = F
 read_data = T
 # Whether to read the initial data or not
 
-save_fig = F
+save_fig = T
 # Whether or not to save the figure
 
-skip_one = T
+skip_one = F
 # Set to only do one test chromosome
 
 max_tree_rank = 3
@@ -38,13 +40,16 @@ max_tree_rank = 3
 
 datadir = here("data", "02-Genomic-discordance")
 
-infile = here(datadir, paste(window_size, "kb-0.5-0.5-", marker_window_size, "mb-topo-counts-tt.csv.gz", sep=""))
+infile = here(datadir, paste(window_size, "kb-0.5-0.5-", marker_window_size, "mb-topo-counts.csv", sep=""))
+#infile = here(datadir, paste(window_size, "kb-0.5-0.5-", marker_window_size, "mb-topo-counts-tt.csv.gz", sep=""))
+#infile = here(datadir, paste0(window_size, "kb-0.5-0.5-", marker_window_size, "mb-topo-counts-chr19-pseudo.csv"))
 # Input options
 ######################
 
 if(read_data){
   cat(as.character(Sys.time()), " | Reading data: ", infile, "\n")
-  all_windows = read.csv(gzfile(infile), header=T)
+  #all_windows = read.csv(gzfile(infile), header=T)
+  all_windows = read.csv(infile, header=T, comment.char="#")
   all_windows_f = subset(all_windows, repeat.filter=="PASS" & missing.filter=="PASS")
   if(au_flag){
     all_windows_f = subset(all_windows_f, AU.test=="PASS")
@@ -134,7 +139,7 @@ for(chrome in levels(as.factor(all_windows$chr))){
   if(au_flag){
     outfile = here("figs", "supp", "chromoplots", paste(out_chrome, "-au-filter.png", sep=""))
   }else{
-    outfile = here("figs", "supp", "chromoplots", paste(out_chrome, ".png", sep=""))
+    outfile = here("figs", "supp", "chromoplots", paste(out_chrome, "-PSEUDO.png", sep=""))
   }
   # Output information for this chrome
   

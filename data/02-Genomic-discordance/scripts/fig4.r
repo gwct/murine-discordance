@@ -4,10 +4,11 @@
 # Gregg Thomas
 ############################################################
 
-library(ggplot2)
+library(tidyverse)
+#library(ggplot2)
 library(cowplot)
 library(ggbeeswarm)
-library(dplyr)
+#library(dplyr)
 library(RColorBrewer)
 library(here)
 source(here("lib", "design.r"))
@@ -18,7 +19,7 @@ cat("----------\n")
 window_size = 10
 # Window size in kb
 
-marker_window_size = 1
+marker_window_size = 5
 # Marker window size in Mb
 
 marker_window_size_kb = marker_window_size * 1000
@@ -47,6 +48,8 @@ if(read_data){
   cat(as.character(Sys.time()), " | Reading marker window data: ", marker_file, "\n")
   marker_windows = read.csv(marker_file, header=T)
 }
+
+marker_windows = marker_windows %>% filter(recomb.rate < 2e-6)
 
 cat(as.character(Sys.time()), " | Fig4: Rendering panel A\n")
 fig_4a = ggplot(marker_windows, aes(x=recomb.rate, y=first.last.wrf)) +

@@ -20,7 +20,7 @@ cat("----------\n")
 window_size = 10
 # Window size in kb
 
-marker_window_size = 1
+marker_window_size = 5
 # Marker window size in Mb
 
 au_flag = F
@@ -35,7 +35,7 @@ gen_chromo = T
 save_fig = F
 # Whether or not to save the figure
 
-skip_one = F
+skip_one = T
 # Set to only do one test chromosome
 
 max_tree_rank = 3
@@ -43,7 +43,7 @@ max_tree_rank = 3
 
 datadir = here("data", "02-Genomic-discordance")
 
-infile = here(datadir, paste(window_size, "kb-0.5-0.5-", marker_window_size, "mb-topo-counts-tt.csv.gz", sep=""))
+infile = here(datadir, paste(window_size, "kb-0.5-0.5-", marker_window_size, "mb-topo-counts.csv", sep=""))
 
 chrome_info_file = here(datadir, "recombination-markers", "chrome-stats.csv")
 # Input options
@@ -51,7 +51,7 @@ chrome_info_file = here(datadir, "recombination-markers", "chrome-stats.csv")
 
 if(read_data){
   cat(as.character(Sys.time()), " | Reading data: ", infile, "\n")
-  all_windows = read.csv(gzfile(infile), header=T)
+  all_windows = read.csv(infile, header=T, comment.char="#")
   all_windows_f = subset(all_windows, repeat.filter=="PASS" & missing.filter=="PASS")
   if(au_flag){
     all_windows_f = subset(all_windows_f, AU.test=="PASS")
@@ -127,13 +127,13 @@ for(j in 1:length(top_topos)){
   cur_topo = top_topos[j]
   cur_tree_raw = as.character(all_windows_f[all_windows_f$topo.rank.overall==cur_topo,]$topo[1])
   
-  cur_tree_raw = gsub("RhaDil", "R. dilectus", cur_tree_raw)
-  cur_tree_raw = gsub("GraDol", "G. dolicurus", cur_tree_raw)
+  cur_tree_raw = gsub("rdil", "R. dilectus", cur_tree_raw)
+  cur_tree_raw = gsub("gdol", "G. dolicurus", cur_tree_raw)
   cur_tree_raw = gsub("mm10", "M. musculus", cur_tree_raw)
-  cur_tree_raw = gsub("PraDel", "P. delectorum", cur_tree_raw)
-  cur_tree_raw = gsub("MasNat", "M. natalensis", cur_tree_raw)
-  cur_tree_raw = gsub("HylAll", "H. alleni", cur_tree_raw)
-  cur_tree_raw = gsub("RhySor", "R. soricoides", cur_tree_raw)
+  cur_tree_raw = gsub("pdel", "P. delectorum", cur_tree_raw)
+  cur_tree_raw = gsub("mnat", "M. natalensis", cur_tree_raw)
+  cur_tree_raw = gsub("hall", "H. alleni", cur_tree_raw)
+  cur_tree_raw = gsub("rsor", "R. soricoides", cur_tree_raw)
   
   cur_tree = read.tree(text=cur_tree_raw)
   #cur_color_cat = topo_counts$col.cat[topo_counts$topo.rank.overall==cur_topo]
@@ -143,7 +143,7 @@ for(j in 1:length(top_topos)){
   
   #nodecheck(cur_tree, tree_type="object", xmax=10)
   
-  cur_fig = ggtree(cur_tree, size=1.5) + 
+  cur_fig = ggtree(cur_tree, size=1.5, ladderize=T) + 
     xlim_tree(7) + 
     ggplot2::ylim(0, 8) +
     ggplot2::xlim(0, 18) +

@@ -21,28 +21,29 @@ source(here("lib", "design.r"))
 
 ############################################################
 
-save_fig = T
+save_fig = F
 # Whether or not to save the figure
 
-tree_file = here("data", "03-Selection-tests", "05_penn_7spec_iqtree.cf.rooted.tree")
-transcript_windows_file = here("data", "03-Selection-tests", "mm10-cds-windows.csv.gz")
-longest_transcripts_file = here("data", "03-Selection-tests", "mm10-transcripts-longest.tab")
-concat_mg_local_file = here("data", "03-Selection-tests", "hyphy", "penn-7spec-mg94-local-concat.csv")
-gt_mg_local_file = here("data", "03-Selection-tests", "hyphy", "penn-7spec-mg94-local-gt.csv")
-concat_m1a_file = here("data", "03-Selection-tests", "paml", "penn-7spec-m1a-concat.csv")
-concat_m2a_file = here("data", "03-Selection-tests", "paml", "penn-7spec-m2a-concat.csv")
-gt_m1a_file = here("data", "03-Selection-tests", "paml", "penn-7spec-m1a-gt.csv")
-gt_m2a_file = here("data", "03-Selection-tests", "paml", "penn-7spec-m2a-gt.csv")
-concat_absrel_file = here("data", "03-Selection-tests", "hyphy", "penn-7spec-absrel-concat-bonf.csv")
-gt_absrel_file = here("data", "03-Selection-tests", "hyphy", "penn-7spec-absrel-gt-bonf.csv")
-concat_busted_file = here("data", "03-Selection-tests", "hyphy", "penn-7spec-busted-concat.csv")
-gt_busted_file = here("data", "03-Selection-tests", "hyphy", "penn-7spec-busted-gt.csv")
+tree_file = here("data", "03-Selection-tests", "concat.cf.rooted.tree")
+#transcript_windows_file = here("data", "03-Selection-tests", "mm10-cds-windows.csv.gz")
+longest_transcripts_file = here("data", "03-Selection-tests", "mm10.ensGene.chromes.longest.cds.bed")
+concat_mg_local_file = here("data", "03-Selection-tests", "mg94-local-st.csv")
+gt_mg_local_file = here("data", "03-Selection-tests", "mg94-local-gt.csv")
+concat_m1a_file = here("data", "03-Selection-tests", "m1a-st.csv")
+concat_m2a_file = here("data", "03-Selection-tests", "m2a-st.csv")
+gt_m1a_file = here("data", "03-Selection-tests", "m1a-gt.csv")
+gt_m2a_file = here("data", "03-Selection-tests", "m2a-gt.csv")
+concat_absrel_file = here("data", "03-Selection-tests", "absrel-st.csv")
+gt_absrel_file = here("data", "03-Selection-tests", "absrel-gt.csv")
+concat_busted_file = here("data", "03-Selection-tests", "busted-st.csv")
+gt_busted_file = here("data", "03-Selection-tests", "busted-gt.csv")
 
 # Input options and files
 ######################
 
 cat(as.character(Sys.time()), " | Reading species tree\n")
 concat_tree = read.tree(tree_file)
+
 
 tree_to_df_list = treeToDF(concat_tree)
 tree_info_concat = tree_to_df_list[["info"]]
@@ -53,7 +54,8 @@ tree_info_concat$gcf = as.numeric(tree_info_concat$gcf)
 tree_info_concat$scf = as.numeric(tree_info_concat$scf)
 # Read astral tree data
 
-tree_info_concat$species = c("Rhynchomys soricoides", "Grammomys dolichurus", "Rhabdomys dilectus", "Hylomyscus alleni", "Mastomys natalensis", "Praomys delectorum", "Mus musculus", NA, NA, NA, NA, NA, NA)
+tree_info_concat$species = c("Rhynchomys soricoides", "Grammomys dolichurus", "Rhabdomys dilectus", "Mus musculus", "Praomys delectorum", 
+                             "Mastomys natalensis", "Hylomyscus alleni", NA, NA, NA, NA, NA, NA)
 # Add full species names to tree df
 
 cat(as.character(Sys.time()), " | Reading gene trees\n")

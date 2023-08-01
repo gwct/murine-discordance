@@ -1,0 +1,57 @@
+
+================== ASTRAL ===================== 
+
+This is ASTRAL version 5.7.1
+Gene trees are treated as unrooted
+6433 trees read from ./chr16-iqtree/loci.treefile
+All output trees will be *arbitrarily* rooted at mm10
+
+======== Running the main analysis
+Number of taxa: 7 (7 species)
+Taxa: [mm10, GraDol, RhaDil, HylAll, MasNat, PraDel, RhySor]
+Taxon occupancy: {GraDol=6433, MasNat=6433, RhaDil=6433, PraDel=6433, mm10=6433, RhySor=6433, HylAll=6433}
+Number of gene trees: 6433
+0 trees have missing taxa
+Calculating quartet distance matrix (for completion of X)
+Species tree distances calculated ...
+Building set of clusters (X) from gene trees 
+------------------------------
+gradient0: 127
+Number of Clusters after addition by distance: 127
+calculating extra bipartitions to be added at level 1 ...
+Adding to X using resolutions of greedy consensus ...
+Limit for sigma of degrees:225
+polytomy size limit : 3
+discarded polytomies:  [3]
+Threshold 0.0:
+Threshold 0.01:
+Threshold 0.02:
+Threshold 0.05:
+Threshold 0.1:
+Threshold 0.2:
+Threshold 0.3333333333333333:
+polytomy of size 3; rounds with additions with at least 5 support: 0; clusters: 127
+max k is :0
+Number of Clusters after addition by greedy: 127
+gradient0 in heuristiic: 127
+partitions formed in 1.131 secs
+Dynamic Programming starting after 1.131 secs
+Using tree-based weight calculation.
+Using polytree-based weight calculation.
+Polytree max score: 225155
+Polytree building time: 0.247 seconds.
+Number of quartet trees in the gene trees: 225155
+Size of largest cluster: 7
+Greedy score: 169292
+estimationFactor: 1.3299801526356827
+Sub-optimal score: 169292
+Total Number of elements weighted: 178
+Normalized score (portion of input quartet trees satisfied before correcting for multiple individuals): 0.7518909195887278
+Optimization score: 169292
+Optimal tree inferred in 1.607 secs.
+(GraDol,(RhaDil,(RhySor,(mm10,(HylAll,(MasNat,PraDel))))));
+Final quartet score is: 169292
+Final normalized quartet score is: 0.7518909195887278
+(mm10,((HylAll,(MasNat,PraDel)1:0.28993826821961416)1:2.1797377087533274,(RhySor,(RhaDil,GraDol)1:0.8171763692321516)1:0.13317620015086876));
+Weight calculation took 0.060383862 secs
+ASTRAL finished in 2.274 secs

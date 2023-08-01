@@ -1,0 +1,22 @@
+jobs: 32
+cluster:
+  mkdir -p slurm_logs/{rule}/{DATASET}/ &&
+  sbatch
+  --partition={resources.partition}
+  --nodes={resources.nodes}
+  --cpus-per-task={resources.cpus}
+  --job-name={rule}-{wildcards}
+  --mem={resources.mem}
+  --time={resources.time}
+  --output=slurm_logs/{rule}/{DATASET}/{rule}-{wildcards}-%j.out
+default-resources:
+  - partition='normal,cpu'
+  - nodes='1'
+  - mem_mb=4000
+  - mem='4g'
+  - time='4:00:00'
+  - cpus=4
+restart-times: 4
+latency-wait: 10
+cluster-cancel: scancel
+verbose: true

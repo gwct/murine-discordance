@@ -1,0 +1,56 @@
+
+================== ASTRAL ===================== 
+
+This is ASTRAL version 5.7.1
+Gene trees are treated as unrooted
+5991 trees read from ./chr17-iqtree/loci.treefile
+All output trees will be *arbitrarily* rooted at mm10
+
+======== Running the main analysis
+Number of taxa: 7 (7 species)
+Taxa: [mm10, GraDol, RhySor, HylAll, MasNat, PraDel, RhaDil]
+Taxon occupancy: {GraDol=5991, MasNat=5991, RhaDil=5991, PraDel=5991, mm10=5991, RhySor=5991, HylAll=5991}
+Number of gene trees: 5991
+0 trees have missing taxa
+Calculating quartet distance matrix (for completion of X)
+Species tree distances calculated ...
+Building set of clusters (X) from gene trees 
+------------------------------
+gradient0: 127
+Number of Clusters after addition by distance: 127
+calculating extra bipartitions to be added at level 1 ...
+Adding to X using resolutions of greedy consensus ...
+Limit for sigma of degrees:225
+polytomy size limit : 3
+discarded polytomies:  []
+Threshold 0.0:
+Threshold 0.01:
+Threshold 0.02:
+Threshold 0.05:
+Threshold 0.1:
+Threshold 0.2:
+Threshold 0.3333333333333333:
+max k is :0
+Number of Clusters after addition by greedy: 127
+gradient0 in heuristiic: 127
+partitions formed in 0.69 secs
+Dynamic Programming starting after 0.691 secs
+Using tree-based weight calculation.
+Using polytree-based weight calculation.
+Polytree max score: 209685
+Polytree building time: 0.273 seconds.
+Number of quartet trees in the gene trees: 209685
+Size of largest cluster: 7
+Greedy score: 156122
+estimationFactor: 1.343084254621386
+Sub-optimal score: 156122
+Total Number of elements weighted: 329
+Normalized score (portion of input quartet trees satisfied before correcting for multiple individuals): 0.7445549276295396
+Optimization score: 156122
+Optimal tree inferred in 1.274 secs.
+(GraDol,(RhaDil,(RhySor,(mm10,(HylAll,(MasNat,PraDel))))));
+Final quartet score is: 156122
+Final normalized quartet score is: 0.7445549276295396
+(mm10,((HylAll,(MasNat,PraDel)1:0.2520269412607492)1:1.950007316039387,(RhySor,(RhaDil,GraDol)1:0.7824217064175637)1:0.1729695621872351));
+Weight calculation took 0.121534932 secs
+ASTRAL finished in 1.927 secs

@@ -7,12 +7,13 @@
 
 #########
 # Data files
-data/02-Genomic-discordance/data/coord-query/
-data/02-Genomic-discordance/data/10kb-0.5-0.5-0.1mb-topo-counts-tt.csv
-data/02-Genomic-discordance/data/10kb-0.5-0.5-1mb-topo-counts-tt.csv
-data/02-Genomic-discordance/data/10kb-0.5-0.5-5mb-topo-counts-tt.csv
-data/03-Selection-tests/data/mm10-cds-windows.csv
-data/03-Selection-tests/data/mm10-cds-windows-rf.csv
+data/01-Pseudo-assemblies/
+# data/02-Genomic-discordance/data/coord-query/
+# data/02-Genomic-discordance/data/10kb-0.5-0.5-0.1mb-topo-counts-tt.csv
+# data/02-Genomic-discordance/data/10kb-0.5-0.5-1mb-topo-counts-tt.csv
+# data/02-Genomic-discordance/data/10kb-0.5-0.5-5mb-topo-counts-tt.csv
+# data/03-Selection-tests/data/mm10-cds-windows.csv
+# data/03-Selection-tests/data/mm10-cds-windows-rf.csv
 
 #########
 # etc
