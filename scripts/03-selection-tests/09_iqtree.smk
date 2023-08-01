@@ -53,6 +53,7 @@ localrules: all
 rule all:
     input:
         expand(os.path.join(TREE_OUTDIR, "loci", "{locus}", "{locus}-" + DATASET + "-cds-NT.pretrim.macse.trim.filter.NT.treefile"), locus=loci),
+        expand(os.path.join(TREE_OUTDIR, "loci", "{locus}", "{locus}-" + DATASET + "-cds-NT.pretrim.macse.trim.filter.NT.treefile.rooted"), locus=loci),
         os.path.join(TREE_OUTDIR, "loci.treefile"),
         os.path.join(TREE_OUTDIR, "astral", "astral.treefile"),
         os.path.join(TREE_OUTDIR, "astral", "astral.cf.tree"),
@@ -88,6 +89,22 @@ rule iqtree:
         """
 #nw_reroot {output.tree_file} {params.outgroup} > {output.tree_file_rooted}
 # Run each locus through iqtree
+
+######################
+
+rule root:
+    input:
+        tree_file = os.path.join(TREE_OUTDIR, "loci", "{locus}", "{locus}-" + DATASET + "-cds-NT.pretrim.macse.trim.filter.NT.treefile")
+    output:
+        rooted_file = os.path.join(TREE_OUTDIR, "loci", "{locus}", "{locus}-" + DATASET + "-cds-NT.pretrim.macse.trim.filter.NT.treefile.rooted")
+    params:
+        outgroup = config["outgroup"]
+    resources:
+        cpus=1
+    shell:
+        """
+        nw_reroot {input.tree_file} {params.outgroup} > {output.rooted_file}
+        """
 
 ######################
 

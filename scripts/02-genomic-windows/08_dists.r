@@ -102,7 +102,7 @@ distReplicates <- function(chrdata, all_win_f, m_win_size, rdists, outdir, numre
     # The tree distances for the current adjacency level
     
     dists_file_base = paste0(chrome, "-", cur_adj, ".csv")
-    dists_file = here("data", "dists", "all-dists", dists_file_base)
+    dists_file = here("data", "02-genomic-windows", "dists", "all-dists", dists_file_base)
     # The name of the file to output all tree distances for the current adjacency
     
     if(file.exists(dists_file)){
@@ -285,10 +285,10 @@ if(test_run){
 }
 
 #infile = paste("../data/", window_size_kb, "kb-0.5-0.5-", marker_window_size, "mb-topo-counts.csv", sep="")
-infile = here("data", paste0(window_size_kb, "kb-0.5-0.5-", marker_window_size, "mb-topo-counts.csv"))
+infile = here("summary-data", "02-genomic-windows", paste0(window_size_kb, "kb-0.5-0.5-", marker_window_size, "mb-topo-counts.csv"))
 
 #script_dir = "../data/dists/"
-script_dir = here("data", "dists")
+script_dir = here("data", "02-genomic-windows", "dists")
 #random_file = paste0(script_dir, "random-dists")
 random_file = here(script_dir, "random-dists")
 if(au_flag){

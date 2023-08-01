@@ -3,29 +3,31 @@ dataset: 7spec
 #conda_env_path: /n/home07/gthomas/miniconda3/envs/cds-aln/
 # The path to the conda environment with the Guidance package installed
 
-cds_directory: /projects/gt156213e/rodent-genomes/cds/seq/
+cds_directory: /projects/gt156213e/murine-discordance/data/03-selection-tests/seq/
 # Directory containing CDS with filenames: <orthogroup>.fa
 # FASTA headers should be in the format: <species ID>-<transcript ID>-<protein ID>
 
-locus_file: /projects/gt156213e/rodent-genomes/cds/data/combine-seqs.tsv
+locus_file: /projects/gt156213e/murine-discordance/summary-data/03-selection-tests/combine-seqs.tsv
 # A file containing a list of loci/clusters, one per line, to run the pipeline on
 
-aln_directory: /projects/gt156213e/rodent-genomes/cds/aln/
+aln_directory: /projects/gt156213e/murine-discordance/data/03-selection-tests/aln/
 # The directory to write alignment output
 
-aln_filter_pass_file: /projects/gt156213e/rodent-genomes/cds/aln/04-filter-spec4-seq20-site50/aln-filter-passed-spec4-seq20-site50.txt
-aln_filter_file: /projects/gt156213e/rodent-genomes/cds/aln/04-filter-spec4-seq20-site50/aln-stats-spec4-seq20-site50.log
+aln_filter_pass_file: /projects/gt156213e/murine-discordance/data/03-selection-tests/aln/04-filter-spec4-seq20-site50/aln-filter-passed-spec4-seq20-site50.txt
+aln_filter_file: /projects/gt156213e/murine-discordance/data/03-selection-tests/aln/04-filter-spec4-seq20-site50/aln-stats-spec4-seq20-site50.log
 #aln_filter_directory: /n/holylfs05/LABS/informatics/Users/gthomas/spiders/aln/16spec/02-Filter-spec4-seq20-site50/
 # The output directory from aln_filter.py
 
-tree_directory: /projects/gt156213e/rodent-genomes/cds/tree/
+tree_directory: /projects/gt156213e/murine-discordance/data/03-selection-tests/tree/
 # The directory to write tree output
 
-species_tree_file: /projects/gt156213e/rodent-genomes/cds/tree/astral/astral.treefile
+outgroup: rsor
+
+species_tree_file: /projects/gt156213e/murine-discordance/data/03-selection-tests/tree/astral/astral.treefile
 # The species tree file for species tree runs
 
 mg94_path: /hellgate/home/gt156213e/env/hyphy-analyses/FitMG94/FitMG94.bf
 # The path to the MG94 model fit file
 
-sel_test_outdir: /projects/gt156213e/rodent-genomes/cds/selection-tests/
+sel_test_outdir: /projects/gt156213e/murine-discordance/data/03-selection-tests/selection-tests/
 # The base output directory for all selection tests
