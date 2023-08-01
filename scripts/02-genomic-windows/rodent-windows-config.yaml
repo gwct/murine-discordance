@@ -1,0 +1,40 @@
+#############################################################################
+# Configuration information for the rodent windows project
+#############################################################################
+
+winsize_kb: "10kb"
+
+repeat_cutoff: "0.5"
+
+missing_cutoff: "0.5"
+
+data_dir: "/home/gt156213e/genomes/data/"
+
+seq_dir: "/mnt/beegfs/gt156213e/penn-genomes/windows/pseudo/seq/"
+
+aln_out_dir: "/home/gt156213e/genomes/aln/01-mafft/"
+
+trim_out_dir: "/home/gt156213e/genomes/aln/02-trimal/"
+
+tree_out_dir: "/home/gt156213e/genomes/tree/"
+
+#chromes: [ "chr1", "chr2", "chr3", "chr4", "chr5", "chr6", "chr7", "chr8", "chr9", "chr10", "chr11", "chr12", "chr13", "chr14", "chr15", "chr16", "chr17", "chr18", "chr19", "chrX" ]
+
+chromes: ["chr1"]
+#chromes: ["chr2"]
+#chromes: ["chr3"]
+#chromes: ["chr4"]
+#chromes: ["chr5", "chr6"]
+#chromes: ["chr7", "chr8"]
+#chromes: ["chr9", "chr10", "chr11"]
+#chromes: ["chr12", "chr13", "chr14"]
+#chromes: ["chr15", "chr16", "chr17"]
+#chromes: ["chr18", "chr19"]
+#chromes: ["chrX"]
+
+outgroup: "rsor"
+
+#############################################################################
+# 
+# 
+# chr19-56500000-56510000

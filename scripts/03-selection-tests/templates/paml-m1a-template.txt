@@ -1,0 +1,28 @@
+seqfile = {seq}
+treefile = {tree}
+outfile = {paml_out}
+
+model = 0
+NSsites = 1
+
+seqtype = 1
+CodonFreq = 2
+clock = 0
+aaDist = 0
+aaRatefile = codeml/dat/wag.dat
+
+icode = 0
+fix_kappa = 0
+kappa = 3
+fix_omega = 0
+omega = 1
+
+fix_alpha = 1
+alpha = 0
+Malpha = 0
+ncatG = 10
+getSE = 0
+Small_Diff = .5e-6
+
+noisy = 3
+verbose = 0

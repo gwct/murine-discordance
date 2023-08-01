@@ -1,0 +1,40 @@
+# Rodent windows
+# PYTHON VERSION: 3.11.0
+# Script call:    03_combine_seqs.py -w 10
+# Runtime:        04/14/2023 10:51:13
+# ----------------
+# Window size (-w):                10kb
+# Log file:                        /mnt/beegfs/gt156213e/penn-genomes/windows/pseudo/scripts/logs/get-window-seqs-10kb-0.5-0.5.log
+# ----------
+# 04.14.2023 | 10:51:13 Reading windows and checking repeats...
+# Total 10kb windows:              263389
+# Filtered 10kb windows:           90533
+# Avg. repeat per 10kb window:     0.4336540459168814
+# 04.14.2023 | 10:51:15 Checking chrome dirs...
+# 04.14.2023 | 10:51:15 Reading seq beds...
+# 04.14.2023 | 10:51:15 mm10
+# 04.14.2023 | 10:51:15 0 deleted
+# 04.14.2023 | 10:51:32 7443 missing
+# 04.14.2023 | 10:51:32 gdol
+# 04.14.2023 | 10:51:32 2 deleted
+# 04.14.2023 | 10:51:48 7443 missing
+# 04.14.2023 | 10:51:48 hall
+# 04.14.2023 | 10:51:48 3 deleted
+# 04.14.2023 | 10:52:06 7442 missing
+# 04.14.2023 | 10:52:06 mnat
+# 04.14.2023 | 10:52:06 4 deleted
+# 04.14.2023 | 10:52:24 7443 missing
+# 04.14.2023 | 10:52:24 pdel
+# 04.14.2023 | 10:52:24 7 deleted
+# 04.14.2023 | 10:52:41 7443 missing
+# 04.14.2023 | 10:52:41 rdil
+# 04.14.2023 | 10:52:41 2 deleted
+# 04.14.2023 | 10:52:59 7443 missing
+# 04.14.2023 | 10:52:59 rsor
+# 04.14.2023 | 10:52:59 1 deleted
+# 04.14.2023 | 10:53:17 7443 missing
+# 04.14.2023 | 10:53:17 Writing sequences...
+# Total 10kb windows written:      165413
+# Filtered MISSING 10kb windows:   7443
+# Filtered REPEAT 10kb windows:    90533
+# 04.14.2023 | 11:46:13 Writing output table...

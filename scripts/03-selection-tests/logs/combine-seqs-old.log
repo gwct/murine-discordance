@@ -1,0 +1,26 @@
+# Combining CDS seqs
+# PYTHON VERSION: 3.10.10
+# Script call:    04_combine_seqs.py
+# Runtime:        05/12/2023 14:11:37
+# ----------------
+# ----------
+# 05.12.2023 | 14:11:37 Reading transcript IDs...
+# Transcript IDs read:             22262
+# 05.12.2023 | 14:11:37 Reading seq beds...
+# 05.12.2023 | 14:11:37 mm10
+# 05.12.2023 | 14:11:37 0 deleted
+# 05.12.2023 | 14:11:38 gdol
+# 05.12.2023 | 14:11:38 2515 deleted
+# 05.12.2023 | 14:11:38 hall
+# 05.12.2023 | 14:11:38 2452 deleted
+# 05.12.2023 | 14:11:38 mnat
+# 05.12.2023 | 14:11:38 2365 deleted
+# 05.12.2023 | 14:11:39 pdel
+# 05.12.2023 | 14:11:39 2492 deleted
+# 05.12.2023 | 14:11:39 rdil
+# 05.12.2023 | 14:11:39 2438 deleted
+# 05.12.2023 | 14:11:39 rsor
+# 05.12.2023 | 14:11:39 2430 deleted
+# 05.12.2023 | 14:11:39 Writing sequences...
+# Total transcripts written:       14577
+# 05.12.2023 | 14:11:42 Writing output table...

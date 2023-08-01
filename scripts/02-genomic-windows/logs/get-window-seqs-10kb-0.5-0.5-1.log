@@ -1,0 +1,431 @@
+# Rodent windows
+# PYTHON VERSION: 3.11.0
+# Script call:    03_get_window_seqs.py -w 10 -p 24
+# Runtime:        03/31/2023 11:00:35
+# ----------------
+# Window size (-w):                10kb
+# Reference genome:                /mnt/beegfs/gt156213e/ref-genomes/mm10/mm10.fa
+# Genetic markers file:            /mnt/beegfs/gt156213e/penn-genomes/windows/data/recombination-markers/cox-markers/Revised_HSmap_SNPs-mm10-5mb-rates.csv
+# Log file:                        /mnt/beegfs/gt156213e/penn-genomes/windows/pseudo/scripts/logs/get-window-seqs-10kb-0.5-0.5.log
+# ----------
+# 03.31.2023 | 11:00:35 Reading genetic markers...
+# Chromosome:                      1
+# Chromosome length:               195471971
+# Windows:                         19548
+# Bed directory:                   /mnt/beegfs/gt156213e/penn-genomes/windows/pseudo/bed/chr1
+# Windows bed file:                /mnt/beegfs/gt156213e/penn-genomes/windows/pseudo/bed/chr1/mm10-chr1-10kb-repeats.bed
+# Output seq directory:            /mnt/beegfs/gt156213e/penn-genomes/windows/pseudo/seq/chr1/10kb-0.5-0.5-seq
+# ----------------
+# 03.31.2023 | 11:00:35 Reading windows and checking repeats...
+# Total 10kb windows:              19548
+# Filtered 10kb windows:           7077
+# Passed repeat 10kb windows:      12471
+# Avg. repeat per 10kb windows:    0.44303927566627666
+# 03.31.2023 | 11:00:35 Getting window coordinates for each species...
+# gdol windows:                    19548
+# hall windows:                    19548
+# mnat windows:                    19548
+# pdel windows:                    19547
+# rdil windows:                    19548
+# rsor windows:                    19548
+# 03.31.2023 | 11:00:35 Getting deleted sequences...
+# Deleted windows:                 1
+# Chromosome:                      2
+# Chromosome length:               182113224
+# Windows:                         18212
+# Bed directory:                   /mnt/beegfs/gt156213e/penn-genomes/windows/pseudo/bed/chr2
+# Windows bed file:                /mnt/beegfs/gt156213e/penn-genomes/windows/pseudo/bed/chr2/mm10-chr2-10kb-repeats.bed
+# Output seq directory:            /mnt/beegfs/gt156213e/penn-genomes/windows/pseudo/seq/chr2/10kb-0.5-0.5-seq
+# ----------------
+# 03.31.2023 | 11:00:35 Reading windows and checking repeats...
+# Total 10kb windows:              18212
+# Filtered 10kb windows:           5377
+# Passed repeat 10kb windows:      12835
+# Avg. repeat per 10kb windows:    0.40973305880414984
+# 03.31.2023 | 11:00:35 Getting window coordinates for each species...
+# gdol windows:                    18212
+# hall windows:                    18212
+# mnat windows:                    18212
+# pdel windows:                    18211
+# rdil windows:                    18212
+# rsor windows:                    18212
+# 03.31.2023 | 11:00:35 Getting deleted sequences...
+# Deleted windows:                 2
+# Chromosome:                      3
+# Chromosome length:               160039680
+# Windows:                         16005
+# Bed directory:                   /mnt/beegfs/gt156213e/penn-genomes/windows/pseudo/bed/chr3
+# Windows bed file:                /mnt/beegfs/gt156213e/penn-genomes/windows/pseudo/bed/chr3/mm10-chr3-10kb-repeats.bed
+# Output seq directory:            /mnt/beegfs/gt156213e/penn-genomes/windows/pseudo/seq/chr3/10kb-0.5-0.5-seq
+# ----------------
+# 03.31.2023 | 11:00:35 Reading windows and checking repeats...
+# Total 10kb windows:              16005
+# Filtered 10kb windows:           5891
+# Passed repeat 10kb windows:      10113
+# Avg. repeat per 10kb windows:    0.4476050484223668
+# 03.31.2023 | 11:00:36 Getting window coordinates for each species...
+# gdol windows:                    16004
+# hall windows:                    16004
+# mnat windows:                    16004
+# pdel windows:                    16004
+# rdil windows:                    16004
+# rsor windows:                    16004
+# 03.31.2023 | 11:00:36 Getting deleted sequences...
+# Deleted windows:                 2
+# Chromosome:                      4
+# Chromosome length:               156508116
+# Windows:                         15652
+# Bed directory:                   /mnt/beegfs/gt156213e/penn-genomes/windows/pseudo/bed/chr4
+# Windows bed file:                /mnt/beegfs/gt156213e/penn-genomes/windows/pseudo/bed/chr4/mm10-chr4-10kb-repeats.bed
+# Output seq directory:            /mnt/beegfs/gt156213e/penn-genomes/windows/pseudo/seq/chr4/10kb-0.5-0.5-seq
+# ----------------
+# 03.31.2023 | 11:00:36 Reading windows and checking repeats...
+# Total 10kb windows:              15652
+# Filtered 10kb windows:           5730
+# Passed repeat 10kb windows:      9921
+# Avg. repeat per 10kb windows:    0.44254595578839684
+# 03.31.2023 | 11:00:36 Getting window coordinates for each species...
+# gdol windows:                    15651
+# hall windows:                    15651
+# mnat windows:                    15651
+# pdel windows:                    15650
+# rdil windows:                    15651
+# rsor windows:                    15651
+# 03.31.2023 | 11:00:36 Getting deleted sequences...
+# Deleted windows:                 3
+# Chromosome:                      5
+# Chromosome length:               151834684
+# Windows:                         15184
+# Bed directory:                   /mnt/beegfs/gt156213e/penn-genomes/windows/pseudo/bed/chr5
+# Windows bed file:                /mnt/beegfs/gt156213e/penn-genomes/windows/pseudo/bed/chr5/mm10-chr5-10kb-repeats.bed
+# Output seq directory:            /mnt/beegfs/gt156213e/penn-genomes/windows/pseudo/seq/chr5/10kb-0.5-0.5-seq
+# ----------------
+# 03.31.2023 | 11:00:36 Reading windows and checking repeats...
+# Total 10kb windows:              15184
+# Filtered 10kb windows:           4849
+# Passed repeat 10kb windows:      10335
+# Avg. repeat per 10kb windows:    0.4229761475139956
+# 03.31.2023 | 11:00:36 Getting window coordinates for each species...
+# gdol windows:                    15184
+# hall windows:                    15184
+# mnat windows:                    15184
+# pdel windows:                    15184
+# rdil windows:                    15184
+# rsor windows:                    15184
+# 03.31.2023 | 11:00:37 Getting deleted sequences...
+# Deleted windows:                 3
+# Chromosome:                      6
+# Chromosome length:               149736546
+# Windows:                         14975
+# Bed directory:                   /mnt/beegfs/gt156213e/penn-genomes/windows/pseudo/bed/chr6
+# Windows bed file:                /mnt/beegfs/gt156213e/penn-genomes/windows/pseudo/bed/chr6/mm10-chr6-10kb-repeats.bed
+# Output seq directory:            /mnt/beegfs/gt156213e/penn-genomes/windows/pseudo/seq/chr6/10kb-0.5-0.5-seq
+# ----------------
+# 03.31.2023 | 11:00:37 Reading windows and checking repeats...
+# Total 10kb windows:              14975
+# Filtered 10kb windows:           5051
+# Passed repeat 10kb windows:      9923
+# Avg. repeat per 10kb windows:    0.4319990250417372
+# 03.31.2023 | 11:00:37 Getting window coordinates for each species...
+# gdol windows:                    14974
+# hall windows:                    14974
+# mnat windows:                    14974
+# pdel windows:                    14974
+# rdil windows:                    14974
+# rsor windows:                    14974
+# 03.31.2023 | 11:00:37 Getting deleted sequences...
+# Deleted windows:                 3
+# Chromosome:                      7
+# Chromosome length:               145441459
+# Windows:                         14545
+# Bed directory:                   /mnt/beegfs/gt156213e/penn-genomes/windows/pseudo/bed/chr7
+# Windows bed file:                /mnt/beegfs/gt156213e/penn-genomes/windows/pseudo/bed/chr7/mm10-chr7-10kb-repeats.bed
+# Output seq directory:            /mnt/beegfs/gt156213e/penn-genomes/windows/pseudo/seq/chr7/10kb-0.5-0.5-seq
+# ----------------
+# 03.31.2023 | 11:00:37 Reading windows and checking repeats...
+# Total 10kb windows:              14545
+# Filtered 10kb windows:           5575
+# Passed repeat 10kb windows:      8970
+# Avg. repeat per 10kb windows:    0.45755602914890603
+# 03.31.2023 | 11:00:37 Getting window coordinates for each species...
+# gdol windows:                    14545
+# hall windows:                    14544
+# mnat windows:                    14544
+# pdel windows:                    14544
+# rdil windows:                    14545
+# rsor windows:                    14545
+# 03.31.2023 | 11:00:37 Getting deleted sequences...
+# Deleted windows:                 6
+# Chromosome:                      8
+# Chromosome length:               129401213
+# Windows:                         12941
+# Bed directory:                   /mnt/beegfs/gt156213e/penn-genomes/windows/pseudo/bed/chr8
+# Windows bed file:                /mnt/beegfs/gt156213e/penn-genomes/windows/pseudo/bed/chr8/mm10-chr8-10kb-repeats.bed
+# Output seq directory:            /mnt/beegfs/gt156213e/penn-genomes/windows/pseudo/seq/chr8/10kb-0.5-0.5-seq
+# ----------------
+# 03.31.2023 | 11:00:37 Reading windows and checking repeats...
+# Total 10kb windows:              12941
+# Filtered 10kb windows:           3764
+# Passed repeat 10kb windows:      9177
+# Avg. repeat per 10kb windows:    0.40739162416937114
+# 03.31.2023 | 11:00:37 Getting window coordinates for each species...
+# gdol windows:                    12941
+# hall windows:                    12941
+# mnat windows:                    12941
+# pdel windows:                    12941
+# rdil windows:                    12941
+# rsor windows:                    12941
+# 03.31.2023 | 11:00:38 Getting deleted sequences...
+# Deleted windows:                 6
+# Chromosome:                      9
+# Chromosome length:               124595110
+# Windows:                         12461
+# Bed directory:                   /mnt/beegfs/gt156213e/penn-genomes/windows/pseudo/bed/chr9
+# Windows bed file:                /mnt/beegfs/gt156213e/penn-genomes/windows/pseudo/bed/chr9/mm10-chr9-10kb-repeats.bed
+# Output seq directory:            /mnt/beegfs/gt156213e/penn-genomes/windows/pseudo/seq/chr9/10kb-0.5-0.5-seq
+# ----------------
+# 03.31.2023 | 11:00:38 Reading windows and checking repeats...
+# Total 10kb windows:              12461
+# Filtered 10kb windows:           3685
+# Passed repeat 10kb windows:      8775
+# Avg. repeat per 10kb windows:    0.4152877056416016
+# 03.31.2023 | 11:00:38 Getting window coordinates for each species...
+# gdol windows:                    12460
+# hall windows:                    12460
+# mnat windows:                    12459
+# pdel windows:                    12460
+# rdil windows:                    12460
+# rsor windows:                    12460
+# 03.31.2023 | 11:00:38 Getting deleted sequences...
+# Deleted windows:                 7
+# Chromosome:                      10
+# Chromosome length:               130694993
+# Windows:                         13070
+# Bed directory:                   /mnt/beegfs/gt156213e/penn-genomes/windows/pseudo/bed/chr10
+# Windows bed file:                /mnt/beegfs/gt156213e/penn-genomes/windows/pseudo/bed/chr10/mm10-chr10-10kb-repeats.bed
+# Output seq directory:            /mnt/beegfs/gt156213e/penn-genomes/windows/pseudo/seq/chr10/10kb-0.5-0.5-seq
+# ----------------
+# 03.31.2023 | 11:00:38 Reading windows and checking repeats...
+# Total 10kb windows:              13070
+# Filtered 10kb windows:           4192
+# Passed repeat 10kb windows:      8878
+# Avg. repeat per 10kb windows:    0.4250188432407639
+# 03.31.2023 | 11:00:38 Getting window coordinates for each species...
+# gdol windows:                    13070
+# hall windows:                    13069
+# mnat windows:                    13070
+# pdel windows:                    13070
+# rdil windows:                    13069
+# rsor windows:                    13070
+# 03.31.2023 | 11:00:38 Getting deleted sequences...
+# Deleted windows:                 9
+# Chromosome:                      11
+# Chromosome length:               122082543
+# Windows:                         12209
+# Bed directory:                   /mnt/beegfs/gt156213e/penn-genomes/windows/pseudo/bed/chr11
+# Windows bed file:                /mnt/beegfs/gt156213e/penn-genomes/windows/pseudo/bed/chr11/mm10-chr11-10kb-repeats.bed
+# Output seq directory:            /mnt/beegfs/gt156213e/penn-genomes/windows/pseudo/seq/chr11/10kb-0.5-0.5-seq
+# ----------------
+# 03.31.2023 | 11:00:38 Reading windows and checking repeats...
+# Total 10kb windows:              12209
+# Filtered 10kb windows:           3178
+# Passed repeat 10kb windows:      9031
+# Avg. repeat per 10kb windows:    0.39336682227682307
+# 03.31.2023 | 11:00:38 Getting window coordinates for each species...
+# gdol windows:                    12209
+# hall windows:                    12209
+# mnat windows:                    12209
+# pdel windows:                    12209
+# rdil windows:                    12208
+# rsor windows:                    12209
+# 03.31.2023 | 11:00:39 Getting deleted sequences...
+# Deleted windows:                 10
+# Chromosome:                      12
+# Chromosome length:               120129022
+# Windows:                         12014
+# Bed directory:                   /mnt/beegfs/gt156213e/penn-genomes/windows/pseudo/bed/chr12
+# Windows bed file:                /mnt/beegfs/gt156213e/penn-genomes/windows/pseudo/bed/chr12/mm10-chr12-10kb-repeats.bed
+# Output seq directory:            /mnt/beegfs/gt156213e/penn-genomes/windows/pseudo/seq/chr12/10kb-0.5-0.5-seq
+# ----------------
+# 03.31.2023 | 11:00:39 Reading windows and checking repeats...
+# Total 10kb windows:              12014
+# Filtered 10kb windows:           3873
+# Passed repeat 10kb windows:      8140
+# Avg. repeat per 10kb windows:    0.421574421508239
+# 03.31.2023 | 11:00:39 Getting window coordinates for each species...
+# gdol windows:                    12013
+# hall windows:                    12013
+# mnat windows:                    12013
+# pdel windows:                    12013
+# rdil windows:                    12013
+# rsor windows:                    12013
+# 03.31.2023 | 11:00:39 Getting deleted sequences...
+# Deleted windows:                 10
+# Chromosome:                      13
+# Chromosome length:               120421639
+# Windows:                         12043
+# Bed directory:                   /mnt/beegfs/gt156213e/penn-genomes/windows/pseudo/bed/chr13
+# Windows bed file:                /mnt/beegfs/gt156213e/penn-genomes/windows/pseudo/bed/chr13/mm10-chr13-10kb-repeats.bed
+# Output seq directory:            /mnt/beegfs/gt156213e/penn-genomes/windows/pseudo/seq/chr13/10kb-0.5-0.5-seq
+# ----------------
+# 03.31.2023 | 11:00:39 Reading windows and checking repeats...
+# Total 10kb windows:              12043
+# Filtered 10kb windows:           3935
+# Passed repeat 10kb windows:      8108
+# Avg. repeat per 10kb windows:    0.4255141647293251
+# 03.31.2023 | 11:00:39 Getting window coordinates for each species...
+# gdol windows:                    12043
+# hall windows:                    12043
+# mnat windows:                    12042
+# pdel windows:                    12043
+# rdil windows:                    12043
+# rsor windows:                    12043
+# 03.31.2023 | 11:00:39 Getting deleted sequences...
+# Deleted windows:                 11
+# Chromosome:                      14
+# Chromosome length:               124902244
+# Windows:                         12491
+# Bed directory:                   /mnt/beegfs/gt156213e/penn-genomes/windows/pseudo/bed/chr14
+# Windows bed file:                /mnt/beegfs/gt156213e/penn-genomes/windows/pseudo/bed/chr14/mm10-chr14-10kb-repeats.bed
+# Output seq directory:            /mnt/beegfs/gt156213e/penn-genomes/windows/pseudo/seq/chr14/10kb-0.5-0.5-seq
+# ----------------
+# 03.31.2023 | 11:00:39 Reading windows and checking repeats...
+# Total 10kb windows:              12491
+# Filtered 10kb windows:           4076
+# Passed repeat 10kb windows:      8415
+# Avg. repeat per 10kb windows:    0.4231097182196597
+# 03.31.2023 | 11:00:39 Getting window coordinates for each species...
+# gdol windows:                    12490
+# hall windows:                    12490
+# mnat windows:                    12491
+# pdel windows:                    12490
+# rdil windows:                    12491
+# rsor windows:                    12491
+# 03.31.2023 | 11:00:40 Getting deleted sequences...
+# Deleted windows:                 14
+# Chromosome:                      15
+# Chromosome length:               104043685
+# Windows:                         10405
+# Bed directory:                   /mnt/beegfs/gt156213e/penn-genomes/windows/pseudo/bed/chr15
+# Windows bed file:                /mnt/beegfs/gt156213e/penn-genomes/windows/pseudo/bed/chr15/mm10-chr15-10kb-repeats.bed
+# Output seq directory:            /mnt/beegfs/gt156213e/penn-genomes/windows/pseudo/seq/chr15/10kb-0.5-0.5-seq
+# ----------------
+# 03.31.2023 | 11:00:40 Reading windows and checking repeats...
+# Total 10kb windows:              10405
+# Filtered 10kb windows:           3189
+# Passed repeat 10kb windows:      7216
+# Avg. repeat per 10kb windows:    0.4113766384778035
+# 03.31.2023 | 11:00:40 Getting window coordinates for each species...
+# gdol windows:                    10405
+# hall windows:                    10405
+# mnat windows:                    10405
+# pdel windows:                    10404
+# rdil windows:                    10405
+# rsor windows:                    10405
+# 03.31.2023 | 11:00:40 Getting deleted sequences...
+# Deleted windows:                 15
+# Chromosome:                      16
+# Chromosome length:               98207768
+# Windows:                         9822
+# Bed directory:                   /mnt/beegfs/gt156213e/penn-genomes/windows/pseudo/bed/chr16
+# Windows bed file:                /mnt/beegfs/gt156213e/penn-genomes/windows/pseudo/bed/chr16/mm10-chr16-10kb-repeats.bed
+# Output seq directory:            /mnt/beegfs/gt156213e/penn-genomes/windows/pseudo/seq/chr16/10kb-0.5-0.5-seq
+# ----------------
+# 03.31.2023 | 11:00:40 Reading windows and checking repeats...
+# Total 10kb windows:              9822
+# Filtered 10kb windows:           3049
+# Passed repeat 10kb windows:      6772
+# Avg. repeat per 10kb windows:    0.4150468743636742
+# 03.31.2023 | 11:00:40 Getting window coordinates for each species...
+# gdol windows:                    9821
+# hall windows:                    9821
+# mnat windows:                    9821
+# pdel windows:                    9821
+# rdil windows:                    9821
+# rsor windows:                    9821
+# 03.31.2023 | 11:00:40 Getting deleted sequences...
+# Deleted windows:                 15
+# Chromosome:                      17
+# Chromosome length:               94987271
+# Windows:                         9500
+# Bed directory:                   /mnt/beegfs/gt156213e/penn-genomes/windows/pseudo/bed/chr17
+# Windows bed file:                /mnt/beegfs/gt156213e/penn-genomes/windows/pseudo/bed/chr17/mm10-chr17-10kb-repeats.bed
+# Output seq directory:            /mnt/beegfs/gt156213e/penn-genomes/windows/pseudo/seq/chr17/10kb-0.5-0.5-seq
+# ----------------
+# 03.31.2023 | 11:00:40 Reading windows and checking repeats...
+# Total 10kb windows:              9500
+# Filtered 10kb windows:           3156
+# Passed repeat 10kb windows:      6343
+# Avg. repeat per 10kb windows:    0.4241374526315787
+# 03.31.2023 | 11:00:40 Getting window coordinates for each species...
+# gdol windows:                    9498
+# hall windows:                    9499
+# mnat windows:                    9498
+# pdel windows:                    9498
+# rdil windows:                    9499
+# rsor windows:                    9499
+# 03.31.2023 | 11:00:40 Getting deleted sequences...
+# Deleted windows:                 18
+# Chromosome:                      18
+# Chromosome length:               90702639
+# Windows:                         9071
+# Bed directory:                   /mnt/beegfs/gt156213e/penn-genomes/windows/pseudo/bed/chr18
+# Windows bed file:                /mnt/beegfs/gt156213e/penn-genomes/windows/pseudo/bed/chr18/mm10-chr18-10kb-repeats.bed
+# Output seq directory:            /mnt/beegfs/gt156213e/penn-genomes/windows/pseudo/seq/chr18/10kb-0.5-0.5-seq
+# ----------------
+# 03.31.2023 | 11:00:41 Reading windows and checking repeats...
+# Total 10kb windows:              9071
+# Filtered 10kb windows:           2866
+# Passed repeat 10kb windows:      6205
+# Avg. repeat per 10kb windows:    0.4142952270723093
+# 03.31.2023 | 11:00:41 Getting window coordinates for each species...
+# gdol windows:                    9071
+# hall windows:                    9071
+# mnat windows:                    9071
+# pdel windows:                    9071
+# rdil windows:                    9071
+# rsor windows:                    9071
+# 03.31.2023 | 11:00:41 Getting deleted sequences...
+# Deleted windows:                 18
+# Chromosome:                      19
+# Chromosome length:               61431566
+# Windows:                         6144
+# Bed directory:                   /mnt/beegfs/gt156213e/penn-genomes/windows/pseudo/bed/chr19
+# Windows bed file:                /mnt/beegfs/gt156213e/penn-genomes/windows/pseudo/bed/chr19/mm10-chr19-10kb-repeats.bed
+# Output seq directory:            /mnt/beegfs/gt156213e/penn-genomes/windows/pseudo/seq/chr19/10kb-0.5-0.5-seq
+# ----------------
+# 03.31.2023 | 11:00:41 Reading windows and checking repeats...
+# Total 10kb windows:              6144
+# Filtered 10kb windows:           1643
+# Passed repeat 10kb windows:      4501
+# Avg. repeat per 10kb windows:    0.3891226037428791
+# 03.31.2023 | 11:00:41 Getting window coordinates for each species...
+# gdol windows:                    6144
+# hall windows:                    6144
+# mnat windows:                    6144
+# pdel windows:                    6144
+# rdil windows:                    6144
+# rsor windows:                    6144
+# 03.31.2023 | 11:00:41 Getting deleted sequences...
+# Deleted windows:                 18
+# Chromosome:                      X
+# Chromosome length:               171031299
+# Windows:                         17104
+# Bed directory:                   /mnt/beegfs/gt156213e/penn-genomes/windows/pseudo/bed/chrX
+# Windows bed file:                /mnt/beegfs/gt156213e/penn-genomes/windows/pseudo/bed/chrX/mm10-chrX-10kb-repeats.bed
+# Output seq directory:            /mnt/beegfs/gt156213e/penn-genomes/windows/pseudo/seq/chrX/10kb-0.5-0.5-seq
+# ----------------
+# 03.31.2023 | 11:00:41 Reading windows and checking repeats...
+# Total 10kb windows:              17104
+# Filtered 10kb windows:           10377
+# Passed repeat 10kb windows:      6727
+# Avg. repeat per 10kb windows:    0.5636149079216601
+# 03.31.2023 | 11:00:41 Getting window coordinates for each species...
+# gdol windows:                    17104
+# hall windows:                    17104
+# mnat windows:                    17104
+# pdel windows:                    17104
+# rdil windows:                    17104
+# rsor windows:                    17103
+# 03.31.2023 | 11:00:41 Getting deleted sequences...
+# Deleted windows:                 19
