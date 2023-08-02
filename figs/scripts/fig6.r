@@ -16,27 +16,34 @@ library(ape)
 library(eulerr)
 library(ggVennDiagram)
 library(here)
-source(here("lib", "get_tree_info.r"))
-source(here("lib", "design.r"))
+source(here("figs", "scripts", "lib", "get_tree_info.r"))
+source(here("figs", "scripts", "lib", "design.r"))
 
 ############################################################
 
 save_fig = F
 # Whether or not to save the figure
 
-tree_file = here("data", "03-Selection-tests", "concat.cf.rooted.tree")
-#transcript_windows_file = here("data", "03-Selection-tests", "mm10-cds-windows.csv.gz")
-longest_transcripts_file = here("data", "03-Selection-tests", "mm10.ensGene.chromes.longest.cds.bed")
-concat_mg_local_file = here("data", "03-Selection-tests", "mg94-local-st.csv")
-gt_mg_local_file = here("data", "03-Selection-tests", "mg94-local-gt.csv")
-concat_m1a_file = here("data", "03-Selection-tests", "m1a-st.csv")
-concat_m2a_file = here("data", "03-Selection-tests", "m2a-st.csv")
-gt_m1a_file = here("data", "03-Selection-tests", "m1a-gt.csv")
-gt_m2a_file = here("data", "03-Selection-tests", "m2a-gt.csv")
-concat_absrel_file = here("data", "03-Selection-tests", "absrel-st.csv")
-gt_absrel_file = here("data", "03-Selection-tests", "absrel-gt.csv")
-concat_busted_file = here("data", "03-Selection-tests", "busted-st.csv")
-gt_busted_file = here("data", "03-Selection-tests", "busted-gt.csv")
+tree_file = here("summary-data", "03-Selection-tests", "concat.cf.rooted.tree")
+transcript_windows_file = here("summary-data", "03-Selection-tests", "mm10-cds-windows.csv")
+longest_transcripts_file = here("summary-data", "03-Selection-tests", "mm10.ensGene.chromes.longest.cds.bed")
+
+concat_mg_local_file = here("summary-data", "03-Selection-tests", "mg94-local-st.csv")
+gt_mg_local_file = here("summary-data", "03-Selection-tests", "mg94-local-gt.csv")
+
+#concat_mg_local_file = here("summary-data", "03-Selection-tests", "no-pseudo-it", "hyphy", "penn-7spec-mg94-local-concat.csv")
+#gt_mg_local_file = here("summary-data", "03-Selection-tests", "no-pseudo-it", "hyphy", "penn-7spec-mg94-local-gt.csv")
+
+concat_m1a_file = here("summary-data", "03-Selection-tests", "m1a-st.csv")
+concat_m2a_file = here("summary-data", "03-Selection-tests", "m2a-st.csv")
+gt_m1a_file = here("summary-data", "03-Selection-tests", "m1a-gt.csv")
+gt_m2a_file = here("summary-data", "03-Selection-tests", "m2a-gt.csv")
+
+concat_absrel_file = here("summary-data", "03-Selection-tests", "absrel-st.csv")
+gt_absrel_file = here("summary-data", "03-Selection-tests", "absrel-gt.csv")
+
+concat_busted_file = here("summary-data", "03-Selection-tests", "busted-st.csv")
+gt_busted_file = here("summary-data", "03-Selection-tests", "busted-gt.csv")
 
 # Input options and files
 ######################
@@ -59,25 +66,26 @@ tree_info_concat$species = c("Rhynchomys soricoides", "Grammomys dolichurus", "R
 # Add full species names to tree df
 
 cat(as.character(Sys.time()), " | Reading gene trees\n")
-transcript_windows_stream = gzfile(transcript_windows_file, 'rt')  
-transcript_windows = read.csv(transcript_windows_stream, header=T, comment.char="#", stringsAsFactors=F)
+#transcript_windows_stream = gzfile(transcript_windows_file, 'rt')  
+transcript_windows = read.csv(transcript_windows_file, header=T, comment.char="#", stringsAsFactors=F)
 # The 10kb windows that overlap with mouse transcripts
 
-longest_transcripts = read.csv(longest_transcripts_file, sep="\t", header=T, comment.char="#", stringsAsFactors=F)
+longest_transcripts = read.csv(longest_transcripts_file, sep="\t", header=F, comment.char="#", stringsAsFactors=F)
+names(longest_transcripts) = c("chr", "start", "end", "transcript", "score", "strand", "cstart", "cend", "rgb", "num.exons", "exon.lens", "exon.starts")
 # The transcripts used for gene trees and dN/dS/
 
-twin = subset(transcript_windows, Transcript.ID %in% longest_transcripts$feature.id)
+twin = subset(transcript_windows, transcript %in% longest_transcripts$transcript)
 # Only take windows that have one of the transcripts we used in them.
 
 ## Read tree and gene data
 ######################
 
-concordant_gt = subset(twin, Gene.tree.match.concat.tree==TRUE)
-concordant_gt = unique(select(concordant_gt, Gene.ID, chr, CDS.start, CDS.end))
+concordant_gt = subset(twin, gene.tree.match.concat.tree==TRUE)
+concordant_gt = unique(select(concordant_gt, transcript, chr, cds.start, cds.end))
 # Get the concordant gene trees
 
-discordant_gt = subset(twin, Gene.tree.match.concat.tree==FALSE)
-discordant_gt = unique(select(discordant_gt, Gene.ID, chr, CDS.start, CDS.end))
+discordant_gt = subset(twin, gene.tree.match.concat.tree==FALSE)
+discordant_gt = unique(select(discordant_gt, transcript, chr, cds.start, cds.end))
 # Get the discordant gene trees
 
 perc_discordant_gt = nrow(discordant_gt) / (nrow(concordant_gt) + nrow(discordant_gt))
@@ -113,13 +121,16 @@ gt_ds = ggplot(gt_mg_local_gene, aes(x=ds)) +
 print(gt_ds)
 # Distribution of dS when using gene trees
 
-ds_filter_level = 0.0575
-cat(as.character(Sys.time()), " | Removing genes with dS above", ds_filter_level, " from subsequent analyses.\n")
+print(quantile(concat_mg_local_gene$ds, c(.90, .95, .99)))
+#ds_filter_level = 0.0575
+ds_filter_level = quantile(concat_mg_local_gene$ds, c(0.95))
+cat(as.character(Sys.time()), " | Removing genes with dS above", ds_filter_level, "from subsequent analyses.\n")
 # Genes above 95.5 percentile
 
 concat_ds_filter = subset(concat_mg_local_gene, ds > ds_filter_level)
 gt_ds_filter = subset(gt_mg_local_gene, ds > ds_filter_level)
 ds_filter = intersect(concat_ds_filter$id, gt_ds_filter$id)
+
 # Get a list of genes to filter out in subsequent analyses based on dS
 ## MG94 local
 ######################
