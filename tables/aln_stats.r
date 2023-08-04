@@ -22,3 +22,15 @@ print(nrow(too_few_spec))
 
 too_few_uniq = aln_stats %>% filter(post.uniq.seqs < 4)
 print(nrow(too_few_uniq))
+
+#too_many_ident = aln_stats %>% filter(post.ident.seqs > 3)
+#print(nrow(too_many_ident))
+
+with_stop = aln_stats %>% filter(post.stop.codons != 0)
+print(nrow(with_stop))
+
+too_short = aln_stats %>% filter(post.codon.aln.length < 33)
+print(nrow(too_short))
+
+
+x = Reduce(union, list(too_few_spec$align, too_few_uniq$align, with_stop$align, too_short$align))
