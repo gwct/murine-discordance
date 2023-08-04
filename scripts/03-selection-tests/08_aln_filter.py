@@ -48,12 +48,14 @@ def countNongapLength(codon_seqs, seq_filter):
 
 #########################
 
-def countUniqIdentSeqs(codon_seqs):
+def countUniqIdentSeqs(codon_seqs, gappy_seqs, post_stop_seqs):
 # This function goes through every sequence in an alignment and counts how 
 # many sequences are unique or identical.
 
     uniq_seqs, ident_seqs, found = 0, 0, [];
-    codon_seq_list = list(codon_seqs.values());
+    #codon_seq_list = list(codon_seqs.values());
+    codon_seq_list = [ codon_seqs[seq] for seq in codon_seqs if seq not in gappy_seqs + post_stop_seqs ]
+
     for seq in codon_seq_list:
         if codon_seq_list.count(seq) == 1:
             uniq_seqs += 1;
@@ -115,16 +117,16 @@ def siteCount(nt_seqs, codon_seqs, aln_len_codons, aln_name):
                 high_gap_sites += 1;
             # Count if the number of gaps at this site is above some threshold
         
-        if i != aln_len_codons:
+        if i != aln_len_codons-1:
             stop_codon_count += len( [ codon for codon in site if codon in stop_codons ] );
         # Count the number of stop codons at the site
-        ## TODO: Add exception for last codon?
     ## End site loop
 
     stop_codon_seqs = [];
     for sample in codon_seqs:
         for codon in codon_seqs[sample][:-1]:
             if codon in stop_codons:
+                #print(sample, codon);
                 stop_codon_seqs.append(sample);
                 break;
     # Get a list of which sequences have stop codons
@@ -345,13 +347,13 @@ with open(log_file, "w") as logfile, open(spec_file, "w") as specfile:
     pre_alns, pre_seqs, post_alns, post_seqs = 0, 0, 0, 0;
     # Counts of aligns and sequences before and after filtering
 
-    aln_stats = ["num seqs", "num species", "codon aln length", "avg nongap length", "uniq seqs", "ident seqs", "gappy seqs", "invariant sites", "informative codon sites", "informative nt sites", "stop codons", 
-                "percent sites with gap", "gappy sites"];
+    aln_stats = ["num.seqs", "num.species", "codon.aln.length", "avg.nongap.length", "uniq.seqs", "ident.seqs", "gappy.seqs", "invariant.sites", "informative.codon.sites", "informative.nt.sites", "stop.codons", 
+                "percent.sites.with.gap", "gappy.sites"];
     # Stats to collect
 
-    aln_headers = ["align"] + [ "pre " + s for s in aln_stats ];
+    aln_headers = ["align"] + [ "pre." + s for s in aln_stats ];
     if not args.count_only:
-        aln_headers += ["sites filtered"] + [ "post " + s for s in aln_stats ];
+        aln_headers += ["sites.filtered"] + [ "post." + s for s in aln_stats ];
     # Headers for the output file including some that need to appear only once, plus some the stats that appear both pre and post filter
 
     CORE.PWS("\t".join(aln_headers), logfile);
@@ -359,7 +361,7 @@ with open(log_file, "w") as logfile, open(spec_file, "w") as specfile:
 
     ##########################
 
-    spec_headers = ["spec"] + ["num alns", "num gappy", "num stop"];
+    spec_headers = ["spec"] + ["num.alns", "num.gappy", "num.stop"];
     specfile.write("\t".join(spec_headers) + "\n");
     # Write the headers to the species stats output file
 
@@ -385,7 +387,7 @@ with open(log_file, "w") as logfile, open(spec_file, "w") as specfile:
     for aln in aln_files:
     # Loop over every alignment
 
-        # if "ENSMUST00000115110" not in aln:
+        # if "ENSMUST00000024939" not in aln:
         #     continue;
 
         if counter % 500 == 0:
@@ -433,7 +435,7 @@ with open(log_file, "w") as logfile, open(spec_file, "w") as specfile:
         for spec in cur_spec_names:
             if spec not in spec_stats:
                 spec_stats[spec] = { col : 0 for col in spec_headers if col != "spec" };
-            spec_stats[spec]['num alns'] += 1;
+            spec_stats[spec]['num.alns'] += 1;
         # Count the species in the alignment in the species dict and initialize if it is the first time this species is seen
 
         codons = {};
@@ -443,21 +445,21 @@ with open(log_file, "w") as logfile, open(spec_file, "w") as specfile:
 
         ##########################
 
-        cur_out["pre num seqs"] = str(pre_num_seq);
+        cur_out["pre.num.seqs"] = str(pre_num_seq);
         # Count the number of samples in the alignment
 
-        cur_out["pre num species"] = str(pre_num_spec);
+        cur_out["pre.num.species"] = str(pre_num_spec);
 
-        cur_out["pre codon aln length"] = len(codons[cur_seq_names[0]]);
+        cur_out["pre.codon.aln.length"] = len(codons[cur_seq_names[0]]);
         # Count the overall length of the alignment
 
-        cur_out["pre avg nongap length"], cur_out["pre gappy seqs"], gappy_seqs = countNongapLength(codons, args.seq_filter);
+        cur_out["pre.avg.nongap.length"], cur_out["pre.gappy.seqs"], gappy_seqs = countNongapLength(codons, args.seq_filter);
         # Calculate the average length of the sequences in the alignment without gaps and the number of sequences that are over the gap threshold
 
-        cur_out["pre uniq seqs"], cur_out["pre ident seqs"] = countUniqIdentSeqs(seqs);
+        cur_out["pre.uniq.seqs"], cur_out["pre.ident.seqs"] = countUniqIdentSeqs(seqs, [], []);
         # Counts the number of unique sequences in an alignment (uniq + ident = total unique sequences)
 
-        cur_out["pre invariant sites"], cur_out["pre percent sites with gap"], cur_out["pre stop codons"], cur_out["pre gappy sites"], pre_stop_seqs, cur_out["pre informative nt sites"], cur_out["pre informative codon sites"] = siteCount(seqs, codons, cur_out["pre codon aln length"], aln);
+        cur_out["pre.invariant.sites"], cur_out["pre.percent.sites.with.gap"], cur_out["pre.stop.codons"], cur_out["pre.gappy.sites"], pre_stop_seqs, cur_out["pre.informative.nt.sites"], cur_out["pre.informative.codon.sites"] = siteCount(seqs, codons, cur_out["pre.codon.aln.length"], aln);
         # Count invariant, informative, gaps, and stop codons at each site in the alignment
 
         ##########################
@@ -465,42 +467,42 @@ with open(log_file, "w") as logfile, open(spec_file, "w") as specfile:
         if not args.count_only:
         # Do some filtering if we aren't just counting the input sequences
 
-            f_codons, cur_out["sites filtered"] = codonWindowFilter(codons, pre_num_seq, cur_out["pre codon aln length"], args.site_filter);
+            f_codons, cur_out["sites.filtered"] = codonWindowFilter(codons, pre_num_seq, cur_out["pre.codon.aln.length"], args.site_filter);
             # Remove sites that are gappy in many sequences (2 gaps in at least 2 codons in overlapping 3 codon windows in at least 50% of sequences)
 
             f_seqs = { seq_id : "".join(f_codons[seq_id]) for seq_id in f_codons };
             # Convert from codon lists to sequence strings
 
-            cur_out["post avg nongap length"], cur_out["post gappy seqs"], gappy_seqs = countNongapLength(f_codons, args.seq_filter);
+            cur_out["post.avg.nongap.length"], cur_out["post.gappy.seqs"], gappy_seqs = countNongapLength(f_codons, args.seq_filter);
             # Calculate the average length of the sequences in the alignment without gaps and the number of sequences that are over the gap threshold AFTER FILTERING CODON SITES
 
-            cur_out["post codon aln length"] = len(f_codons[cur_seq_names[0]]);
+            cur_out["post.codon.aln.length"] = len(f_codons[cur_seq_names[0]]);
              # Count the overall length of the alignment AFTER FILTERING CODON SITES
 
             short_aln = False;
-            if cur_out["post codon aln length"] < 33:
+            if cur_out["post.codon.aln.length"] < 33:
                 rm_too_short.append(aln);
                 short_aln = True;
                 num_short += 1;
 
-            cur_out["post uniq seqs"], cur_out["post ident seqs"] = countUniqIdentSeqs(f_codons);
-            # Counts the number of unique sequences in an alignment (uniq + ident = total unique sequences) AFTER FILTERING CODON SITES
-
-            cur_out["post invariant sites"], cur_out["post percent sites with gap"], cur_out["post stop codons"], cur_out["post gappy sites"], post_stop_seqs, cur_out["post informative nt sites"], cur_out["post informative codon sites"] = siteCount(f_seqs, f_codons, cur_out["post codon aln length"], aln);
+            cur_out["post.invariant.sites"], cur_out["post.percent.sites.with.gap"], cur_out["post.stop.codons"], cur_out["post.gappy.sites"], post_stop_seqs, cur_out["post.informative.nt.sites"], cur_out["post.informative.codon.sites"] = siteCount(f_seqs, f_codons, cur_out["post.codon.aln.length"], aln);
             # Count invariant, informative, gaps, and stop codons at each site in the alignment AFTER FILTERING CODON SITES
+
+            cur_out["post.uniq.seqs"], cur_out["post.ident.seqs"] = countUniqIdentSeqs(f_codons, gappy_seqs, post_stop_seqs);
+            # Counts the number of unique sequences in an alignment (uniq + ident = total unique sequences) AFTER FILTERING CODON SITES
 
             ##########################
 
             for seq in gappy_seqs:
                 rm_gappy.append(aln + "\t" + seq);
                 gappy_spec = seq.split(args.header_delim)[0];
-                spec_stats[gappy_spec]["num gappy"] += 1;
+                spec_stats[gappy_spec]["num.gappy"] += 1;
             # Add the seqs removed for being too gappy to the gappy seq list
 
             for seq in post_stop_seqs:
                 rm_stop_codons.append(aln + "\t" + seq);
                 stop_spec = seq.split(args.header_delim)[0];
-                spec_stats[stop_spec]["num gappy"] += 1;
+                spec_stats[stop_spec]["num.gappy"] += 1;
             # Add the seqs removed for being having stop codons to the stop codon seq list
 
             ##########################
@@ -518,16 +520,16 @@ with open(log_file, "w") as logfile, open(spec_file, "w") as specfile:
             # Remove sequences from the alignment that are too gappy or have stop codons after codon filtering
 
             post_num_seqs = len(final_seqs);
-            cur_out["post num seqs"] = post_num_seqs;
+            cur_out["post.num.seqs"] = post_num_seqs;
             post_spec_names = set([ s.split(args.header_delim)[0] for s in final_seqs ]);
             post_num_spec = len(post_spec_names);
             if post_num_spec == num_spec and post_num_seqs == num_spec:
                 post_single_copy_alns.append(aln);
-            cur_out["post num species"] = post_num_spec;
+            cur_out["post.num.species"] = post_num_spec;
             # Count the number of sequences and species in the alignment after filtering
 
             write_aln = True;
-            if cur_out["post num species"] < args.num_spec_filter:
+            if cur_out["post.num.species"] < args.num_spec_filter:
                 rm_too_few_spec.append(aln);
                 write_aln = False;
             elif short_aln:

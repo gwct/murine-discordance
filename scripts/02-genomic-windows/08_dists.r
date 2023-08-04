@@ -81,8 +81,8 @@ distReplicates <- function(chrdata, all_win_f, m_win_size, rdists, outdir, numre
                           "mean.rf"=c(), "median.rf"=c(), "var.rf"=c(),
                           "mean.wrf"=c(), "median.wrf"=c(), "var.wrf"=c(),
                           "mean.spr"=c(), "median.spr"=c(), "var.spr"=c(),
-                          "mean.kf"=c(), "median.kf"=c(), "var.kf"=c(),
-                          "mean.path"=c(), "median.path"=c(), "var.path"=c())
+                          "mean.kf"=c(), "median.kf"=c(), "var.kf"=c())
+                          #"mean.path"=c(), "median.path"=c(), "var.path"=c())
   # Stats per adjacency and replicate for this chromosome.
 
   
@@ -91,14 +91,15 @@ distReplicates <- function(chrdata, all_win_f, m_win_size, rdists, outdir, numre
   sig_wrf = seq(1:numreps)
   sig_spr = seq(1:numreps)
   sig_kf = seq(1:numreps)
-  sig_path = seq(1:numreps)
+  #sig_path = seq(1:numreps)
   cur_adj = 1
     
   while(sig || cur_adj <= 500){
     # Calculate wRF for adjacent windows until the distribution becomes random-like (non-significant for wilcox or KS test)  
     cat(as.character(Sys.time()), " | Chromosome ", out_chrome, " - adjacency ", cur_adj, "\n", sep="")
     
-    cur_dists = data.frame("win1"=c(), "win2"=c(), "rf"=c(), "wrf"=c(), "spr"=c(), "kf"=c(), "path"=c())
+    #cur_dists = data.frame("win1"=c(), "win2"=c(), "rf"=c(), "wrf"=c(), "spr"=c(), "kf"=c(), "path"=c())
+    cur_dists = data.frame("win1"=c(), "win2"=c(), "rf"=c(), "wrf"=c(), "spr"=c(), "kf"=c())
     # The tree distances for the current adjacency level
     
     dists_file_base = paste0(chrome, "-", cur_adj, ".csv")
@@ -157,10 +158,11 @@ distReplicates <- function(chrdata, all_win_f, m_win_size, rdists, outdir, numre
         names(spr) = NULL
         spr = spr
         kf = KF.dist(cur_tree, forward_tree)
-        path = path.dist(cur_tree, forward_tree)
+        #path = path.dist(cur_tree, forward_tree)
         # Calculate the wRF for the two trees   
         
-        cur_dists = rbind(cur_dists, data.frame("win1"=cur_window, "win2"=as.character(forward_window$window), "rf"=rf, "wrf"=wrf, "spr"=spr, "kf"=kf, "path"=path))
+        #cur_dists = rbind(cur_dists, data.frame("win1"=cur_window, "win2"=as.character(forward_window$window), "rf"=rf, "wrf"=wrf, "spr"=spr, "kf"=kf, "path"=path))
+        cur_dists = rbind(cur_dists, data.frame("win1"=cur_window, "win2"=as.character(forward_window$window), "rf"=rf, "wrf"=wrf, "spr"=spr, "kf"=kf))
         # Calculate the wRF for the two trees
         # The forward distance.       
       }
@@ -208,18 +210,18 @@ distReplicates <- function(chrdata, all_win_f, m_win_size, rdists, outdir, numre
       }
       # KF test
       
-      if(sig_path[i] != "DONE"){
-        wilcox_path_p = wilcox.test(cur_dists$path, rdists_rep$path)$p.value
-        if(wilcox_path_p > 0.01){
-          sig_path[i] = "DONE"
-          out_data = rbind(out_data, data.frame("replicate"=i, "measure"="path", "nonsig.adj"=cur_adj))
-        }
-      }
+      # if(sig_path[i] != "DONE"){
+      #   wilcox_path_p = wilcox.test(cur_dists$path, rdists_rep$path)$p.value
+      #   if(wilcox_path_p > 0.01){
+      #     sig_path[i] = "DONE"
+      #     out_data = rbind(out_data, data.frame("replicate"=i, "measure"="path", "nonsig.adj"=cur_adj))
+      #   }
+      # }
       # path test
     }
     # Replicate loop
     
-    if(length(unique(sig_rf)) == 1 && length(unique(sig_wrf)) == 1 && length(unique(sig_spr)) == 1 && length(unique(sig_kf)) == 1 && length(unique(sig_path)) == 1){
+    if(length(unique(sig_rf)) == 1 && length(unique(sig_wrf)) == 1 && length(unique(sig_spr)) == 1 && length(unique(sig_kf)) == 1){
       sig = FALSE
     }
     # Exit loop when all measures are not significantly different from random.
@@ -231,8 +233,8 @@ distReplicates <- function(chrdata, all_win_f, m_win_size, rdists, outdir, numre
                                               "mean.rf"=mean(cur_dists$rf), "median.rf"=median(cur_dists$rf), "var.rf"=var(cur_dists$rf),
                                               "mean.wrf"=mean(cur_dists$wrf), "median.wrf"=median(cur_dists$wrf), "var.wrf"=var(cur_dists$wrf),
                                               "mean.spr"=mean(cur_dists$spr), "median.spr"=median(cur_dists$spr), "var.spr"=var(cur_dists$spr),
-                                              "mean.kf"=mean(cur_dists$kf), "median.kf"=median(cur_dists$kf), "var.kf"=var(cur_dists$kf),
-                                              "mean.path"=mean(cur_dists$path), "median.path"=median(cur_dists$path), "var.path"=var(cur_dists$path))
+                                              "mean.kf"=mean(cur_dists$kf), "median.kf"=median(cur_dists$kf), "var.kf"=var(cur_dists$kf))
+                                              #"mean.path"=mean(cur_dists$path), "median.path"=median(cur_dists$path), "var.path"=var(cur_dists$path))
     )
     # Compile output stats for the current adjacency
     
@@ -271,10 +273,10 @@ skip_one = FALSE
 nrand_win = 12000
 # The number of random windows to sample
 
-nreps = 10
+nreps = 100
 # The number of replicates
 
-test_run = TRUE
+test_run = FALSE
 # Only do chromosome 7 as a test (~1hr)
 
 if(test_run){
@@ -370,7 +372,6 @@ all_windows = subset(all_windows, chr!="chrX")
 if(test_run){
   test_windows = split(test_windows, f=test_windows$chr)
   mclapply(test_windows, distReplicates, all_win_f=test_windows_f, m_win_size=marker_window_size, rdists=random_dists, outdir=script_dir, numreps=nreps, mc.cores=num_cores)
-  
 }else {
   all_windows = split(all_windows, f=all_windows$chr)
   # Split by chromosome.
