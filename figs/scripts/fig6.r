@@ -24,6 +24,9 @@ source(here("figs", "scripts", "lib", "design.r"))
 save_fig = F
 # Whether or not to save the figure
 
+write_overlaps = T
+# Whether or not to write the overlaps file
+
 tree_file = here("summary-data", "03-Selection-tests", "concat.cf.rooted.tree")
 transcript_windows_file = here("summary-data", "03-Selection-tests", "mm10-cds-windows.csv")
 longest_transcripts_file = here("summary-data", "03-Selection-tests", "mm10.ensGene.chromes.longest.cds.bed")
@@ -172,19 +175,19 @@ gt_paml_ps = subset(gt_paml, gt_paml$pval < 0.01)
 
 cat(as.character(Sys.time()), " | Fig6 PAML M1 and M2: Counting positively selected genes\n")
 paml_gt_uniq = gt_paml_ps[!gt_paml_ps$id %in% concat_paml_ps$id,]
-paml_gt_uniq_disco = length(intersect(paml_gt_uniq$id, discordant_gt$Gene.ID))
+paml_gt_uniq_disco = length(intersect(paml_gt_uniq$id, discordant_gt$transcript))
 paml_gt_uniq_disco_perc = paml_gt_uniq_disco / nrow(paml_gt_uniq)
 # GT unique
 #####
 
 paml_concat_uniq = concat_paml_ps[!concat_paml_ps$id %in% gt_paml_ps$id,]
-paml_concat_uniq_disco = length(intersect(paml_concat_uniq$id, discordant_gt$Gene.ID))
+paml_concat_uniq_disco = length(intersect(paml_concat_uniq$id, discordant_gt$transcript))
 paml_concat_uniq_disco_perc = paml_concat_uniq_disco / nrow(paml_concat_uniq)
 # Concat unique
 #####
 
 paml_shared = concat_paml_ps[concat_paml_ps$id %in% gt_paml_ps$id,]
-paml_shared_disco = length(intersect(paml_shared$id, discordant_gt$Gene.ID))
+paml_shared_disco = length(intersect(paml_shared$id, discordant_gt$transcript))
 paml_shared_disco_perc = paml_shared_disco / nrow(paml_shared)
 # Shared
 #####
@@ -219,19 +222,19 @@ gt_absrel_ps = subset(gt_absrel, num.branches.pval.less.than.alpha > 0)
 # Select only genes with evidence for selection on at least one branch
 
 absrel_gt_uniq = gt_absrel_ps[!gt_absrel_ps$id %in% concat_absrel_ps$id,]
-absrel_gt_uniq_disco = length(intersect(absrel_gt_uniq$id, discordant_gt$Gene.ID))
+absrel_gt_uniq_disco = length(intersect(absrel_gt_uniq$id, discordant_gt$transcript))
 absrel_gt_uniq_disco_perc = absrel_gt_uniq_disco / nrow(absrel_gt_uniq)
 # GT unique
 #####
 
 absrel_concat_uniq = concat_absrel_ps[!concat_absrel_ps$id %in% gt_absrel_ps$id,]
-absrel_concat_uniq_disco = length(intersect(absrel_concat_uniq$id, discordant_gt$Gene.ID))
+absrel_concat_uniq_disco = length(intersect(absrel_concat_uniq$id, discordant_gt$transcript))
 absrel_concat_uniq_disco_perc = absrel_concat_uniq_disco / nrow(absrel_concat_uniq)
 # Concat unique
 #####
 
 absrel_shared = concat_absrel_ps[concat_absrel_ps$id %in% gt_absrel_ps$id,]
-absrel_shared_disco = length(intersect(absrel_shared$id, discordant_gt$Gene.ID))
+absrel_shared_disco = length(intersect(absrel_shared$id, discordant_gt$transcript))
 absrel_shared_disco_perc = absrel_shared_disco / nrow(absrel_shared)
 # Shared
 #####
@@ -273,19 +276,19 @@ gt_busted_ps = subset(gt_busted, pval < 0.01)
 # Genes with p-values less than 0.01 inferred as PS
 
 busted_gt_uniq = gt_busted_ps[!gt_busted_ps$id %in% concat_busted_ps$id,]
-busted_gt_uniq_disco = length(intersect(busted_gt_uniq$id, discordant_gt$Gene.ID))
+busted_gt_uniq_disco = length(intersect(busted_gt_uniq$id, discordant_gt$transcript))
 busted_gt_uniq_disco_perc = busted_gt_uniq_disco / nrow(busted_gt_uniq)
 # GT unique
 #####
 
 busted_concat_uniq = concat_busted_ps[!concat_busted_ps$id %in% gt_busted_ps$id,]
-busted_concat_uniq_disco = length(intersect(busted_concat_uniq$id, discordant_gt$Gene.ID))
+busted_concat_uniq_disco = length(intersect(busted_concat_uniq$id, discordant_gt$transcript))
 busted_concat_uniq_disco_perc = busted_concat_uniq_disco / nrow(busted_concat_uniq)
 # Concat unique
 #####
 
 busted_shared = concat_busted_ps[concat_busted_ps$id %in% gt_busted_ps$id,]
-busted_shared_disco = length(intersect(busted_shared$id, discordant_gt$Gene.ID))
+busted_shared_disco = length(intersect(busted_shared$id, discordant_gt$transcript))
 busted_shared_disco_perc = busted_shared_disco / nrow(busted_shared)
 # Shared
 #####
@@ -339,8 +342,8 @@ fig_6a = ggplot(comps, aes(x=label, y=prop, fill=type, label=text)) +
   geom_bar(stat="identity") +
   geom_text(size=2.3, position=position_stack(vjust=0.5), color="#f2f2f2") +
   geom_text(aes(label=text2), size=2.3, color="#f2f2f2", nudge_y=0.05) +
-  geom_text(aes(label=text3), size=2.3, color="#f2f2f2", nudge_y=-0.05) +
-  geom_text(aes(label=text4), size=2.3, color="#f2f2f2", nudge_y=0.82) +
+  geom_text(aes(label=text3), size=2.3, color="#f2f2f2", nudge_y=-0.025) +
+  geom_text(aes(label=text4), size=2.3, color="#f2f2f2", nudge_y=0.85) +
   xlab("") +
   ylab("Proportion of positively selected genes") +
   scale_y_continuous(expand=c(0,0), limits=c(0,1)) +
@@ -367,16 +370,34 @@ if(save_fig){
 }
 # Save the figure
 
+######################
+
+if(write_overlaps){
+  cat(as.character(Sys.time()), " | Getting overlaps between methods \n")
+  gt_comp = list("BUSTED"=gt_busted_ps$id, "aBSREL"=gt_absrel_ps$id, "M1avM2a"=gt_paml_ps$id)
+  shared_gt_genes = Reduce(intersect, gt_comp)
+  #write.csv(shared_gt_genes, file=paste(datadir, "shared-ps-genes-all-gt.csv", sep=""), col.names=F, row.names=F)
+  all_gt_genes = Reduce(union, gt_comp)
+  
+  ps_genes_file = here("summary-data", "02-genomic-windows", "feature-beds", "ps-transcripts-all-gt.txt")
+  cat(as.character(Sys.time()), " | Writing overlaps to file: ", ps_genes_file, "\n")
+  #write.csv(all_gt_genes, file=ps_genes_file, row.names=F, quote=F)
+  write(all_gt_genes, file=ps_genes_file)
+  
+  ## Get PS genes into bed format:
+  ## grep -f ps-transcripts-all-gt.txt ../../../data/03-selection-tests/annotations/mm10.ensGene.chromes.gtf | awk '$3=="transcript"{print}' | cut -d \" -f 2 > ps-genes-all-gt.txt
+  ## grep -f ps-genes-all-gt.txt mm10-genes.bed > mm10-ps-genes-all-gt.bed
+  
+  ## Get coding genes only from gtf:
+  ## grep "CDS"  ../../../data/03-selection-tests/annotations/mm10.ensGene.chromes.gtf | cut -d \" -f 2 | sort | uniq > mm10-coding-genes.txt
+  ## grep -f mm10-coding-genes.txt mm10-genes.bed > mm10-coding-genes.bed
+}
+
 ############################################################
 
 ## Old code for venn diagrams of genes between methods
 
 # cat(as.character(Sys.time()), " | Fig6: Rendering panel B \n")
-# gt_comp = list("BUSTED"=gt_busted_ps$id, "aBSREL"=gt_absrel_ps$id, "M1avM2a"=gt_paml_ps$id)
-# #shared_gt_genes = Reduce(intersect, gt_comp)
-# #write.csv(shared_gt_genes, file=paste(datadir, "shared-ps-genes-all-gt.csv", sep=""), col.names=F, row.names=F)
-# #all_gt_genes = Reduce(union, gt_comp)
-# #write.csv(all_gt_genes, file=paste(datadir, "ps-genes-all-gt.csv", sep=""), col.names=F, row.names=F)
 # fig_6b = plot(euler(gt_comp, shape = "ellipse"), labels=FALSE, quantities=TRUE, fill=corecol(numcol=3, offset=5))
 # print(fig_6b)
 # 
@@ -400,14 +421,14 @@ if(save_fig){
 # # gt_busted_list = data.frame("id"=gt_busted_ps$id, "test"="BUSTED", "label"="Gene trees")
 # # gt_absrel_list = data.frame("id"=gt_absrel_ps$id, "test"="aBSREL", "label"="Gene trees")
 # # gt_paml_list = data.frame("id"=gt_paml_ps$id, "test"="M1a vs. M2a", "label"="Gene trees")
-# # 
+# #
 # # concat_busted_list = data.frame("id"=concat_busted_ps$id, "test"="BUSTED", "label"="Concatenated tree")
 # # concat_absrel_list = data.frame("id"=concat_absrel_ps$id, "test"="aBSREL", "label"="Concatenated tree")
 # # concat_paml_list = data.frame("id"=concat_paml_ps$id, "test"="M1a vs. M2a", "label"="Concatenated tree")
-# # 
+# #
 # # combined_list = rbind(gt_busted_list, gt_absrel_list, gt_paml_list, concat_busted_list, concat_absrel_list, concat_paml_list)
-# # 
-# # 
+# #
+# #
 # # plot(euler(combined_list, by = list(label)), legend = TRUE)
 # 
 # ######################
