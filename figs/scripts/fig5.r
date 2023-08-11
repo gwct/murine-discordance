@@ -110,7 +110,7 @@ marker_window_size = 5
 au_flag = FALSE
 # Set to filter out windows that don't pass the AU test
 
-read_data = T
+read_data = F
 # Whether or not to read the data
 
 do_calcs = F
@@ -131,7 +131,7 @@ featured_chr = "chr7"
 max_dist_mb = 5
 # Distance limit for plots
 
-save_fig = F
+save_fig = T
 # Whether or not to save the figure
 
 gen_supp = F
@@ -148,29 +148,17 @@ if(coding_genes){
 point_alpha = 0.1
 # Point transparency level
 
-#datadir = "C:/Users/Gregg/Box Sync/rodents/penn/paper/data/"
-#datadir = "C:/Users/grt814/Box Sync/rodents/penn/paper/data/"
-
-datadir = here("data", "02-Genomic-discordance")
-ps_datadir = here("data", "03-Selection-tests")
+datadir = here("summary-data", "02-genomic-windows")
 
 distdir = "D:/data/rodent-genomes/dists/"
 
-tree_file = gzfile(paste(datadir, "/", window_size_kb, "kb-0.5-0.5-", marker_window_size, "mb-topo-counts-tt.csv.gz", sep=""))
+tree_file = here("summary-data", "02-genomic-windows", paste0(window_size_kb, "kb-0.5-0.5-", marker_window_size, "mb-topo-counts.csv"))
 
-species_tree_file = paste(ps_datadir, "/05_penn_7spec_iqtree.cf.rooted.tree", sep="")
-# Re-label the species tree to match the gene trees
+species_tree_file = here("summary-data", "03-selection-tests", "concat.cf.rooted.tree")
 
-transcript_windows_file = gzfile(paste(datadir, "/mm10-cds-windows.csv.gz", sep=""))
-longest_transcripts_file = paste(datadir, "/mm10-transcripts-longest.tab", sep="")
-# Transcript files
+chrome_info_file = here("summary-data", "02-genomic-windows", "recombination-markers", "chrome-stats.csv")
 
-ps_genes_file = paste(ps_datadir, "/ps-genes-all-gt.csv", sep="")
-# PS gene IDs
-
-chrome_info_file = paste(datadir, "/recombination-markers/chrome-stats.csv", sep="")
-
-pre_calc_file = paste(datadir, "/all-feature-stats.csv", sep="")
+pre_calc_file = here("summary-data", "02-genomic-windows", "all-feature-stats.csv")
 # Input options
 ######################
 
@@ -179,23 +167,11 @@ if(read_data){
   concat_tree = read.tree(species_tree_file)
   
   cat(as.character(Sys.time()), " | Reading tree window data: ", tree_file, "\n")
-  all_windows = read.csv(tree_file, header=T)
+  all_windows = read.csv(tree_file, comment.char="#", header=T)
   all_windows_f = subset(all_windows, repeat.filter=="PASS" & missing.filter=="PASS")
   if(au_flag){
     all_windows_f = subset(all_windows_f, AU.test=="PASS")
   }
- 
-  cat(as.character(Sys.time()), " | Reading gene IDs for PS genes\n")
-  ps_gene_ids = read.csv(ps_genes_file, header=F, stringsAsFactors=F)
-  
-  cat(as.character(Sys.time()), " | Reading gene trees\n")
-  transcript_windows = read.csv(transcript_windows_file, header=T, comment.char="#", stringsAsFactors=F)
-  # The 10kb windows that overlap with mouse transcripts
-  
-  longest_transcripts = read.csv(longest_transcripts_file, sep="\t", header=T, comment.char="#", stringsAsFactors=F)
-  # The transcripts used for gene trees and dN/dS
-  
-  #cat(as.character(Sys.time()), " | Reading chrome info: ", chrome_info_file, "\n")
 }
 # Read and filter the window data
 ######################
@@ -212,7 +188,6 @@ if(do_calcs){
   
   for(chrome in levels(as.factor(all_windows$chr))){
   # Do calculations for each chromosome
-    
     if(skip_one && chrome != "chr9"){
       next
     }
@@ -246,13 +221,20 @@ if(do_calcs){
     
     full_stats_file = paste(distdir, out_chrome, "-stats.csv", sep="")
     if(coding_genes){
-      gene_file = paste(datadir, "coord-query/mm10-coding-genes-", marker_window_size ,"-Mb.bed.", chrome, ".dists", sep="")
+      gene_base = paste0("coding-genes-", marker_window_size ,"-Mb.bed.", chrome, ".dists")
+      gene_file = here(datadir, "coord-query", gene_base)
     }else{
-      gene_file = paste(datadir, "coord-query/mm10-genes-", marker_window_size ,"-Mb.bed.", chrome, ".dists", sep="")
+      gene_base = paste0("genes-", marker_window_size ,"-Mb.bed.", chrome, ".dists")
+      gene_file = here(datadir, "coord-query", gene_base)
     }
-    uce_file = paste(datadir, "coord-query/mm10-uces-", marker_window_size ,"-Mb.bed.", chrome, ".dists", sep="")
-    hs_file = paste(datadir, "coord-query/mm10-hotspots-", marker_window_size ,"-Mb.bed.", chrome, ".dists", sep="")
-    ps_file = paste(datadir, "coord-query/mm10-ps-", marker_window_size ,"-Mb.bed.", chrome, ".dists", sep="")
+    uce_base = paste0("uces-", marker_window_size ,"-Mb.bed.", chrome, ".dists")
+    uce_file = here(datadir, "coord-query", uce_base)
+    
+    hs_base = paste0("hotspots-", marker_window_size ,"-Mb.bed.", chrome, ".dists")
+    hs_file = here(datadir, "coord-query", hs_base)
+
+    ps_base = paste0("ps-", marker_window_size ,"-Mb.bed.", chrome, ".dists")
+    ps_file = here(datadir, "coord-query", ps_base)    
     
     # File names for this chromosome
     ######################
@@ -359,7 +341,7 @@ if(do_calcs){
   
   features = rbind(non_features, hs, non_ps_genes, ps_genes, uces)
   features$label = factor(features$label, levels=c(non_lab, hs_lab, non_ps_lab, ps_lab, uce_lab))
-  #write.csv(features, file=paste(datadir, "all-feature-stats.csv", sep=""), row.names=F)
+  write.csv(features, file=pre_calc_file, row.names=F)
   # Combine feature dfs
 }
 ## If calcs are done, need to combine the data here
@@ -380,6 +362,11 @@ sig_cols = c("N.S."="#333333",
              "*"=corecol(pal="wilke", numcol=1, offset=4), 
              "**"=corecol(pal="wilke", numcol=1, offset=2), 
              "***"=corecol(pal="wilke", numcol=1, offset=6))
+# sig_cols = c("#333333", 
+#              corecol(pal="wilke", numcol=1, offset=4), 
+#              corecol(pal="wilke", numcol=1, offset=2), 
+#              corecol(pal="wilke", numcol=1, offset=6))
+# sig_labs = factor(c("N.S", "*", "**", "***"), levels=c("N.S", "*", "**", "***"))
 # Colors for the significance levels in the Tukey means diff plots.
 
 # Plot setup
@@ -513,7 +500,7 @@ slope_anova_plot = ggplot(slope_anova_comp, aes(x=comp, y=label.diff, color=sig)
   geom_point(size=3) +
   geom_errorbar(aes(ymin=label.lwr, ymax=label.upr), width=0.25, size=1) +
   geom_hline(yintercept=0, size=1, linetype=2) +
-  scale_color_manual(values=sig_cols) +
+  scale_color_manual(values=sig_cols, drop=FALSE) +
   #xlab("wRF slope from feature window\nto all windows within 5Mb") +
   xlab("") +
   ylab("Difference in means") +
@@ -580,7 +567,7 @@ spec_anova_plot = ggplot(spec_anova_comp, aes(x=comp, y=label.diff, color=sig)) 
   geom_point(size=3) +
   geom_errorbar(aes(ymin=label.lwr, ymax=label.upr), width=0.25, size=1) +
   geom_hline(yintercept=0, size=1, linetype=2) +
-  scale_color_manual(values=sig_cols) +
+  scale_color_manual(values=sig_cols, drop=FALSE) +
   #xlab("Feature window comparison\nof wRF to species tree") +
   xlab("") +
   ylab("Difference in means") +
@@ -598,7 +585,7 @@ print(spec_anova_plot)
 
 cat(as.character(Sys.time()), " | Combining panels\n")
 
-comp_leg = get_legend(slope_anova_plot + theme(legend.position="bottom"))
+comp_leg = get_legend(adj_wrf_anova_plot + theme(legend.position="bottom"))
 
 fig_5new_top = plot_grid(slope_plot, slope_anova_plot + theme(legend.position="none"), ncol=2, labels=c("A", ""))
 fig_5new_mid = plot_grid(wrf_adj_plot, adj_wrf_anova_plot + theme(legend.position="none"), ncol=2, labels=c("B", ""))
@@ -618,6 +605,13 @@ if(save_fig){
 ######################
 ######################
 ## STASH
+
+# ps_genes_file = here("summary-data", "02-genomic-windows", "feature-beds", "ps-transcripts-all-gt.txt")
+# #ps_genes_file = paste(ps_datadir, "/ps-genes-all-gt.csv", sep="")
+# # PS gene IDs
+# 
+# cat(as.character(Sys.time()), " | Reading gene IDs for PS genes\n")
+# ps_gene_ids = read.csv(ps_genes_file, header=F, stringsAsFactors=F)
 
 # tree_file = paste(datadir, window_size_kb, "kb-0.5-0.5-", marker_window_size, "mb-topo-counts-tt.csv", sep="")
 # all_windows = read.csv(tree_file, header=T)

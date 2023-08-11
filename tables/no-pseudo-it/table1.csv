@@ -1,0 +1,9 @@
+"topo.rank.overall","topo","topo.count.overall","prop"
+1,"(RS,((GD,RD),(MM,(HA,(MN,PD)))));",20581,0.125
+2,"(RS,((GD,RD),(MM,((HA,MN),PD))));",16616,0.101
+3,"(RS,((HA,(MN,PD)),(MM,(GD,RD))));",14505,0.0883
+4,"(RS,(MM,((GD,RD),(HA,(MN,PD)))));",10964,0.0668
+5,"(RS,(((HA,MN),PD),(MM,(GD,RD))));",9717,0.0592
+6,"(RS,(GD,((HA,(MN,PD)),(MM,RD))));",8909,0.0543
+7,"(RS,(MM,((GD,RD),((HA,MN),PD))));",7438,0.0453
+8,"(RS,((GD,RD),(MM,((HA,PD),MN))));",7129,0.0434

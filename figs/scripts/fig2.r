@@ -12,7 +12,7 @@ library(cowplot)
 library(ggsignif)
 library(here)
 library("ggtree")
-source(here("lib", "design.r"))
+source(here("figs", "scripts", "lib", "design.r"))
 
 ############################################################
 cat("----------\n")
@@ -29,19 +29,19 @@ au_flag = F
 read_data = T
 # Whether to read the initial data or not
 
-gen_chromo = T
+gen_chromo = F
 # Whether or not to re-genereate the chromoplot
 
 save_fig = F
 # Whether or not to save the figure
 
-skip_one = T
+skip_one = F
 # Set to only do one test chromosome
 
 max_tree_rank = 3
 # The number of top trees to print/color
 
-datadir = here("data", "02-Genomic-discordance")
+datadir = here("summary-data", "02-genomic-windows")
 
 infile = here(datadir, paste(window_size, "kb-0.5-0.5-", marker_window_size, "mb-topo-counts.csv", sep=""))
 

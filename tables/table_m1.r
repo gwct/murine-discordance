@@ -14,11 +14,8 @@ library(stringr)
 ############################################################
 cat("----------\n")
 
-window_size_str = 10
+window_size = 10
 # Window size in kb
-
-window_size = window_size_str * 1000
-# Window size in bp
 
 au_flag = F
 # Set to filter out windows that don't pass the AU test
@@ -26,14 +23,18 @@ au_flag = F
 read_data = T
 # Set to read and filter data or not (if its already stored in mem)
 
-infile = paste("../../windows/data-2/", window_size_str, "kb-0.5-0.5-topo-counts-tt.csv", sep="")
-outfile = "../tables/tableM1.csv"
+datadir = here("summary-data", "02-genomic-windows")
+
+infile = here(datadir, paste(window_size, "kb-0.5-0.5-", marker_window_size, "mb-topo-counts.csv", sep=""))
+
+outfile = here("tables", "tableM1.csv")
+
 # Input options
 ######################
 
 if(read_data){
   cat(as.character(Sys.time()), "| Reading input data:", infile, "\n")
-  all_windows = read.csv(infile, header=T)
+  all_windows = read.csv(infile, comment.char="#", header=T)
   all_windows_f = subset(all_windows, repeat.filter=="PASS" & missing.filter=="PASS")
   if(au_flag){
     all_windows_f = subset(all_windows_f, AU.test=="PASS")

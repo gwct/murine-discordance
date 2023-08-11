@@ -24,7 +24,10 @@ source(here("figs", "scripts", "lib", "design.r"))
 save_fig = F
 # Whether or not to save the figure
 
-write_overlaps = T
+write_rates = T
+# Whether or not to write the table of FPRs and FNRs
+
+write_overlaps = F
 # Whether or not to write the overlaps file
 
 tree_file = here("summary-data", "03-Selection-tests", "concat.cf.rooted.tree")
@@ -33,9 +36,6 @@ longest_transcripts_file = here("summary-data", "03-Selection-tests", "mm10.ensG
 
 concat_mg_local_file = here("summary-data", "03-Selection-tests", "mg94-local-st.csv")
 gt_mg_local_file = here("summary-data", "03-Selection-tests", "mg94-local-gt.csv")
-
-#concat_mg_local_file = here("summary-data", "03-Selection-tests", "no-pseudo-it", "hyphy", "penn-7spec-mg94-local-concat.csv")
-#gt_mg_local_file = here("summary-data", "03-Selection-tests", "no-pseudo-it", "hyphy", "penn-7spec-mg94-local-gt.csv")
 
 concat_m1a_file = here("summary-data", "03-Selection-tests", "m1a-st.csv")
 concat_m2a_file = here("summary-data", "03-Selection-tests", "m2a-st.csv")
@@ -369,6 +369,64 @@ if(save_fig){
   ggsave(filename=figfile, fig_6a, width=5, height=4, units="in")
 }
 # Save the figure
+
+######################
+
+if(write_rates){
+  library(scales)
+  
+  num_genes = nrow(gt_busted)
+  
+  busted_counts = busted_comp %>% 
+    mutate(type = as.character(type)) %>%
+    select(count) %>%
+    t
+  busted_counts = as.data.frame(busted_counts)
+
+  names(busted_counts) = c("fn", "tp", "fp")
+  
+  busted_counts$tn = num_genes - busted_counts$fn - busted_counts$tp - busted_counts$fp
+
+  #####
+  
+  absrel_counts = absrel_comp %>% 
+    mutate(type = as.character(type)) %>%
+    select(count) %>%
+    t
+  absrel_counts = as.data.frame(absrel_counts)
+  
+  names(absrel_counts) = c("fn", "tp", "fp")
+  
+  absrel_counts$tn = num_genes - absrel_counts$fn - absrel_counts$tp - absrel_counts$fp
+  
+  #####
+  
+  paml_counts = paml_comp %>% 
+    mutate(type = as.character(type)) %>%
+    select(count) %>%
+    t
+  paml_counts = as.data.frame(paml_counts)
+  
+  names(paml_counts) = c("fn", "tp", "fp")
+  
+  paml_counts$tn = num_genes - paml_counts$fn - paml_counts$tp - paml_counts$fp
+  
+  #####
+  
+  rate_table = data.frame("test"=c("BUSTED", "aBSREL", "M1a vs. M2a"),
+                          "fpr"=c(busted_counts$fp / (busted_counts$fp + busted_counts$tn), 
+                                  absrel_counts$fp / (absrel_counts$fp + absrel_counts$tn),
+                                  paml_counts$fp / (paml_counts$fp + paml_counts$tn)),
+                          "fnr"=c(busted_counts$fn / (busted_counts$fn + busted_counts$tp),
+                                  absrel_counts$fn / (absrel_counts$fn + absrel_counts$tp),
+                                  paml_counts$fn / (paml_counts$fn + paml_counts$tp)))
+  
+  rate_table$fpr = percent(rate_table$fpr)
+  rate_table$fnr = percent(rate_table$fnr)
+  
+  table_out = here("tables", "table3.csv")
+  write.csv(rate_table, table_out, row.names=F)
+}
 
 ######################
 
