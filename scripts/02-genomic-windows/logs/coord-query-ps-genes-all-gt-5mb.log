@@ -1616,3 +1616,439 @@ starting worker pid=419263 on localhost:11792 at 19:48:01.169
 [1] "GENE 56 chr6    132893010    132893940    NA    ENSMUSG00000056926    .    +    132893475"
 [1] "GENE 57 chr6    132909650    132910587    NA    ENSMUSG00000059410    .    +    132910118"
 [1] "GENE 58 chr6    134035699    134270158    NA    ENSMUSG00000030199    .    +    134152928"
+[1] "GENE 59 chr6    137477244    137654876    NA    ENSMUSG00000015766    .    -    137566060"
+[1] "GENE 60 chr6    137983585    138079916    NA    ENSMUSG00000044378    .    -    138031750"
+[1] "GENE 61 chr6    141629517    141686646    NA    ENSMUSG00000030236    .    +    141658082"
+[1] "GENE 62 chr6    146950328    146954422    NA    ENSMUSG00000040163    .    -    146952375"
+[1] "GENE 63 chr6    149309413    149335663    NA    ENSMUSG00000032712    .    +    149322538"
+[1] "GENE 64 chr6    149408885    149563329    NA    ENSMUSG00000003452    .    +    149486107"
+starting worker pid=419376 on localhost:11792 at 19:49:18.290
+starting worker pid=419486 on localhost:11792 at 19:49:18.791
+starting worker pid=419549 on localhost:11792 at 19:49:19.306
+starting worker pid=419612 on localhost:11792 at 19:49:19.798
+starting worker pid=419675 on localhost:11792 at 19:49:20.315
+starting worker pid=419738 on localhost:11792 at 19:49:20.815
+starting worker pid=419801 on localhost:11792 at 19:49:21.322
+starting worker pid=419864 on localhost:11792 at 19:49:21.834
+starting worker pid=419927 on localhost:11792 at 19:49:22.348
+starting worker pid=419990 on localhost:11792 at 19:49:22.875
+starting worker pid=420053 on localhost:11792 at 19:49:23.397
+starting worker pid=420116 on localhost:11792 at 19:49:23.919
+starting worker pid=420179 on localhost:11792 at 19:49:24.431
+starting worker pid=420242 on localhost:11792 at 19:49:24.961
+starting worker pid=420305 on localhost:11792 at 19:49:25.456
+starting worker pid=420368 on localhost:11792 at 19:49:25.989
+starting worker pid=420431 on localhost:11792 at 19:49:26.504
+starting worker pid=420494 on localhost:11792 at 19:49:27.029
+starting worker pid=420557 on localhost:11792 at 19:49:27.570
+starting worker pid=420620 on localhost:11792 at 19:49:28.107
+starting worker pid=420683 on localhost:11792 at 19:49:28.631
+starting worker pid=420747 on localhost:11792 at 19:49:29.168
+starting worker pid=420810 on localhost:11792 at 19:49:29.690
+starting worker pid=420873 on localhost:11792 at 19:49:30.232
+starting worker pid=420936 on localhost:11792 at 19:49:30.750
+starting worker pid=420999 on localhost:11792 at 19:49:31.280
+starting worker pid=421062 on localhost:11792 at 19:49:31.793
+starting worker pid=421125 on localhost:11792 at 19:49:32.319
+starting worker pid=421188 on localhost:11792 at 19:49:32.824
+starting worker pid=421251 on localhost:11792 at 19:49:33.357
+starting worker pid=421314 on localhost:11792 at 19:49:33.880
+starting worker pid=421377 on localhost:11792 at 19:49:34.402
+starting worker pid=421441 on localhost:11792 at 19:49:34.931
+starting worker pid=421505 on localhost:11792 at 19:49:35.426
+starting worker pid=421568 on localhost:11792 at 19:49:35.948
+starting worker pid=421631 on localhost:11792 at 19:49:36.448
+starting worker pid=421694 on localhost:11792 at 19:49:36.974
+starting worker pid=421757 on localhost:11792 at 19:49:37.472
+starting worker pid=421820 on localhost:11792 at 19:49:37.998
+starting worker pid=421883 on localhost:11792 at 19:49:38.496
+starting worker pid=421946 on localhost:11792 at 19:49:39.021
+starting worker pid=422009 on localhost:11792 at 19:49:39.531
+starting worker pid=422072 on localhost:11792 at 19:49:40.044
+starting worker pid=422135 on localhost:11792 at 19:49:40.537
+starting worker pid=422198 on localhost:11792 at 19:49:41.043
+starting worker pid=422261 on localhost:11792 at 19:49:41.543
+[1][1][1] "GENE 3 chr7    4481519    4501680    NA    ENSMUSG00000019254    .    -    4491600"[1][1][1][1][1][1][1][1][1][1][1][1] "GENE 19 chr7    25199914    25220615    NA    ENSMUSG00000054499    .    -    25210264"[1] "GENE 14 chr7    19212537    19224174    NA    ENSMUSG00000044317    .    +    19218356"[1] "GENE 15 chr7    22842687    22843605    NA    ENSMUSG00000095931    .    -    22843146"[1] "GENE 2 chr7    4147914    4150374    NA    ENSMUSG00000043432    .    -    4149144"
+[1][1][1] "GENE 1 chr7    3154657    3169203    NA    ENSMUSG00000054753    .    -    3161930"
+[1] "GENE 23 chr7    25400052    25412886    NA    ENSMUSG00000060188    .    -    25406469"[1][1][1][1][1][1][1][1][1] "GENE 33 chr7    41633202    41651530    NA    ENSMUSG00000074165    .    +    41642366"[1][1][1] "GENE 32 chr7    37318023    37773641    NA    ENSMUSG00000043456    .    -    37545832"[1]
+[1][1][1] "GENE 4 chr7    4522932    4532453    NA    ENSMUSG00000055809    .    -    4527692"
+[1] "GENE 6 chr7    6438687    6442161    NA    ENSMUSG00000090824    .    +    6440424"
+[1][1][1][1] "GENE 8 chr7    7127072    7136755    NA    ENSMUSG00000063535    .    -    7131914"[1][1][1] "GENE 44 chr7    45783737    45804144    NA    ENSMUSG00000062044    .    +    45793940" "GENE 7 chr7    6486943    6499755    NA    ENSMUSG00000034583    .    -    6493349" "GENE 13 chr7    16992707    16997516    NA    ENSMUSG00000041117    .    +    16995112"
+ "GENE 9 chr7    10087197    10105741    NA    ENSMUSG00000058685    .    -    10096469"
+ "GENE 10 chr7    10443330    10449202    NA    ENSMUSG00000046716    .    +    10446266"
+ "GENE 11 chr7    14331435    14333557    NA    ENSMUSG00000099216    .    -    14332496"
+ "GENE 18 chr7    25072566    25083492    NA    ENSMUSG00000045252    .    +    25078029"
+ "GENE 12 chr7    16781339    16798274    NA    ENSMUSG00000001918    .    +    16789806" "GENE 17 chr7    24530688    24538600    NA    ENSMUSG00000041037    .    +    24534644"
+
+
+
+ "GENE 16 chr7    24227571    24237560    NA    ENSMUSG00000074283    .    -    24232566"
+ "GENE 21 chr7    25228257    25237851    NA    ENSMUSG00000057177    .    -    25233054"
+ "GENE 20 chr7    25221424    25227507    NA    ENSMUSG00000046541    .    +    25224466" "GENE 22 chr7    25367619    25369724    NA    ENSMUSG00000063651    .    -    25368672"
+
+ "GENE 24 chr7    25516041    25539857    NA    ENSMUSG00000054385    .    -    25527949"
+ "GENE 26 chr7    27959134    27979171    NA    ENSMUSG00000063047    .    -    27969152"
+ "GENE 29 chr7    34109542    34133268    NA    ENSMUSG00000036459    .    -    34121405"
+ "GENE 27 chr7    28741991    28753871    NA    ENSMUSG00000070699    .    +    28747931"
+ "GENE 31 chr7    35397034    35438689    NA    ENSMUSG00000023072    .    +    35417862" "GENE 28 chr7    30565426    30567962    NA    ENSMUSG00000036826    .    +    30566694"
+ "GENE 30 chr7    34236706    34313551    NA    ENSMUSG00000066571    .    -    34275128" "GENE 34 chr7    42011283    42059023    NA    ENSMUSG00000092032    .    -    42035153"
+[1] "GENE 50 chr7    67730159    67759742    NA    ENSMUSG00000030554    .    -    67744950"
+ "GENE 35 chr7    43437072    43438249    NA    ENSMUSG00000004612    .    +    43437660" "GENE 25 chr7    26535022    26575615    NA    ENSMUSG00000054102    .    +    26555318"
+ "GENE 5 chr7    4628039    4631422    NA    ENSMUSG00000045282    .    -    4629730"
+ "GENE 36 chr7    43440781    43443334    NA    ENSMUSG00000038973    .    +    43442058"
+ "GENE 37 chr7    43562255    43575461    NA    ENSMUSG00000056592    .    +    43568858"
+ "GENE 38 chr7    44429017    44463351    NA    ENSMUSG00000047085    .    +    44446184"
+[1] "GENE 47 chr7    48020970    48027597    NA    ENSMUSG00000070552    .    -    48024284" "GENE 39 chr7    44605802    44670843    NA    ENSMUSG00000030739    .    -    44638322"
+ "GENE 42 chr7    45457943    45459884    NA    ENSMUSG00000050708    .    -    45458914" "GENE 43 chr7    45522915    45526268    NA    ENSMUSG00000040435    .    -    45524592" "GENE 46 chr7    46443153    46639807    NA    ENSMUSG00000030839    .    -    46541480" "GENE 41 chr7    45335289    45338974    NA    ENSMUSG00000038239    .    +    45337132"
+ "GENE 40 chr7    45125921    45136231    NA    ENSMUSG00000089989    .    -    45131076" "GENE 45 chr7    46396496    46438704    NA    ENSMUSG00000058975    .    +    46417600"
+
+
+
+[1]
+
+[1] "GENE 49 chr7    66644564    66689596    NA    ENSMUSG00000030509    .    -    66667080"
+[1] "GENE 51 chr7    75455533    75754609    NA    ENSMUSG00000066406    .    +    75605071"[1] "GENE 52 chr7    76229886    77124698    NA    ENSMUSG00000025754    .    +    76677292"
+
+[1]
+
+
+
+[1]
+
+
+[1] "GENE 55 chr7    81057599    81105612    NA    ENSMUSG00000038763    .    +    81081606" "GENE 48 chr7    62377009    62381640    NA    ENSMUSG00000056972    .    +    62379324"[1]
+
+
+ "GENE 53 chr7    79053482    79115099    NA    ENSMUSG00000030607    .    +    79084290"[1] "GENE 54 chr7    79593362    79617657    NA    ENSMUSG00000030549    .    -    79605510"[1] "GENE 58 chr7    90442728    90447994    NA    ENSMUSG00000051451    .    +    90445361"
+
+
+ "GENE 56 chr7    89980722    90049069    NA    ENSMUSG00000097585    .    +    90014896"
+
+ "GENE 57 chr7    90223872    90265777    NA    ENSMUSG00000030617    .    -    90244824"
+
+[1] "GENE 59 chr7    97081585    97308946    NA    ENSMUSG00000004508    .    +    97195266"[1]
+[1] "GENE 60 chr7    97919954    98049663    NA    ENSMUSG00000035582    .    +    97984808" "GENE 61 chr7    98051059    98119524    NA    ENSMUSG00000030761    .    -    98085292"
+
+[1] "GENE 62 chr7    98440415    98477479    NA    ENSMUSG00000074003    .    +    98458947"
+[1] "GENE 63 chr7    99859115    99917822    NA    ENSMUSG00000035211    .    +    99888468"
+[1] "GENE 64 chr7    103051299    103052259    NA    ENSMUSG00000073960    .    +    103051779"
+[1] "GENE 65 chr7    103249736    103252505    NA    ENSMUSG00000057321    .    -    103251120"
+[1] "GENE 66 chr7    104244456    104262234    NA    ENSMUSG00000056144    .    +    104253345"
+[1] "GENE 67 chr7    104338753    104353362    NA    ENSMUSG00000057143    .    -    104346058"
+[1] "GENE 68 chr7    104934239    104940477    NA    ENSMUSG00000073916    .    +    104937358"
+[1] "GENE 69 chr7    107070980    107077802    NA    ENSMUSG00000049674    .    +    107074391"
+[1] "GENE 70 chr7    108251616    108258347    NA    ENSMUSG00000096465    .    -    108254982"
+[1] "GENE 71 chr7    109712180    109723850    NA    ENSMUSG00000031022    .    -    109718015"
+[1] "GENE 72 chr7    114046781    114117781    NA    ENSMUSG00000055723    .    -    114082281"
+[1] "GENE 73 chr7    114631477    114636357    NA    ENSMUSG00000030669    .    -    114633917"
+[1] "GENE 74 chr7    119760922    119787513    NA    ENSMUSG00000030935    .    +    119774218"
+[1] "GENE 75 chr7    119768678    119794058    NA    ENSMUSG00000030929    .    -    119781368"
+[1] "GENE 76 chr7    122037212    122067263    NA    ENSMUSG00000030871    .    -    122052238"
+[1] "GENE 77 chr7    123123884    123195296    NA    ENSMUSG00000052707    .    +    123159590"
+[1] "GENE 78 chr7    128523615    128546981    NA    ENSMUSG00000030847    .    +    128535298"
+[1] "GENE 79 chr7    132032686    132154739    NA    ENSMUSG00000030862    .    -    132093712"
+[1] "GENE 80 chr7    137193672    137314445    NA    ENSMUSG00000010476    .    -    137254058"
+[1] "GENE 81 chr7    139978931    139992562    NA    ENSMUSG00000025473    .    -    139985746"
+[1] "GENE 82 chr7    140159998    140164764    NA    ENSMUSG00000051180    .    -    140162381"
+[1] "GENE 83 chr7    140399044    140402918    NA    ENSMUSG00000062712    .    -    140400981"
+[1] "GENE 84 chr7    140898944    140900446    NA    ENSMUSG00000025488    .    -    140899695"
+[1] "GENE 85 chr7    141949750    142004247    NA    ENSMUSG00000053046    .    +    141976998"[1]
+ "GENE 86 chr7    143607658    143628722    NA    ENSMUSG00000045362    .    -    143618190"
+[1] "GENE 87 chr7    143634805    143649661    NA    ENSMUSG00000010751    .    -    143642233"
+[1][1] "GENE 89 chr7    144915099    144931701    NA    ENSMUSG00000031072    .    +    144923400"
+ "GENE 88 chr7    144001927    144424494    NA    ENSMUSG00000037541    .    +    144213210"
+starting worker pid=422377 on localhost:11792 at 19:51:03.210
+starting worker pid=422491 on localhost:11792 at 19:51:03.729
+starting worker pid=422554 on localhost:11792 at 19:51:04.255
+starting worker pid=422617 on localhost:11792 at 19:51:04.769
+starting worker pid=422680 on localhost:11792 at 19:51:05.307
+starting worker pid=422743 on localhost:11792 at 19:51:05.824
+starting worker pid=422806 on localhost:11792 at 19:51:06.357
+starting worker pid=422869 on localhost:11792 at 19:51:06.887
+starting worker pid=422932 on localhost:11792 at 19:51:07.390
+starting worker pid=422995 on localhost:11792 at 19:51:07.887
+starting worker pid=423058 on localhost:11792 at 19:51:08.396
+starting worker pid=423121 on localhost:11792 at 19:51:08.886
+starting worker pid=423184 on localhost:11792 at 19:51:09.375
+starting worker pid=423247 on localhost:11792 at 19:51:09.871
+starting worker pid=423310 on localhost:11792 at 19:51:10.370
+starting worker pid=423373 on localhost:11792 at 19:51:10.867
+starting worker pid=423436 on localhost:11792 at 19:51:11.383
+starting worker pid=423499 on localhost:11792 at 19:51:11.873
+starting worker pid=423562 on localhost:11792 at 19:51:12.356
+starting worker pid=423625 on localhost:11792 at 19:51:12.844
+starting worker pid=423688 on localhost:11792 at 19:51:13.344
+starting worker pid=423751 on localhost:11792 at 19:51:13.838
+starting worker pid=423814 on localhost:11792 at 19:51:14.337
+starting worker pid=423877 on localhost:11792 at 19:51:14.835
+starting worker pid=423940 on localhost:11792 at 19:51:15.335
+starting worker pid=424003 on localhost:11792 at 19:51:15.828
+starting worker pid=424066 on localhost:11792 at 19:51:16.321
+starting worker pid=424129 on localhost:11792 at 19:51:16.822
+starting worker pid=424192 on localhost:11792 at 19:51:17.328
+starting worker pid=424255 on localhost:11792 at 19:51:17.828
+starting worker pid=424318 on localhost:11792 at 19:51:18.311
+starting worker pid=424381 on localhost:11792 at 19:51:18.794
+starting worker pid=424444 on localhost:11792 at 19:51:19.288
+starting worker pid=424507 on localhost:11792 at 19:51:19.782
+starting worker pid=424570 on localhost:11792 at 19:51:20.275
+starting worker pid=424633 on localhost:11792 at 19:51:20.762
+starting worker pid=424696 on localhost:11792 at 19:51:21.263
+starting worker pid=424759 on localhost:11792 at 19:51:21.761
+starting worker pid=424824 on localhost:11792 at 19:51:22.261
+starting worker pid=424887 on localhost:11792 at 19:51:22.750
+starting worker pid=424950 on localhost:11792 at 19:51:23.246
+starting worker pid=425013 on localhost:11792 at 19:51:23.733
+starting worker pid=425076 on localhost:11792 at 19:51:24.242
+starting worker pid=425139 on localhost:11792 at 19:51:24.742
+starting worker pid=425202 on localhost:11792 at 19:51:25.222
+starting worker pid=425265 on localhost:11792 at 19:51:25.713
+[1][1][1][1][1][1][1][1][1][1][1][1][1][1] "GENE 10 chr8    36567750    36953143    NA    ENSMUSG00000031523    .    -    36760446"[1][1] "GENE 2 chr8    10984680    11008458    NA    ENSMUSG00000038894    .    -    10996569"[1][1] "GENE 12 chr8    40675076    40682199    NA    ENSMUSG00000046723    .    +    40678638" "GENE 1 chr8    3587292    3609075    NA    ENSMUSG00000044433    .    +    3598184"[1] "GENE 19 chr8    46552027    46580007    NA    ENSMUSG00000031629    .    +    46566017"[1] "GENE 20 chr8    47675390    47685239    NA    ENSMUSG00000074357    .    +    47680314"[1] "GENE 21 chr8    66697191    66706792    NA    ENSMUSG00000036437    .    +    66701992"[1] "GENE 22 chr8    67523853    67548627    NA    ENSMUSG00000056426    .    +    67536240"[1][1] "GENE 25 chr8    70699161    70700080    NA    ENSMUSG00000080058    .    -    70699620"[1] "GENE 26 chr8    70718542    70722634    NA    ENSMUSG00000095026    .    +    70720588"[1] "GENE 28 chr8    71488102    71499583    NA    ENSMUSG00000007610    .    +    71493842"[1] "GENE 24 chr8    70616154    70621483    NA    ENSMUSG00000049988    .    +    70618818"[1] "GENE 5 chr8    14095864    14847680    NA    ENSMUSG00000047495    .    +    14471772"
+[1] "GENE 30 chr8    83165080    83166170    NA    ENSMUSG00000074228    .    -    83165625"[1] "GENE 31 chr8    83571697    83607971    NA    ENSMUSG00000031708    .    -    83589834"[1] "GENE 32 chr8    84042928    84045000    NA    ENSMUSG00000045232    .    -    84043964"[1] "GENE 33 chr8    84148024    84172590    NA    ENSMUSG00000008129    .    +    84160307"[1] "GENE 35 chr8    86808159    86885258    NA    ENSMUSG00000031652    .    -    86846708"[1] "GENE 34 chr8    86745452    86748655    NA    ENSMUSG00000074178    .    +    86747054"[1] "GENE 37 chr8    93056727    93080017    NA    ENSMUSG00000078964    .    -    93068372"[1][1] "GENE 40 chr8    104281346    104310081    NA    ENSMUSG00000031876    .    -    104295714"[1] "GENE 39 chr8    94434355    94527272    NA    ENSMUSG00000074151    .    +    94480814"[1][1][1] "GENE 45 chr8    110882455    110902488    NA    ENSMUSG00000033703    .    -    110892472"[1] "GENE 46 chr8    111154420    111259216    NA    ENSMUSG00000003316    .    -    111206818"[1] "GENE 42 chr8    105258285    105264609    NA    ENSMUSG00000031887    .    -    105261447"[1] "GENE 29 chr8    71951037    71993792    NA    ENSMUSG00000052446    .    +    71972414"
+[1][1] "GENE 6 chr8    18595130    18803189    NA    ENSMUSG00000039842    .    +    18699160"
+ "GENE 7 chr8    25849622    25937939    NA    ENSMUSG00000031576    .    +    25893780" "GENE 9 chr8    33619585    33641967    NA    ENSMUSG00000052906    .    -    33630776"
+ "GENE 8 chr8    27260328    27276674    NA    ENSMUSG00000031490    .    +    27268501"
+ "GENE 14 chr8    40793272    40797303    NA    ENSMUSG00000046282    .    +    40795288"
+ "GENE 11 chr8    39581684    39642673    NA    ENSMUSG00000025044    .    -    39612178"
+ "GENE 13 chr8    40752207    40756176    NA    ENSMUSG00000071937    .    +    40754192"
+ "GENE 15 chr8    40822989    40827037    NA    ENSMUSG00000054033    .    +    40825013"
+ "GENE 18 chr8    45999302    46029477    NA    ENSMUSG00000031637    .    +    46014390" "GENE 3 chr8    11840473    11855761    NA    ENSMUSG00000031512    .    +    11848117"
+ "GENE 16 chr8    40862395    40922308    NA    ENSMUSG00000031596    .    +    40892352"
+
+ "GENE 17 chr8    43568277    43576707    NA    ENSMUSG00000048516    .    -    43572492"
+
+
+
+
+
+ "GENE 23 chr8    67689081    68212027    NA    ENSMUSG00000030465    .    -    67950554"
+
+
+
+
+ "GENE 27 chr8    70762773    70766663    NA    ENSMUSG00000031838    .    -    70764718"
+
+
+
+
+
+
+
+ "GENE 38 chr8    93099014    93131283    NA    ENSMUSG00000057400    .    -    93115148"
+
+
+ "GENE 36 chr8    90906531    90908416    NA    ENSMUSG00000074171    .    -    90907474"
+ "GENE 41 chr8    104947355    104960047    NA    ENSMUSG00000062826    .    +    104953701"
+
+
+[1] "GENE 49 chr8    122883821    123042277    NA    ENSMUSG00000035569    .    -    122963049"
+ "GENE 43 chr8    105518754    105523988    NA    ENSMUSG00000031891    .    +    105521371"
+ "GENE 44 chr8    105973512    105979429    NA    ENSMUSG00000031898    .    -    105976470" "GENE 4 chr8    13566947    13677603    NA    ENSMUSG00000031453    .    -    13622275"
+
+
+
+[1]
+[1]
+[1]
+ "GENE 47 chr8    117701903    117759027    NA    ENSMUSG00000031844    .    +    117730465"
+ "GENE 48 chr8    121729622    121794276    NA    ENSMUSG00000025318    .    +    121761949"
+ "GENE 50 chr8    124369048    124439658    NA    ENSMUSG00000050751    .    -    124404353"
+[1] "GENE 51 chr8    125910449    125947440    NA    ENSMUSG00000031853    .    +    125928944"[1]
+ "GENE 52 chr8    126138994    126395978    NA    ENSMUSG00000057060    .    +    126267486"
+[1] "GENE 53 chr8    129067133    129183732    NA    ENSMUSG00000056018    .    +    129125432"
+starting worker pid=425377 on localhost:11792 at 19:52:34.413
+starting worker pid=425488 on localhost:11792 at 19:52:34.903
+starting worker pid=425551 on localhost:11792 at 19:52:35.415
+starting worker pid=425614 on localhost:11792 at 19:52:35.918
+starting worker pid=425677 on localhost:11792 at 19:52:36.439
+starting worker pid=425740 on localhost:11792 at 19:52:36.937
+starting worker pid=425803 on localhost:11792 at 19:52:37.433
+starting worker pid=425866 on localhost:11792 at 19:52:37.923
+starting worker pid=425929 on localhost:11792 at 19:52:38.412
+starting worker pid=425993 on localhost:11792 at 19:52:38.888
+starting worker pid=426056 on localhost:11792 at 19:52:39.365
+starting worker pid=426119 on localhost:11792 at 19:52:39.842
+starting worker pid=426182 on localhost:11792 at 19:52:40.328
+starting worker pid=426245 on localhost:11792 at 19:52:40.827
+starting worker pid=426308 on localhost:11792 at 19:52:41.338
+starting worker pid=426371 on localhost:11792 at 19:52:41.812
+starting worker pid=426434 on localhost:11792 at 19:52:42.301
+starting worker pid=426497 on localhost:11792 at 19:52:42.768
+starting worker pid=426560 on localhost:11792 at 19:52:43.256
+starting worker pid=426623 on localhost:11792 at 19:52:43.735
+starting worker pid=426687 on localhost:11792 at 19:52:44.225
+starting worker pid=426750 on localhost:11792 at 19:52:44.701
+starting worker pid=426815 on localhost:11792 at 19:52:45.177
+starting worker pid=426878 on localhost:11792 at 19:52:45.644
+starting worker pid=426942 on localhost:11792 at 19:52:46.124
+starting worker pid=427005 on localhost:11792 at 19:52:46.604
+starting worker pid=427068 on localhost:11792 at 19:52:47.081
+starting worker pid=427131 on localhost:11792 at 19:52:47.581
+starting worker pid=427197 on localhost:11792 at 19:52:48.065
+starting worker pid=427260 on localhost:11792 at 19:52:48.561
+starting worker pid=427323 on localhost:11792 at 19:52:49.028
+starting worker pid=427386 on localhost:11792 at 19:52:49.539
+starting worker pid=427449 on localhost:11792 at 19:52:50.024
+starting worker pid=427512 on localhost:11792 at 19:52:50.510
+starting worker pid=427575 on localhost:11792 at 19:52:50.986
+starting worker pid=427638 on localhost:11792 at 19:52:51.488
+starting worker pid=427701 on localhost:11792 at 19:52:51.968
+starting worker pid=427764 on localhost:11792 at 19:52:52.458
+starting worker pid=427827 on localhost:11792 at 19:52:52.935
+starting worker pid=427890 on localhost:11792 at 19:52:53.454
+starting worker pid=427953 on localhost:11792 at 19:52:53.948
+starting worker pid=428016 on localhost:11792 at 19:52:54.459
+starting worker pid=428079 on localhost:11792 at 19:52:54.954
+starting worker pid=428142 on localhost:11792 at 19:52:55.445
+starting worker pid=428205 on localhost:11792 at 19:52:55.932
+starting worker pid=428268 on localhost:11792 at 19:52:56.435
+[1][1][1][1][1][1][1][1][1][1][1][1][1][1][1][1][1] "GENE 18 chr9    39569382    39575569    NA    ENSMUSG00000059366    .    -    39572476"[1] "GENE 1 chr9    3335139    3391154    NA    ENSMUSG00000025899    .    +    3363146"
+[1] "GENE 19 chr9    44673232    44686305    NA    ENSMUSG00000032098    .    +    44679768"[1] "GENE 3 chr9    19622101    19649731    NA    ENSMUSG00000057551    .    +    19635916"
+[1][1] "GENE 23 chr9    50892800    51009073    NA    ENSMUSG00000037112    .    -    50950936"[1][1][1] "GENE 21 chr9    45107175    45135606    NA    ENSMUSG00000074385    .    -    45121390" "GENE 4 chr9    20168532    20174057    NA    ENSMUSG00000066899    .    -    20171294"
+[1] "GENE 26 chr9    61372365    61418497    NA    ENSMUSG00000032280    .    +    61395431"[1] "GENE 27 chr9    63138169    63148961    NA    ENSMUSG00000022245    .    -    63143565"[1] "GENE 28 chr9    64385625    64709205    NA    ENSMUSG00000036466    .    +    64547415"[1] "GENE 30 chr9    65141188    65185872    NA    ENSMUSG00000032394    .    +    65163530"[1] "GENE 33 chr9    73479421    73968966    NA    ENSMUSG00000062151    .    -    73724194"[1] "GENE 32 chr9    70031495    70038088    NA    ENSMUSG00000032226    .    -    70034792"[1][1][1] "GENE 29 chr9    64922860    64951607    NA    ENSMUSG00000034452    .    -    64937234" "GENE 8 chr9    22332011    22389188    NA    ENSMUSG00000036777    .    -    22360600"
+[1] "GENE 35 chr9    80066902    80144953    NA    ENSMUSG00000034252    .    +    80105928"[1] "GENE 37 chr9    88580890    88588819    NA    ENSMUSG00000090693    .    +    88584854"[1] "GENE 36 chr9    83548326    83638801    NA    ENSMUSG00000032261    .    +    83593564"[1] "GENE 38 chr9    98856493    98857374    NA    ENSMUSG00000063058    .    +    98856934"[1] "GENE 39 chr9    102716671    102733418    NA    ENSMUSG00000032531    .    +    102725044"[1][1][1] "GENE 9 chr9    24557046    24696293    NA    ENSMUSG00000085576    .    -    24626670"[1] "GENE 43 chr9    106194946    106199746    NA    ENSMUSG00000020253    .    -    106197346"[1][1][1] "GENE 7 chr9    22247429    22259895    NA    ENSMUSG00000062794    .    -    22253662"
+ "GENE 10 chr9    26733727    26763101    NA    ENSMUSG00000045994    .    +    26748414" "GENE 2 chr9    8899832    8968611    NA    ENSMUSG00000031870    .    +    8934222"
+ "GENE 5 chr9    21062392    21067093    NA    ENSMUSG00000079681    .    -    21064742" "GENE 6 chr9    21229729    21239361    NA    ENSMUSG00000003308    .    -    21234545"
+ "GENE 13 chr9    31846043    31913462    NA    ENSMUSG00000032033    .    -    31879752"
+ "GENE 11 chr9    27097383    27155421    NA    ENSMUSG00000031990    .    -    27126402"
+ "GENE 12 chr9    30427107    30466733    NA    ENSMUSG00000031993    .    +    30446920"
+ "GENE 15 chr9    37275834    37348432    NA    ENSMUSG00000034303    .    -    37312133"
+ "GENE 16 chr9    37555697    37649655    NA    ENSMUSG00000001942    .    +    37602676"
+ "GENE 14 chr9    35645112    35648202    NA    ENSMUSG00000094995    .    -    35646657"
+
+ "GENE 17 chr9    39058850    39064951    NA    ENSMUSG00000094182    .    -    39061900"
+
+ "GENE 20 chr9    44998739    45009627    NA    ENSMUSG00000032093    .    -    45004183" "GENE 22 chr9    50762827    50775520    NA    ENSMUSG00000037971    .    -    50769174"
+ "GENE 24 chr9    58218075    58249786    NA    ENSMUSG00000036986    .    -    58233930" "GENE 25 chr9    60794541    60880370    NA    ENSMUSG00000034485    .    +    60837456"
+
+
+
+[1] "GENE 47 chr9    110798165    110803754    NA    ENSMUSG00000044664    .    +    110800960"
+
+
+[1] "GENE 31 chr9    67758711    67760230    NA    ENSMUSG00000055125    .    -    67759470"
+ "GENE 34 chr9    78311971    78314796    NA    ENSMUSG00000066463    .    -    78313384"
+
+
+
+
+
+ "GENE 40 chr9    104063376    104127725    NA    ENSMUSG00000090150    .    +    104095550"
+ "GENE 41 chr9    105162155    105395524    NA    ENSMUSG00000035032    .    -    105278840" "GENE 42 chr9    105989453    106096783    NA    ENSMUSG00000032572    .    -    106043118"
+
+
+ "GENE 46 chr9    109432315    109449140    NA    ENSMUSG00000074062    .    -    109440728" "GENE 44 chr9    108302957    108306160    NA    ENSMUSG00000039461    .    -    108304558" "GENE 45 chr9    108572310    108578739    NA    ENSMUSG00000066357    .    -    108575524"
+
+
+
+
+
+
+[1]
+ "GENE 48 chr9    110984934    110990583    NA    ENSMUSG00000066319    .    -    110987758"[1][1]
+
+[1]
+
+[1] "GENE 49 chr9    118506266    118582519    NA    ENSMUSG00000038708    .    +    118544392"
+ "GENE 50 chr9    119971162    119984658    NA    ENSMUSG00000032515    .    -    119977910" "GENE 51 chr9    120013754    120023598    NA    ENSMUSG00000079243    .    -    120018676" "GENE 52 chr9    121680044    121705490    NA    ENSMUSG00000061536    .    -    121692767"
+ "GENE 53 chr9    122844528    122866006    NA    ENSMUSG00000047036    .    -    122855267"
+
+
+
+[1] "GENE 54 chr9    123034725    123067561    NA    ENSMUSG00000025787    .    +    123051143"
+[1] "GENE 55 chr9    123170823    123216038    NA    ENSMUSG00000035498    .    -    123193430"
+[1] "GENE 56 chr9    123478705    123521552    NA    ENSMUSG00000025239    .    +    123500128"
+[1] "GENE 57 chr9    124101949    124113557    NA    ENSMUSG00000049103    .    +    124107753"
+starting worker pid=428380 on localhost:11792 at 19:53:56.674
+starting worker pid=428492 on localhost:11792 at 19:53:57.163
+starting worker pid=428555 on localhost:11792 at 19:53:57.652
+starting worker pid=428618 on localhost:11792 at 19:53:58.135
+starting worker pid=428681 on localhost:11792 at 19:53:58.635
+starting worker pid=428744 on localhost:11792 at 19:53:59.101
+starting worker pid=428807 on localhost:11792 at 19:53:59.579
+starting worker pid=428870 on localhost:11792 at 19:54:00.050
+starting worker pid=428933 on localhost:11792 at 19:54:00.533
+starting worker pid=428996 on localhost:11792 at 19:54:01.008
+starting worker pid=429059 on localhost:11792 at 19:54:01.500
+starting worker pid=429122 on localhost:11792 at 19:54:01.989
+starting worker pid=429186 on localhost:11792 at 19:54:02.475
+starting worker pid=429249 on localhost:11792 at 19:54:02.954
+starting worker pid=429312 on localhost:11792 at 19:54:03.447
+starting worker pid=429375 on localhost:11792 at 19:54:03.916
+starting worker pid=429438 on localhost:11792 at 19:54:04.408
+starting worker pid=429501 on localhost:11792 at 19:54:04.880
+starting worker pid=429564 on localhost:11792 at 19:54:05.363
+starting worker pid=429627 on localhost:11792 at 19:54:05.834
+starting worker pid=429690 on localhost:11792 at 19:54:06.313
+starting worker pid=429753 on localhost:11792 at 19:54:06.771
+starting worker pid=429816 on localhost:11792 at 19:54:07.258
+starting worker pid=429879 on localhost:11792 at 19:54:07.722
+starting worker pid=429942 on localhost:11792 at 19:54:08.201
+starting worker pid=430005 on localhost:11792 at 19:54:08.690
+starting worker pid=430068 on localhost:11792 at 19:54:09.165
+starting worker pid=430131 on localhost:11792 at 19:54:09.658
+starting worker pid=430194 on localhost:11792 at 19:54:10.126
+starting worker pid=430257 on localhost:11792 at 19:54:10.630
+starting worker pid=430320 on localhost:11792 at 19:54:11.110
+starting worker pid=430383 on localhost:11792 at 19:54:11.601
+starting worker pid=430446 on localhost:11792 at 19:54:12.070
+starting worker pid=430509 on localhost:11792 at 19:54:12.574
+starting worker pid=430572 on localhost:11792 at 19:54:13.039
+starting worker pid=430635 on localhost:11792 at 19:54:13.535
+starting worker pid=430698 on localhost:11792 at 19:54:14.023
+starting worker pid=430761 on localhost:11792 at 19:54:14.523
+starting worker pid=430824 on localhost:11792 at 19:54:14.990
+starting worker pid=430887 on localhost:11792 at 19:54:15.480
+starting worker pid=430950 on localhost:11792 at 19:54:15.965
+starting worker pid=431013 on localhost:11792 at 19:54:16.471
+starting worker pid=431076 on localhost:11792 at 19:54:16.971
+starting worker pid=431139 on localhost:11792 at 19:54:17.483
+starting worker pid=431202 on localhost:11792 at 19:54:17.985
+starting worker pid=431265 on localhost:11792 at 19:54:18.484
+[1] "GENE 1 chrX    6047452    6055110    NA    ENSMUSG00000073295    .    +    6051281"[1][1][1][1][1][1][1][1][1][1][1] "GENE 13 chrX    71663666    71669257    NA    ENSMUSG00000056380    .    +    71666462"[1] "GENE 8 chrX    53774047    53776394    NA    ENSMUSG00000059334    .    -    53775220"[1] "GENE 15 chrX    73137231    73149450    NA    ENSMUSG00000071745    .    -    73143340"[1] "GENE 17 chrX    77837900    77853623    NA    ENSMUSG00000000003    .    -    77845762"[1][1] "GENE 10 chrX    58909359    58920304    NA    ENSMUSG00000046180    .    +    58914832"[1] "GENE 19 chrX    92015190    92016333    NA    ENSMUSG00000062162    .    -    92015762"[1][1][1][1][1] "GENE 23 chrX    100838647    101059667    NA    ENSMUSG00000009670    .    -    100949157"[1]
+[1] "GENE 25 chrX    101794655    101798642    NA    ENSMUSG00000046774    .    +    101796648"[1] "GENE 27 chrX    106574345    106603679    NA    ENSMUSG00000052821    .    -    106589012"[1] "GENE 28 chrX    106837081    106840644    NA    ENSMUSG00000047686    .    -    106838862"[1] "GENE 29 chrX    107945734    107948465    NA    ENSMUSG00000073006    .    -    107947100"[1][1][1] "GENE 31 chrX    111110417    111125854    NA    ENSMUSG00000073001    .    +    111118136"[1] "GENE 33 chrX    113040592    113185517    NA    ENSMUSG00000025531    .    -    113113054"[1] "GENE 32 chrX    112384302    112406779    NA    ENSMUSG00000025527    .    -    112395540"[1][1] "GENE 35 chrX    134460117    134476490    NA    ENSMUSG00000009596    .    -    134468304"[1] "GENE 36 chrX    134717962    134721917    NA    ENSMUSG00000033460    .    +    134719940"[1] "GENE 37 chrX    136448106    136544056    NA    ENSMUSG00000057439    .    -    136496081"[1] "GENE 2 chrX    7067518    7078609    NA    ENSMUSG00000050089    .    +    7073064"
+[1][1] "GENE 40 chrX    141475384    141689234    NA    ENSMUSG00000031274    .    +    141582309"[1] "GENE 46 chrX    167304928    167330558    NA    ENSMUSG00000044583    .    -    167317743"[1] "GENE 42 chrX    154482001    154484682    NA    ENSMUSG00000025051    .    +    154483342"[1] "GENE 45 chrX    166523006    166585720    NA    ENSMUSG00000000402    .    -    166554363"[1] "GENE 41 chrX    152016427    152062694    NA    ENSMUSG00000041133    .    +    152039560"[1] "GENE 43 chrX    154948542    154949505    NA    ENSMUSG00000094196    .    -    154949024"[1] "GENE 44 chrX    159210306    159368244    NA    ENSMUSG00000031309    .    +    159289275" "GENE 4 chrX    36112109    36171259    NA    ENSMUSG00000017057    .    +    36141684" "GENE 5 chrX    36423600    36491830    NA    ENSMUSG00000091556    .    -    36457715"
+ "GENE 3 chrX    12654878    12673668    NA    ENSMUSG00000044148    .    -    12664273" "GENE 6 chrX    38401356    38456454    NA    ENSMUSG00000016534    .    -    38428905" "GENE 7 chrX    46329006    46330345    NA    ENSMUSG00000046615    .    +    46329676"
+ "GENE 9 chrX    56870162    57001558    NA    ENSMUSG00000053852    .    +    56935860" "GENE 11 chrX    60436051    60539249    NA    ENSMUSG00000079583    .    -    60487650"
+ "GENE 12 chrX    65047643    65049014    NA    ENSMUSG00000031181    .    +    65048328"
+ "GENE 14 chrX    72381869    72386858    NA    ENSMUSG00000043453    .    -    72384364"
+
+
+
+
+ "GENE 16 chrX    74127463    74150760    NA    ENSMUSG00000031394    .    +    74139112"
+
+ "GENE 18 chrX    89403847    89409689    NA    ENSMUSG00000035395    .    -    89406768" "GENE 20 chrX    92118878    92599572    NA    ENSMUSG00000067649    .    -    92359225" "GENE 21 chrX    94234598    94277724    NA    ENSMUSG00000043929    .    +    94256161" "GENE 22 chrX    96455358    96574485    NA    ENSMUSG00000031209    .    +    96514922"
+ "GENE 24 chrX    101376377    101385629    NA    ENSMUSG00000047797    .    +    101381003"
+
+
+
+ "GENE 30 chrX    109004533    109013404    NA    ENSMUSG00000031245    .    -    109008968" "GENE 26 chrX    105120377    105123927    NA    ENSMUSG00000031227    .    +    105122152"
+
+
+ "GENE 34 chrX    117014756    117015104    NA    ENSMUSG00000067441    .    +    117014930"
+
+
+ "GENE 38 chrX    136858146    136868755    NA    ENSMUSG00000043463    .    -    136863450"
+ "GENE 39 chrX    139333682    139338169    NA    ENSMUSG00000051257    .    +    139335926"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[1] "GENE 47 chrX    167471308    168577231    NA    ENSMUSG00000049176    .    -    168024270"
+
+
+
+
