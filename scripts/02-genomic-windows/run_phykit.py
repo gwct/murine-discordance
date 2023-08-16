@@ -31,6 +31,8 @@ def runPhykit(file_list, cur_chrome, in_dir):
     num_alns = len(file_list);
     num_alns_str = str(num_alns);
 
+    alndir = os.path.join(in_dir, cur_chrome, "10kb-0.5-0.5");
+
     for f in file_list:
         if aln_counter == 1 or aln_counter % 100 == 0:
             core.PWS("# " + core.getDateTime() + " | " + cur_chrome + " -> " + str(aln_counter) + " / " + num_alns_str);
@@ -40,15 +42,14 @@ def runPhykit(file_list, cur_chrome, in_dir):
         window = window.split("-");
         window = window[0] + ":" + window[1] + "-" + window[2];
 
-        #infile = os.path.join(indir, cur_chrome + "-trimal", f);
+        infile = os.path.join(alndir, f);
 
-        #print(infile);
-        vs_cmd = "phykit vs " + f;
+        vs_cmd = "phykit vs " + infile;
         stats = runCMD(vs_cmd);
         stats = stats.strip().split("\t");
         outline = [window, stats[1], stats[0], stats[2]];
 
-        pis_cmd = "phykit pis " + f;
+        pis_cmd = "phykit pis " + infile;
         stats = runCMD(pis_cmd);
         stats = stats.strip().split("\t");
 
@@ -63,8 +64,6 @@ def runPhykit(file_list, cur_chrome, in_dir):
 indir = "../../data/02-genomic-windows/aln/02-trimal/";
 outfilename = "../../summary-data/02-genomic-windows/phykit-out.csv";
 
-#10kb-0.5-0.5
-
 core.PWS("# " + core.getDateTime() + " | Reading file names: " + indir);
 file_dict = {};
 for d in os.listdir(indir):
@@ -74,7 +73,8 @@ for d in os.listdir(indir):
     alndir = os.path.join(indir, d, "10kb-0.5-0.5");
     #chrome = d.replace("-trimal", "");
 
-    file_dict[d] = [ os.path.join(alndir, aln) for aln in os.listdir(alndir) if aln.endswith("-mafft-trimal.fa") ];
+    #file_dict[d] = [ os.path.join(alndir, aln) for aln in os.listdir(alndir) if aln.endswith("-mafft-trimal.fa") ];
+    file_dict[d] = [ aln for aln in os.listdir(alndir) if aln.endswith("-mafft-trimal.fa") ];
 
 core.PWS("# " + core.getDateTime() + " | Starting counts");
 outlines_main = [];

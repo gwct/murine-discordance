@@ -270,7 +270,7 @@ skip_one = FALSE
 nrand_win = 12000
 # The number of random windows to sample
 
-nreps = 10
+nreps = 100
 # The number of replicates
 
 test_run = FALSE
@@ -365,7 +365,7 @@ if(file.exists(random_file)){
 ## The random sampling
 
 #all_windows = subset(all_windows, chr!="chrX")
-all_windows = subset(all_windows, chr=="chrX")
+all_windows = subset(all_windows, chr=="chr2")
 # Remove the X because it's weird
 
 if(test_run){
