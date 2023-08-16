@@ -330,6 +330,8 @@ ps_lab = "PS gene windows"
 uce_lab = "UCE windows"
 # Feature column labels
 
+features$label = factor(features$label, levels=c(non_lab, hs_lab, non_ps_lab, ps_lab, uce_lab))
+
 if(do_calcs){
   cat(as.character(Sys.time()), " | Adding labels to full data\n")
   non_features$label = non_lab
@@ -340,7 +342,7 @@ if(do_calcs){
   # Add labels
   
   features = rbind(non_features, hs, non_ps_genes, ps_genes, uces)
-  features$label = factor(features$label, levels=c(non_lab, hs_lab, non_ps_lab, ps_lab, uce_lab))
+  #features$label = factor(features$label, levels=c(non_lab, hs_lab, non_ps_lab, ps_lab, uce_lab))
   write.csv(features, file=pre_calc_file, row.names=F)
   # Combine feature dfs
 }
