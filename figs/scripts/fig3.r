@@ -9,11 +9,8 @@ setwd(this.dir)
 
 library(tidyverse)
 library(cowplot)
-#library(ggbeeswarm)
 library(RColorBrewer)
 library(here)
-#library(readr)
-#library(archive)
 source(here("figs", "scripts", "lib", "design.r"))
 
 ############################################################
@@ -30,7 +27,7 @@ marker_window_size = 5
 au_flag = FALSE
 # Set to filter out windows that don't pass the AU test
 
-read_data = F
+read_data = T
 # Whether or not to re-read the input data
 
 skip_one = F
@@ -101,7 +98,7 @@ for(chrome in levels(all_windows$chr)){
   if(skip_x && chrome == "chrX"){
     next
   }
-  
+
   if(nchar(chrome) == 4 && chrome != "chrX"){
     out_chrome = gsub("chr", "chr0", chrome)
   }else{
@@ -150,7 +147,7 @@ for(chrome in levels(all_windows$chr)){
   cat(as.character(Sys.time()), " | Chromosome ", out_chrome, " - calculating decay rates (slopes)\n", sep="")
   cur_nonsig_adjs = c()
   for(k in 1:num_reps){
-    if(chrome == "chr2" && k > 10){
+    if(chrome %in% c("chr2", "chrX") && k > 10){
       cur_nonsig_adjs = c(cur_nonsig_adjs, NA)
       replicate_data = rbind(replicate_data, data.frame("chrome"=chrome, "replicate"=k, "nonsig.adj"=NA))
     }else{
@@ -236,8 +233,8 @@ print(all_chrome_log_p)
 
 cat(as.character(Sys.time()), " | Fig3: Generating figure panel C\n")
 
-#avg_nonsig_chr = signif(mean(summary_data$avg.nonsig.adj), 2)
-#med_nonsig_chr = signif(median(summary_data$avg.nonsig.adj), 2)
+avg_nonsig_chr = signif(mean(summary_data$avg.nonsig.adj), 2)
+med_nonsig_chr = signif(median(summary_data$avg.nonsig.adj), 2)
 summary_data_no_out = summary_data %>% 
   filter(!chrome %in% c("chr7", "chr9", "chr11"))
 avg_nonsig_chr_no_out = signif(mean(summary_data_no_out$avg.nonsig.adj), 2)
@@ -289,9 +286,6 @@ dec_p = ggplot(summary_data, aes(x=chrome, y=avg.decay.rate)) +
 k = 1
 for(chrome in levels(summary_data$chrome)){
   print(chrome)
-  if(chrome == "chr02"){
-    next
-  }
   dec_p = dec_p + geom_segment(x=k, y=-0.0001, xend=k, yend=summary_data$avg.decay.rate[summary_data$chrome==chrome], color="#666666", linetype="dotted")
   k = k + 1
 }

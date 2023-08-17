@@ -4,14 +4,14 @@
 # Gregg Thomas
 ############################################################
 
-library(ggplot2)
-library(cowplot)
-library(ggbeeswarm)
-library(dplyr)
-library(RColorBrewer)
-
 this.dir <- dirname(parent.frame(2)$ofile)
 setwd(this.dir)
+
+library(tidyverse)
+library(cowplot)
+library(RColorBrewer)
+library(here)
+source(here("figs", "scripts", "lib", "design.r"))
 
 ############################################################
 
@@ -21,45 +21,40 @@ window_size_kb = 10
 window_size = window_size_kb * 1000
 # Window size in bp
 
-marker_window_size = 1
+marker_window_size = 5
 # Marker window size in Mb
 
 au_flag = FALSE
 # Set to filter out windows that don't pass the AU test
 
-read_data = T
+read_data = F
 # Whether or not to re-read the input data
 
-skip_one = F
-# Set to only do one test chromosome
-
-skip_x = T
-# Skip the X chromosome
-
-save_fig = F
+save_fig = T
 # Whether or not to save the figure
 
-num_reps = 5
+num_reps = 10
 # The number of replicates for random tree dists from dists.r
 
-datadir = "C:/Users/Gregg/Box Sync/rodents/penn/paper/data/"
+infile = here("summary-data", "02-genomic-windows", paste0(window_size_kb, "kb-0.5-0.5-", marker_window_size, "mb-topo-counts.csv"))
 
-infile = paste(datadir, window_size_kb, "kb-0.5-0.5-", marker_window_size, "mb-topo-counts-tt.csv", sep="")
-#script_dir = paste(datadir, "nonrandom-treedists/", sep="")
-script_dir = "D:/data/rodent-genomes/dists/"
+chrome_info_file = here("summary-data", "02-genomic-windows", "recombination-markers", "chrome-stats.csv")
+
+dist_dir = "D:/data/rodent-genomes/dists/"
+
 # Input options
 ######################
 
 if(read_data){
   #window_file = paste(datadir, window_size_kb, "kb-", marker_window_size, "mb-dists.csv", sep="")
   cat(as.character(Sys.time()), " | Reading window data: ", infile, "\n")
-  all_windows = read.csv(infile, header=T)
+  all_windows = read_csv(infile, comment="#")
   
   chrome_info_file = paste(datadir, "recombination-markers/chrome-stats.csv", sep="")
   cat(as.character(Sys.time()), " | Reading chrome data: ", chrome_info_file, "\n")
-  chrome_info = read.csv(chrome_info_file, comment.char="#", header=T)
+  chrome_info = read_csv(chrome_info_file, comment="#")
   
-  random_file = paste(script_dir,"random-dists", sep="")
+  random_file = paste0(dist_dir, "random-dists")
   if(au_flag){
     random_file = paste(random_file, "-au", sep="")
   }
@@ -94,6 +89,8 @@ for(chrome in levels(all_windows$chr)){
   
   out_chrome = chrome
   # The string for the current chromosome.
+
+  ##########
   
   cat(as.character(Sys.time()), " | Chromosome ", out_chrome, " - subsetting and filtering...\n", sep="")
   chrdata = subset(all_windows, chr==chrome)
@@ -104,48 +101,67 @@ for(chrome in levels(all_windows$chr)){
   }
   used_windows = length(chrdata_f[,1])
   chr_len = chrdata$chr.len[1]
-  # Subset data for this chromosome
+  # Subset window data for this chromosome
   
-  chr_infile = paste(script_dir, out_chrome, sep="")
-  chr_statsfile = paste(script_dir, out_chrome, "-stats", sep="")
+  ##########
+  
+  chr_infile = paste0(dist_dir, out_chrome)
+  chr_statsfile = paste0(dist_dir, out_chrome, "-stats")
   #figfile = paste(script_dir, out_chrome, sep="")
   if(au_flag){
-    chr_infile = paste(chr_infile, "-au-filter", sep="")
-    chr_statsfile = paste(chr_statsfile, "-au-filter", sep="")
+    chr_infile = paste0(chr_infile, "-au-filter")
+    chr_statsfile = paste0(chr_statsfile, "-au-filter")
     #figfile = paste(figfile, "-au-filter", sep="")
   }
-  chr_infile = paste(chr_infile, ".csv", sep="")
-  chr_statsfile = paste(chr_statsfile, ".csv", sep="")
+  chr_infile = paste0(chr_infile, ".csv")
+  chr_statsfile = paste0(chr_statsfile, ".csv")
   #figfile = paste(figfile, ".png", sep="")
   
+  
   cat(as.character(Sys.time()), " | Chromosome ", out_chrome, " - reading dist data:       ", chr_infile, "\n", sep="")
-  dist_data = read.csv(chr_infile, header=T)
+  dist_data = read_csv(chr_infile)
   dist_data = subset(dist_data, measure=="wrf")
   
   cat(as.character(Sys.time()), " | Chromosome ", out_chrome, " - reading stats data:      ", chr_statsfile, "\n", sep="")
-  stats_data = read.csv(chr_statsfile, header=T)
+  stats_data = read_csv(chr_statsfile)
   # Set up input file names (output files from gen_data) and read data.
+  
+  ##########
   
   cat(as.character(Sys.time()), " | Chromosome ", out_chrome, " - calculating decay rates (slopes)\n", sep="")
   cur_nonsig_adjs = c()
   for(k in 1:num_reps){
-    cur_dists = dist_data[dist_data$replicate==k,]
+    cur_dists = dist_data %>% 
+      filter(replicate == k) %>% 
+      mutate(nonsig.adj = nonsig.adj * window_size / 1000000)
+    # Select the data from the current replicate and convert from 10kb windows to Mb
+    
     cur_nonsig_adjs = c(cur_nonsig_adjs, cur_dists$nonsig.adj)
-    cur_dists$nonsig.adj = cur_dists$nonsig.adj * window_size / 1000000
+    # Add the non-sig adjacency to the current list
+    
     replicate_data = rbind(replicate_data, data.frame("chrome"=chrome, "replicate"=k, 
                                                       "nonsig.adj"=cur_dists$nonsig.adj))
-    
+    # Save the replicate date for the boxplot (panel C)
   }
+  # Loop over each replicate to get the non-sig adjacency
   
-  avg_nonsig_adj = mean(cur_nonsig_adjs)
-  med_nonsig_adj = median(cur_nonsig_adjs)
-  cur_stats = subset(stats_data, adj <= avg_nonsig_adj)
+  #####
   
-  cur_stats$adj = cur_stats$adj * window_size / 1000000
+  avg_nonsig_adj = mean(cur_nonsig_adjs, na.rm=T)
+  med_nonsig_adj = median(cur_nonsig_adjs, na.rm=T)
+  # Calculate stats for the current set of non-sig adjacencies for the summary
+  
+  cur_stats = stats_data %>%
+    mutate(adj = adj * window_size / 1000000) %>% 
+    filter(adj <= avg_nonsig_adj)
+  # Select the full data for the adjacencies less than the non-sig adjacency
+  
   cur_fit = lm(cur_stats$mean.wrf ~ cur_stats$adj)
   cur_ln_fit = lm(cur_stats$mean.wrf ~ log10(cur_stats$adj))
-  #lines(cur_data$adj,predict(cur_ln_fit),col='red')
   cur_slope = cur_fit$coefficients[2]
+  # Fit the models
+  
+  #####
   
   cur_color = my_colors[chrome]
   
@@ -154,36 +170,20 @@ for(chrome in levels(all_windows$chr)){
   
   all_chrome_log_p = all_chrome_log_p +
     geom_smooth(data=cur_stats, aes(x=log10(adj), y=median.wrf), method="lm", formula=y~x, se=F, color=cur_color)
+  # Add the models to the plots for panels A and B
+  
+  #####
   
   summary_data = rbind(summary_data, data.frame("chrome"=chrome, "len"=chr_len, 
                                                 "map.len"=chrome_info$max.map.site[chrome_info$chr==chrome], 
-                                                "num.topos"=max(chrdata_f$topo.num.chrom), 
+                                                "num.topos"=max(chrdata_f$topo.num.chrome), 
                                                 "avg.nonsig.adj"=avg_nonsig_adj, "med.nonsig.adj"=med_nonsig_adj,
                                                 "avg.decay.rate"=cur_slope))
+  # The summary data table (used for panel D)
   
-  # cur_slopes$dummy = paste(chrome, sep="")
-  # dist_data$dummy = paste(chrome, sep="")
-  # # Dummy data for boxplot axis
-  # 
-  # dist_data$nonsig.adj = dist_data$nonsig.adj * window_size / 1000000
-  #out_data$rand.adj = out_data$rand.adj / 10
-  # Convert to Mb
-  
-  # stats_data$adj = stats_data$adj * window_size / 1000000
-  # stats_data = subset(stats_data, adj <= dist_data$nonsig.adj)
-  # 
-  # all_chrome_p = all_chrome_p +
-  #   geom_smooth(data=stats_data, aes(x=adj, y=median.wrf), method="lm", formula=y~log10(x), se=F, color=my_colors[i])
-  # 
-  # all_chrome_log_p = all_chrome_log_p +
-  #   geom_smooth(data=stats_data, aes(x=log10(adj), y=median.wrf), method="lm", formula=y~x, se=F, color=my_colors[i])
-  # 
-  # summary_data = rbind(summary_data, data.frame("chrome"=chrome, "len"=chr_len, "map.len"=chrome_info$max.map.site[chrome_info$chr==chrome], "num.topos"=max(chrdata_f$topo.num.chrom), "avg.nonsig.adj"=mean(dist_data$nonsig.adj), "avg.decay.rate"=mean(cur_slopes$slopes)))
+  ##########
   
   i = i + 1
-  if(skip_one){
-    stop("skip one ok")
-  }
 }
 ## Chrome loop
 
@@ -285,7 +285,7 @@ fig3 = plot_grid(fig_3ab, avg_p, dec_p, ncol=3, labels=c("", "C", "D"), label_si
 ######################
 
 if(save_fig){
-  fig3file = "../figs/supp/figSX-xchrome.png"
-  cat(as.character(Sys.time()), " | Fig3: Saving figure:", fig3file, "\n")
-  ggsave(filename=fig3file, fig3, width=12, height=7.5, units="in")
+  figfile = here("figs", "supp", "figS7-chrome.png")
+  cat(as.character(Sys.time()), " | Fig3: Saving figure:", figfile, "\n")
+  ggsave(filename=figfile, fig3, width=12, height=7.5, units="in")
 }

@@ -5,11 +5,16 @@
 # Gregg Thomas
 ############################################################
 
+this.dir <- dirname(parent.frame(2)$ofile)
+setwd(this.dir)
+
 library(tidyverse)
 library(cowplot)
 library(ggbeeswarm)
 library(RColorBrewer)
 library(GenomicRanges)
+library(here)
+source(here("figs", "scripts", "lib", "design.r"))
 
 ############################################################
 
