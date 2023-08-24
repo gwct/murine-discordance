@@ -27,13 +27,13 @@ marker_window_size = 5
 au_flag = FALSE
 # Set to filter out windows that don't pass the AU test
 
-read_data = F
+read_data = T
 # Whether or not to re-read the input data
 
 save_fig = T
 # Whether or not to save the figure
 
-num_reps = 10
+num_reps = 100
 # The number of replicates for random tree dists from dists.r
 
 infile = here("summary-data", "02-genomic-windows", paste0(window_size_kb, "kb-0.5-0.5-", marker_window_size, "mb-topo-counts.csv"))
@@ -49,19 +49,21 @@ if(read_data){
   #window_file = paste(datadir, window_size_kb, "kb-", marker_window_size, "mb-dists.csv", sep="")
   cat(as.character(Sys.time()), " | Reading window data: ", infile, "\n")
   all_windows = read_csv(infile, comment="#")
+  names(all_windows) = make.names(names(all_windows))
   
-  chrome_info_file = paste(datadir, "recombination-markers/chrome-stats.csv", sep="")
   cat(as.character(Sys.time()), " | Reading chrome data: ", chrome_info_file, "\n")
   chrome_info = read_csv(chrome_info_file, comment="#")
+  names(chrome_info) = make.names(names(chrome_info))
   
   random_file = paste0(dist_dir, "random-dists")
   if(au_flag){
-    random_file = paste(random_file, "-au", sep="")
+    random_file = paste0(random_file, "-au")
   }
-  random_file = paste(random_file, ".csv", sep="")
+  random_file = paste0(random_file, ".csv")
   
   cat(as.character(Sys.time()), " | Reading random tree dists: ", random_file, "\n")
-  random_data = read.csv(random_file, header=T)
+  random_data = read_csv(random_file)
+  #random_data = read.csv(archive_read(dist_archive, file=random_file))
 }
 # Read input data
 ######################
@@ -285,7 +287,7 @@ fig3 = plot_grid(fig_3ab, avg_p, dec_p, ncol=3, labels=c("", "C", "D"), label_si
 ######################
 
 if(save_fig){
-  figfile = here("figs", "supp", "figS7-chrome.png")
+  figfile = here("figs", "supp", "figS5.png")
   cat(as.character(Sys.time()), " | Fig3: Saving figure:", figfile, "\n")
   ggsave(filename=figfile, fig3, width=12, height=7.5, units="in")
 }

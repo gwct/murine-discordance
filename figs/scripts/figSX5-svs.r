@@ -78,11 +78,11 @@ marker_file = here("summary-data", "02-genomic-windows", paste0(window_size, "kb
 # Input options
 ######################
 
-if(source_pafr){
-  setwd("C:/bin/pafr/R/")
-  files.sources = list.files()
-  sapply(files.sources, source)
-}
+# if(source_pafr){
+#   setwd("C:/bin/pafr/R/")
+#   files.sources = list.files()
+#   sapply(files.sources, source)
+# }
 
 this.dir <- dirname(parent.frame(2)$ofile)
 setwd(this.dir)
@@ -472,7 +472,7 @@ plot_list[["inf"]] = wrf_inf_p
 ####################
 
 if(save_fig){
-  figfile = here("figs", "supp", "figS11.png")
+  figfile = here("figs", "supp", "figS9.png")
   cat(as.character(Sys.time()), " | FigS-svs: Saving figure:", figfile, "\n")
   q_plots = plot_grid(plotlist=plot_list, nrow=3)
   p = plot_grid(r_plots, q_plots, nrow=2, rel_heights=c(1,2), align='vh')

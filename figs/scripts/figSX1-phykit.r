@@ -68,7 +68,7 @@ fig = ggplot(sites, aes(x=label, y=num.sites, group=label)) +
 print(fig)
 
 if(save_fig){
-  figfile = here("figs", "supp" "figS6.png")
+  figfile = here("figs", "supp", "figS4.png")
   cat(as.character(Sys.time()), " | Saving figure: ", figfile, "\n")
   ggsave(filename=figfile, fig, width=3, height=4, units="in")
 }

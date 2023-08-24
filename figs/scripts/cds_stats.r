@@ -8,13 +8,14 @@ this.dir <- dirname(parent.frame(2)$ofile)
 setwd(this.dir)
 
 library(tidyverse)
+library(ape)
 
 ############################################################
 
 window_size = 10
 # Window size in kb
 
-chrome_info_file = here(datadir, "recombination-markers", "chrome-stats.csv")
+chrome_info_file = here("summary-data", "02-genomic-windows", "recombination-markers", "chrome-stats.csv")
 
 transcript_windows_file = here("summary-data", "03-selection-tests", "mm10-cds-windows.csv")
 longest_transcripts_file = here("summary-data", "03-selection-tests", "mm10.ensGene.chromes.longest.bed")
@@ -67,3 +68,28 @@ for(chrome in chrome_info$chr){
 }
 
 cat("wRF decay over ", avg_cds_adj, " windows:                                   ", mean(avg_cds_dists))
+
+############################################################
+
+window_size = 10
+marker_window_size = 5
+
+window_file = here("summary-data", "02-genomic-windows", paste0(window_size, "kb-0.5-0.5-", marker_window_size, "mb-topo-counts.csv"))
+cat(as.character(Sys.time()), " | Reading window data: ", window_file, "\n")
+all_windows = read_csv(infile, comment="#")
+names(all_windows) = make.names(names(all_windows))
+all_windows_f = subset(all_windows, repeat.filter=="PASS" & missing.filter=="PASS")
+
+window_trees = read.tree(text=all_windows_f$unparsed.tree)
+#total_bl = lapply(window_trees, FUN = function(x) sum(x$edge.length))
+#bls = sapply(window_trees, get, x="edge.length")
+
+bls = c()
+
+## Takes a while
+#for(i in 1:length(window_trees)){
+#  bls = c(bls, window_trees[[i]]$edge.length)
+#}
+## Takes a while
+
+

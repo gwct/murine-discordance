@@ -27,7 +27,7 @@ save_fig = T
 
 if(source_pafr){
   #setwd("C:/Users/grt814/bin/pafr/R/")
-  cat(as.character(Sys.time()), " | FigS8: Sourcing pafr\n")
+  cat(as.character(Sys.time()), " | Sourcing pafr\n")
   setwd("C:/bin/pafr/R/")
   #source("C:/Users/grt814/bin/pafr/")
   files.sources = list.files()
@@ -47,7 +47,7 @@ paf_file = here("summary-data", "04-mouse-rat-svs", "rn6-mm10.paf")
 ######################
 
 if(read_data){
-  cat(as.character(Sys.time()), " | FigS8: Reading alignment file: ", paf_file, "\n")
+  cat(as.character(Sys.time()), " | Reading alignment file: ", paf_file, "\n")
   paf = read_paf(paf_file)
   paf = subset(paf, nchar(qname) <= 5 & nchar(tname) <= 5)
   paf = subset(paf, qname != "chrM" & tname != "chrM")
@@ -66,7 +66,7 @@ chr_orders = list(mouse_chr, rat_chr)
 # Set the order of the chromosomes
 
 
-cat(as.character(Sys.time()), " | FigS11: Rendering dotplot\n")
+cat(as.character(Sys.time()), " | Rendering dotplot\n")
 paf_result = dotplot(paf, order_by="provided", label_seqs=TRUE, xlab="Mouse", ylab="Rat", ordering=chr_orders)
 # Process paf with pafr
 
@@ -78,14 +78,14 @@ print(figS8)
 # Generate the dotplot
 
 if(save_fig){
-  figSfile = here("figs", "supp", "figS8.pdf")
-  cat(as.character(Sys.time()), " | FigS8: Saving supplemental figure:", figSfile, "\n")
+  figSfile = here("figs", "supp", "figS6.pdf")
+  cat(as.character(Sys.time()), " | Saving supplemental figure:", figSfile, "\n")
   ggsave(filename=figSfile, figS8, width=8, height=8, unit="in")
 }
 
 ######################
 
-cat(as.character(Sys.time()), " | FigS9: Counting alignment chunk sizes\n")
+cat(as.character(Sys.time()), " | Counting alignment chunk sizes\n")
 
 paf_bins = data.frame("bin"=c(10, 100, 1000, 10000, 100000, 1000000, 10000000, 100000000, 1000000000), "count"=c(0,0,0,0,0,0,0,0,0), "size"=c(0,0,0,0,0,0,0,0,0),
                       "bin.labels"=c("1bp-10bp", "10bp-100bp", "100bp-1kb", "1kb-10kb", "10kb-100kb", "100kb-1Mb", "1Mb-10Mb", "10Mb-100Mb", "100Mb-1Gb"))
@@ -113,7 +113,7 @@ for(i in 1:nrow(paf)){
   # Add one to the count for the bin and add the length of the block to the size of the bin
 }
 
-cat(as.character(Sys.time()), " | FigS9: Rendering alignment chunk distributions\n")
+cat(as.character(Sys.time()), " | Rendering alignment chunk distributions\n")
 
 paf_bins$bin.labels = factor(paf_bins$bin.labels, levels=rev(c("1bp-10bp", "10bp-100bp", "100bp-1kb", "1kb-10kb", "10kb-100kb", "100kb-1Mb", "1Mb-10Mb", "10Mb-100Mb", "100Mb-1Gb")))
 # Re-order the bin labels
@@ -155,7 +155,7 @@ figS9_ab = plot_grid(figS9_a, figS9_b, ncol=2, labels=c("A", "B"), label_size=12
 
 ######################
 
-cat(as.character(Sys.time()), " | FigS9: Counting distances between aligned chunks\n")
+cat(as.character(Sys.time()), " | Counting distances between aligned chunks\n")
 
 paf_sort = paf[order(paf$qname, paf$qstart), ]
 # Make sure the data frame is sorted by query start
@@ -175,7 +175,7 @@ t_inter_dist = rainfallTransform(t_bed, mode="left")
 # the interval distance between aligned chunks
 ######################
 
-cat(as.character(Sys.time()), " | FigS9: Rendering inter-dist distributions\n")
+cat(as.character(Sys.time()), " | Rendering inter-dist distributions\n")
 
 names(q_inter_dist) = c("name", "start", "end", "dist")
 q_inter_dist$label = "Mouse"
@@ -215,15 +215,15 @@ print(figS9_c)
 
 ######################
 
-cat(as.character(Sys.time()), " | FigS9: Combining panels\n")
+cat(as.character(Sys.time()), " | Combining panels\n")
 
 figS9_bot = plot_grid(NULL, figS9_c, NULL, ncol=3, rel_widths=c(0.25, 1, 0.25), labels=c("", "C", ""))
 
 figS9 = plot_grid(figS9_ab, figS9_bot, nrow=2)
 
 if(save_fig){
-  figSfile = here("figs", "supp", "figS9.png")
-  cat(as.character(Sys.time()), " | FigS9: Saving supplemental figure:", figSfile, "\n")
+  figSfile = here("figs", "supp", "figS7.png")
+  cat(as.character(Sys.time()), " | Saving supplemental figure:", figSfile, "\n")
   ggsave(filename=figSfile, figS9, width=6, height=8, unit="in")
 }
 

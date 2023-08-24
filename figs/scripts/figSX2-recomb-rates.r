@@ -34,7 +34,7 @@ save_fig = T
 # datadir = "C:/Users/Gregg/Box Sync/rodents/penn/paper/data/"
 # infile = paste(datadir, window_size, "kb-0.5-0.5-", marker_window_size, "mb-topo-counts-tt.csv", sep="")
 
-infile = here("summary-data", "02-genomic-windows", paste0(window_size_kb, "kb-0.5-0.5-", marker_window_size, "mb-topo-counts.csv"))
+infile = here("summary-data", "02-genomic-windows", paste0(window_size, "kb-0.5-0.5-", marker_window_size, "mb-topo-counts.csv"))
 
 # Input options
 ######################
@@ -66,7 +66,7 @@ fig = ggplot(marker_data, aes(x=marker.slope, fill=chr)) +
 print(fig)
 
 if(save_fig){
-  figfile = here("figs", "supp", paste0("figSX-", marker_window_size, "mb-rec-rates.png"))
+  figfile = here("figs", "supp", paste0("figS8.png"))
   #figfile = paste("../figs/figSX-", marker_window_size, "mb-rec-rates.png", sep="")
   cat(as.character(Sys.time()), " | Saving figure: ", figfile, "\n")
   ggsave(filename=figfile, fig, width=6, height=6, units="in")

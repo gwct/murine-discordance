@@ -36,7 +36,7 @@ skip_one = F
 skip_x = T
 # Skip the X chromosome
 
-save_fig = T
+save_fig = F
 # Whether or not to save the figure
 
 num_reps = 100
@@ -77,7 +77,7 @@ if(read_data){
 ######################
 
 my_colors = colorRampPalette(brewer.pal(8, "Set2"))(20)
-names(my_colors) = c("chr1", "chr2", "chr3", "chr4", "chr5", "chr6", "chr7", "chr8", "chr9", "chr10", "chr11", "chr12", "chr13", "chr14", "chr15", "chr16", "chr17", "chr18", "chr19")
+names(my_colors) = c("chr1", "chr2", "chr3", "chr4", "chr5", "chr6", "chr7", "chr8", "chr9", "chr10", "chr11", "chr12", "chr13", "chr14", "chr15", "chr16", "chr17", "chr18", "chr19", "chrX")
 # Colors for the plots
 
 replicate_data = data.frame("chrome"=c(), "replicate"=c(), "nonsig.adj"=c())
@@ -147,22 +147,22 @@ for(chrome in levels(all_windows$chr)){
   cat(as.character(Sys.time()), " | Chromosome ", out_chrome, " - calculating decay rates (slopes)\n", sep="")
   cur_nonsig_adjs = c()
   for(k in 1:num_reps){
-    if(chrome %in% c("chr2", "chrX") && k > 10){
-      cur_nonsig_adjs = c(cur_nonsig_adjs, NA)
-      replicate_data = rbind(replicate_data, data.frame("chrome"=chrome, "replicate"=k, "nonsig.adj"=NA))
-    }else{
-      cur_dists = dist_data %>% 
-        filter(replicate == k) %>% 
-        mutate(nonsig.adj = nonsig.adj * window_size / 1000000)
-      # Select the data from the current replicate and convert from 10kb windows to Mb
-      
-      cur_nonsig_adjs = c(cur_nonsig_adjs, cur_dists$nonsig.adj)
-      # Add the non-sig adjacency to the current list
-  
-      replicate_data = rbind(replicate_data, data.frame("chrome"=chrome, "replicate"=k, 
-                                                        "nonsig.adj"=cur_dists$nonsig.adj))
+    # if(chrome %in% c("chrX") && k > 10){
+    #   cur_nonsig_adjs = c(cur_nonsig_adjs, NA)
+    #   replicate_data = rbind(replicate_data, data.frame("chrome"=chrome, "replicate"=k, "nonsig.adj"=NA))
+    # }else{
+    cur_dists = dist_data %>% 
+      filter(replicate == k) %>% 
+      mutate(nonsig.adj = nonsig.adj * window_size / 1000000)
+    # Select the data from the current replicate and convert from 10kb windows to Mb
+    
+    cur_nonsig_adjs = c(cur_nonsig_adjs, cur_dists$nonsig.adj)
+    # Add the non-sig adjacency to the current list
+
+    replicate_data = rbind(replicate_data, data.frame("chrome"=chrome, "replicate"=k, 
+                                                      "nonsig.adj"=cur_dists$nonsig.adj))
       # Save the replicate date for the boxplot (panel C)
-    }
+    # }
   }
   # Loop over each replicate to get the non-sig adjacency
   
@@ -243,7 +243,7 @@ avg_nonsig_chr_no_out = signif(mean(summary_data_no_out$avg.nonsig.adj), 2)
 blah = data.frame()
 # Dummy data frame for layering
 
-replicate_data$chrome = factor(replicate_data$chrome, levels=rev(c("chr1", "chr2", "chr3", "chr4", "chr5", "chr6", "chr7", "chr8", "chr9", "chr10", "chr11", "chr12", "chr13", "chr14", "chr15", "chr16", "chr17", "chr18", "chr19")))
+replicate_data$chrome = factor(replicate_data$chrome, levels=rev(c("chr1", "chr2", "chr3", "chr4", "chr5", "chr6", "chr7", "chr8", "chr9", "chr10", "chr11", "chr12", "chr13", "chr14", "chr15", "chr16", "chr17", "chr18", "chr19", "chrX")))
 
 avg_p = ggplot(replicate_data, aes(x=chrome, y=nonsig.adj, group=chrome, color=chrome)) +
   geom_boxplot(outlier.shape=NA) +
@@ -316,3 +316,10 @@ if(save_fig){
   cat(as.character(Sys.time()), " | Fig3: Saving figure:", figfile, "\n")
   ggsave(filename=figfile, fig3, width=12, height=7.5, units="in")
 }
+
+######################
+
+# p = ggplot(summary_data, aes(x=avg.nonsig.adj, y=avg.decay.rate)) +
+#   geom_point(size=3, alpha=0.5, color="#920000") +
+#   bartheme()
+# print(p)
