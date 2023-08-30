@@ -4,15 +4,16 @@
 # Gregg Thomas
 ############################################################
 
+this.dir <- dirname(parent.frame(2)$ofile)
+setwd(this.dir)
+
 library(ggplot2)
 library(cowplot)
 library(ggsignif)
 library("ggtree")
-#this.dir <- dirname(parent.frame(2)$ofile)
-#setwd(this.dir)
 library(here)
-source(here("lib", "get_tree_info.r"))
-source(here("lib", "design.r"))
+source(here("figs", "scripts", "lib", "get_tree_info.r"))
+source(here("figs", "scripts", "lib", "design.r"))
 
 ############################################################
 cat("----------\n")
@@ -38,7 +39,7 @@ skip_one = F
 max_tree_rank = 3
 # The number of top trees to print/color
 
-datadir = here("data", "02-Genomic-discordance")
+datadir = here("summary-data", "02-genomic-windows")
 
 infile = here(datadir, paste(window_size, "kb-0.5-0.5-", marker_window_size, "mb-topo-counts.csv", sep=""))
 #infile = here(datadir, paste(window_size, "kb-0.5-0.5-", marker_window_size, "mb-topo-counts-tt.csv.gz", sep=""))
@@ -133,13 +134,13 @@ for(chrome in levels(as.factor(all_windows$chr))){
   num_topos = max(chrdata_f$topo.num.chrome)
   # Get the concatenated and astral chromosome topology and length
   
-  window_title = paste("Rodent phylogenies: ", window_size, "kb windows on chr", chrome, sep="")
+  window_title = paste("Rodent phylogenies: ", window_size, "kb windows on ", chrome, sep="")
   window_subtitle = paste("Chrome length: ", chr_len, "bp, showing ", used_windows, " of ", total_windows, " windows, ", num_topos, " topologies", sep="")
   
   if(au_flag){
     outfile = here("figs", "supp", "chromoplots", paste(out_chrome, "-au-filter.png", sep=""))
   }else{
-    outfile = here("figs", "supp", "chromoplots", paste(out_chrome, "-PSEUDO.png", sep=""))
+    outfile = here("figs", "supp", "chromoplots", paste(out_chrome, ".pdf", sep=""))
   }
   # Output information for this chrome
   
