@@ -7,16 +7,13 @@
 
 library(ape)
 library(phangorn)
-#library(ggplot2)
-#library(cowplot)
-#library(ggsignif)
-#library("ggtree")
 library(parallel)
+library(here)
 
 ############################################################
 # Functions
 
-calcRFs <- function(chrome_win_data){
+calcRFs <- function(chrome_win_data, st){
 
   chrome = as.character(chrome_win_data$chr[1])
   if(is.na(chrome)){
@@ -38,7 +35,8 @@ calcRFs <- function(chrome_win_data){
                        "first.last.wrf"=c(), "wrf.decay"=c(), 
                        "first.last.spr"=c(), "spr.decay"=c(), 
                        "first.last.kf"=c(), "kf.decay"=c(), 
-                       "first.last.path"=c(), "path.decay"=c()
+                       "first.last.path"=c(), "path.decay"=c(),
+                       "rf.st.avg"=c(), "wrf.st.avg"=c(), "spr.st.avg"=c(), "kf.st.avg"=c(), "path.st.avg"=c()
   )
   # Initialize an empty data frame
   
@@ -61,7 +59,8 @@ calcRFs <- function(chrome_win_data){
     # Skip windows that don't have at least 10 trees
     
     cur_win_data = data.frame("dist.to.first"=c(), "rf.to.first"=c(), "wrf.to.first"=c(),
-                              "spr.to.first"=c(), "kf.to.first"=c(), "path.to.first"=c())
+                              "spr.to.first"=c(), "kf.to.first"=c(), "path.to.first"=c(),
+                              "rf.st"=c(), "wrf.st"=c(), "spr.st"=c(), "kf.st"=c(), "path.st"=c())
     # Data frame for current marker window
     
     first = TRUE
@@ -96,6 +95,15 @@ calcRFs <- function(chrome_win_data){
       }
       # If this is the first tree of the window, save the tree and the start position
       # for all other comparisons
+
+      rf_st = RF.dist(tree1, st)
+      wrf_st = wRF.dist(tree1, st)
+      spr_st = SPR.dist(tree1, st)
+      names(spr_st) = NULL
+      spr_st = spr_st
+      kf_st = KF.dist(tree1, st)
+      path_st = path.dist(tree1, st)
+      # The phylogenetic distances to the species tree      
       
       
       if(!first){
@@ -112,7 +120,8 @@ calcRFs <- function(chrome_win_data){
         # The phylogenetic distances to the first tree
         
         cur_win_data = rbind(cur_win_data, data.frame("dist.to.first"=dist_to_first, "rf.to.first"=rf, "wrf.to.first"=wrf,
-                                                      "spr.to.first"=spr, "kf.to.first"=kf, "path.to.first"=path))
+                                                      "spr.to.first"=spr, "kf.to.first"=kf, "path.to.first"=path,
+                                                      "rf.st"=rf_st, "wrf.st"=wrf_st, "spr.st"=spr_st, "kf.st"=kf_st, "path.st"=path_st))
         # Add the distances to the data frame
       }
       # For all other trees, calculate distances
@@ -166,12 +175,24 @@ calcRFs <- function(chrome_win_data){
       spr_decay = lm(cur_win_data$spr.to.first ~ log10(cur_win_data$dist.to.first))$coefficients[2]
       kf_decay = lm(cur_win_data$kf.to.first ~ log10(cur_win_data$dist.to.first))$coefficients[2]
       path_decay = lm(cur_win_data$path.to.first ~ log10(cur_win_data$dist.to.first))$coefficients[2]
+
+      rf_st_avg = mean(cur_win_data$rf.st, na.rm=T)
+      wrf_st_avg = mean(cur_win_data$wrf.st, na.rm=T)
+      spr_st_avg = mean(cur_win_data$spr.st, na.rm=T)
+      kf_st_avg = mean(cur_win_data$kf.st, na.rm=T)
+      path_st_avg = mean(cur_win_data$path.st, na.rm=T)
     }else{
       rf_decay = NA
       wrf_decay = NA
       spr_decay = NA
       kf_decay = NA
-      path_decay = NA     
+      path_decay = NA
+
+      rf_st_avg = NA
+      wrf_st_avg = NA
+      spr_st_avg = NA
+      kf_st_avg = NA
+      path_st_avg = NA  
     }
     
     # plot(dists_to_first, wrfs_to_first)
@@ -195,7 +216,8 @@ calcRFs <- function(chrome_win_data){
                          "first.last.wrf"=wrf, "wrf.decay"=wrf_decay, 
                          "first.last.spr"=spr, "spr.decay"=spr_decay, 
                          "first.last.kf"=kf, "kf.decay"=kf_decay, 
-                         "first.last.path"=path, "path.decay"=path_decay)
+                         "first.last.path"=path, "path.decay"=path_decay,
+                         "rf.st.avg"=rf_st_avg, "wrf.st.avg"=wrf_st_avg, "spr.st.avg"=spr_st_avg, "kf.st.avg"=kf_st_avg, "path.st.avg"=path_st_avg)
     )
     # Add the data for the current window to the main data frame
   }
@@ -220,7 +242,7 @@ skip_one = FALSE
 num_cores = 20
 # The number of cores to split chromosomes across
 
-test_run = FALSE
+test_run = F
 # Only do chromosome 7 as a test (~1hr)
 
 if(test_run){
@@ -230,8 +252,11 @@ if(test_run){
   # Number of cores
 }
 
-infile = paste("../data/", window_size, "kb-0.5-0.5-", marker_window_size, "mb-topo-counts.csv", sep="")
-outfile = paste("../data/", window_size, "kb-", marker_window_size, "mb-recomb-dists.csv", sep="")
+infile = here("summary-data", "02-genomic-windows", paste0(window_size, "kb-0.5-0.5-", marker_window_size, "mb-topo-counts.csv"))
+#infile = paste("../data/", window_size, "kb-0.5-0.5-", marker_window_size, "mb-topo-counts.csv", sep="")
+outfile = here("summary-data", "02-genomic-windows", paste0(window_size, "kb-", marker_window_size, "mb-recomb-dists-st.csv"))
+#outfile = paste("../data/", window_size, "kb-", marker_window_size, "mb-recomb-dists.csv", sep="")
+species_tree_file = here("summary-data", "03-selection-tests", "concat.cf.rooted.tree")
 #infile = paste("/mnt/beegfs/gt156213e/penn-genomes/windows/data-2/", window_size, "kb-0.5-0.5-topo-counts-tt.csv", sep="")
 
 # Input options
@@ -240,6 +265,8 @@ outfile = paste("../data/", window_size, "kb-", marker_window_size, "mb-recomb-d
 cat(as.character(Sys.time()), " | Reading data:", infile, "\n")
 win_data = read.csv(infile, header=T, comment.char="#")
 # Tree data
+
+species_tree = read.tree(file=species_tree_file)
 
 if(test_run){
   cat(as.character(Sys.time()), " | Subsetting data for test run.\n")
@@ -252,15 +279,17 @@ if(test_run){
 ######################
 
 if(test_run){
-  test_windows = split(test_windows, f=test_windows$chr)
-  all_windows = mclapply(test_windows, calcRFs, mc.cores=num_cores)
+  #test_windows = split(test_windows, f=test_windows$chr)
+  #all_windows = mclapply(test_windows, calcRFs, st=species_tree mc.cores=num_cores)
+  out_windows = calcRFs(test_windows, species_tree)
 }else{
   win_data = split(win_data, f=win_data$chr)
   # Split by chromosome.
   
-  all_windows = mclapply(win_data, calcRFs, mc.cores=num_cores)
+  all_windows = mclapply(win_data, calcRFs, st=species_tree, mc.cores=num_cores)
+  out_windows = do.call("rbind", all_windows)
 }
-out_windows = do.call("rbind", all_windows)
+
 cat(as.character(Sys.time()), " | Writing output:", outfile,"\n")
 write.csv(out_windows, outfile, row.names=F)
 # Calc dists in parallel for each chromosome

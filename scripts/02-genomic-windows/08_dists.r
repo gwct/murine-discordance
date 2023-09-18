@@ -365,7 +365,8 @@ if(file.exists(random_file)){
 ## The random sampling
 
 #all_windows = subset(all_windows, chr!="chrX")
-all_windows = subset(all_windows, chr=="chr2")
+#all_windows = subset(all_windows, chr=="chr2")
+all_windows = subset(all_windows, chr=="chrX")
 # Remove the X because it's weird
 
 if(test_run){
