@@ -69,6 +69,8 @@ fig_4a = ggplot(marker_windows, aes(x=recomb.rate, y=first.last.wrf)) +
         plot.margin=unit(c(0.5,0.5,0,0), units="cm"))
 print(fig_4a)
 
+lm_4a = lm(marker_windows$first.last.wrf ~ marker_windows$recomb.rate)
+
 cat(as.character(Sys.time()), " | Fig4: Rendering panel B\n")
 fig_4b = ggplot(marker_windows, aes(x=recomb.rate, y=wrf.decay)) +
   geom_point(size=2, color=corecol(numcol=1, pal="wilke", offset=2), alpha=0.5) +
@@ -83,6 +85,8 @@ fig_4b = ggplot(marker_windows, aes(x=recomb.rate, y=wrf.decay)) +
         plot.margin=unit(c(0.5,0.5,0,0), units="cm"))
 print(fig_4b)
 
+lm_4b = lm(marker_windows$wrf.decay ~ marker_windows$recomb.rate)
+
 cat(as.character(Sys.time()), " | Fig4: Rendering panel C\n")
 fig_4c = ggplot(marker_windows, aes(x=recomb.rate, y=wrf.st.avg)) +
   geom_point(size=2, color=corecol(numcol=1, pal="wilke", offset=2), alpha=0.5) +
@@ -96,6 +100,8 @@ fig_4c = ggplot(marker_windows, aes(x=recomb.rate, y=wrf.st.avg)) +
         axis.title.y=element_text(size=10),
         plot.margin=unit(c(0.5,0,0,0), units="cm"))
 print(fig_4c)
+
+lm_4c = lm(marker_windows$wrf.st.avg ~ marker_windows$recomb.rate)
 
 ######################
 
