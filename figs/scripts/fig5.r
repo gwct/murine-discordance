@@ -16,6 +16,7 @@ library(ggsignif)
 library(phangorn)
 library(broom)
 library(here)
+source(here("figs", "scripts", "lib", "design.r"))
 
 ########################################################################################################################
 
@@ -110,7 +111,7 @@ marker_window_size = 5
 au_flag = FALSE
 # Set to filter out windows that don't pass the AU test
 
-read_data = F
+read_data = T
 # Whether or not to read the data
 
 do_calcs = F
@@ -131,7 +132,7 @@ featured_chr = "chr7"
 max_dist_mb = 5
 # Distance limit for plots
 
-save_fig = T
+save_fig = F
 # Whether or not to save the figure
 
 gen_supp = F
@@ -158,7 +159,7 @@ species_tree_file = here("summary-data", "03-selection-tests", "concat.cf.rooted
 
 chrome_info_file = here("summary-data", "02-genomic-windows", "recombination-markers", "chrome-stats.csv")
 
-pre_calc_file = here("summary-data", "02-genomic-windows", "all-feature-stats.csv")
+pre_calc_file = here("summary-data", "02-genomic-windows", paste0("all-feature-stats-", max_dist_mb, "mb.csv"))
 # Input options
 ######################
 
@@ -603,6 +604,44 @@ if(save_fig){
 }
 # Save figure
 ######################
+######################
+
+# spec_anova_comp = spec_anova_comp %>%
+#   mutate(sig2 = ifelse(sig=="***", "Significant", sig))
+# 
+# sig_shapes = c("N.S."=21,
+#              "*"=22,
+#              "**"=23,
+#              "Significant"=24)
+# 
+# sig_cols = c("N.S."="#333333", 
+#              "*"=corecol(pal="wilke", numcol=1, offset=4), 
+#              "**"=corecol(pal="wilke", numcol=1, offset=2), 
+#              "Significant"=corecol(pal="wilke", numcol=1, offset=6))
+# 
+# spec_anova_plot = ggplot(spec_anova_comp, aes(x=comp, y=label.diff, color=sig2, fill=sig2, shape=sig2)) +
+#   geom_point(size=3) +
+#   geom_errorbar(aes(ymin=label.lwr, ymax=label.upr), width=0.25, size=1) +
+#   geom_hline(yintercept=0, size=1, linetype=2) +
+#   scale_color_manual(values=sig_cols, drop=FALSE) +
+#   scale_fill_manual(values=sig_cols, drop=FALSE) +
+#   scale_shape_manual(values=sig_shapes, drop=FALSE) +
+#   #xlab("Feature window comparison\nof wRF to species tree") +
+#   ggtitle("Comparing distributions of\nphylogenetic distance from trees inferred fromx\ngenomic features to the species tree") +
+#   xlab("") +
+#   ylab("Difference in means of distance\nfrom locus trees to species tree") +
+#   bartheme() +
+#   theme(panel.grid.major.x=element_line(color = "#d3d3d3", size=0.5, linetype=1),
+#         axis.text.x=element_text(angle=40, hjust=1, size=14),
+#         axis.title.y=element_text(size=14),
+#         plot.title=element_text(size=16, margin=margin(b=20)),
+#         plot.margin=margin(0.5,0.5,0,0.5, unit="cm"),
+#         legend.position="bottom",
+#         legend.margin = margin(-1, 0, 0, 0, unit="cm"))
+# #coord_flip()
+# print(spec_anova_plot)
+# 
+# ggsave(filename=here("figs", "scripts", "fig5c.png"), spec_anova_plot, width=6, height=6, units="in")
 
 ######################
 ######################

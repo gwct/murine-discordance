@@ -29,10 +29,10 @@ au_flag = F
 read_data = T
 # Whether to read the initial data or not
 
-gen_chromo = F
+gen_chromo = T
 # Whether or not to re-genereate the chromoplot
 
-save_fig = F
+save_fig = T
 # Whether or not to save the figure
 
 skip_one = F
@@ -154,9 +154,9 @@ for(j in 1:length(top_topos)){
   #print(cur_fig)
   # Generate the tree
   
-  if(j==3){
-    cur_fig = cur_fig %>% rotate(9)
-  }
+  # if(j==3){
+  #   cur_fig = cur_fig %>% rotate(9)
+  # }
   
   tree_figs[[j]] = cur_fig
   # Save the tree fig in th elist

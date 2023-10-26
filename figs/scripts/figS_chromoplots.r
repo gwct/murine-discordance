@@ -75,7 +75,7 @@ color_temp$rank = as.character(color_temp$rank)
 
 color_p = ggplot(color_temp, aes(x=rank, y=blah, fill=col, label=rank)) +
   geom_bar(stat="identity") +
-  scale_fill_manual(name="Overall rank of topologies that are top 3 in at least one chrome:", 
+  scale_fill_manual(name="Overall rank of topologies that are top 3 in at least one chromosome:", 
                     limits=color_temp$rank, 
                     values=color_temp$col) +
   bartheme()
@@ -135,7 +135,7 @@ for(chrome in levels(as.factor(all_windows$chr))){
   # Get the concatenated and astral chromosome topology and length
   
   window_title = paste("Rodent phylogenies: ", window_size, "kb windows on ", chrome, sep="")
-  window_subtitle = paste("Chrome length: ", chr_len, "bp, showing ", used_windows, " of ", total_windows, " windows, ", num_topos, " topologies", sep="")
+  window_subtitle = paste("Chromosome length: ", chr_len, "bp, showing ", used_windows, " of ", total_windows, " windows, ", num_topos, " topologies", sep="")
   
   if(au_flag){
     outfile = here("figs", "supp", "chromoplots", paste(out_chrome, "-au-filter.png", sep=""))

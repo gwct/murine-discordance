@@ -36,7 +36,7 @@ skip_one = F
 skip_x = T
 # Skip the X chromosome
 
-save_fig = F
+save_fig = T
 # Whether or not to save the figure
 
 num_reps = 100
@@ -218,14 +218,14 @@ cat(as.character(Sys.time()), " | Fig3: Generating figure panels A and B\n")
 all_chrome_p = all_chrome_p + 
   geom_hline(yintercept=median(random_data$wrf), size=2, linetype="dashed", color="#333333") +
   xlab("Distance between\nwindows (Mb)") +
-  ylab("Average wRF") +
+  ylab("Mean wRF") +
   bartheme()
 print(all_chrome_p)
 
 all_chrome_log_p = all_chrome_log_p + 
   geom_hline(yintercept=median(random_data$wrf), size=2, linetype="dashed", color="#333333") +
   xlab("Distance between\nwindows (log Mb)") +
-  ylab("Average wRF") +
+  ylab("Mean wRF") +
   bartheme()
 print(all_chrome_log_p)
 
@@ -293,7 +293,7 @@ for(chrome in levels(summary_data$chrome)){
 dec_p = dec_p + geom_point(size=4, color="#920000") +
   #geom_text(data=blah, aes(x=18.4, y=avg_decay_rate+0.00004, label=paste("Avg. = ", avg_decay_rate, sep="")),  size=4, color="#333333") +
   xlab("Chromosome") +
-  ylab("Average\ndecay rate") +
+  ylab("Mean\ndecay rate") +
   scale_y_continuous(expand=c(0,0), limits=c(-0.0001,0.07)) +
   bartheme() +
   coord_flip()
