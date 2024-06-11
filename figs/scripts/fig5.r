@@ -132,7 +132,7 @@ featured_chr = "chr7"
 max_dist_mb = 5
 # Distance limit for plots
 
-save_fig = F
+save_fig = T
 # Whether or not to save the figure
 
 gen_supp = F
@@ -578,7 +578,7 @@ spec_anova_plot = ggplot(spec_anova_comp, aes(x=comp, y=label.diff, color=sig)) 
   theme(panel.grid.major.x=element_line(color = "#d3d3d3", size=0.5, linetype=1),
         axis.text.x=element_text(angle=40, hjust=1, size=10),
         axis.title.y=element_text(size=12),
-        plot.margin=margin(0.5,0.5,0,0.5, unit="cm"))
+        plot.margin=margin(0.5,0.5,-0.75,0.5, unit="cm"))
   #coord_flip()
 print(spec_anova_plot)
 # Plot the differences in spec wrf, colored by significance level
@@ -590,17 +590,18 @@ cat(as.character(Sys.time()), " | Combining panels\n")
 
 comp_leg = get_legend(adj_wrf_anova_plot + theme(legend.position="bottom"))
 
-fig_5new_top = plot_grid(slope_plot, slope_anova_plot + theme(legend.position="none"), ncol=2, labels=c("A", ""))
-fig_5new_mid = plot_grid(wrf_adj_plot, adj_wrf_anova_plot + theme(legend.position="none"), ncol=2, labels=c("B", ""))
-fig_5new_bot = plot_grid(spec_plot, spec_anova_plot + theme(legend.position="none"), ncol=2, labels=c("C", ""))
-fig_5new_noleg = plot_grid(fig_5new_top, fig_5new_mid, fig_5new_bot, nrow=3)
+#fig_5new_top = plot_grid(slope_plot, slope_anova_plot + theme(legend.position="none"), ncol=2, labels=c("A", ""))
+fig_5new_mid = plot_grid(wrf_adj_plot, adj_wrf_anova_plot + theme(legend.position="none"), ncol=2, labels=c("A", ""))
+fig_5new_bot = plot_grid(spec_plot, spec_anova_plot + theme(legend.position="none"), ncol=2, labels=c("B", ""))
+#fig_5new_noleg = plot_grid(fig_5new_top, fig_5new_mid, fig_5new_bot, nrow=3)
+fig_5new_noleg = plot_grid(fig_5new_mid, fig_5new_bot, nrow=2)
 fig_5new = plot_grid(fig_5new_noleg, comp_leg, nrow=2, rel_heights=c(1,0.1))
 # Combine figure panels
 
 if(save_fig){
   figfile = here("figs", "fig5.png")
   cat(as.character(Sys.time()), " | Fig5: Saving figure:", figfile, "\n")
-  ggsave(filename=figfile, fig_5new, width=7.5, height=10.5, units="in")
+  ggsave(filename=figfile, fig_5new, width=7.5, height=8.5, units="in")
 }
 # Save figure
 ######################
