@@ -22,7 +22,7 @@ read_data = T
 source_pafr = T
 # Whether or not to source the pafr package
 
-save_fig = T
+save_fig = F
 # Whether or not to save the figures
 
 if(source_pafr){
